@@ -1,0 +1,647 @@
+#!/usr/bin/env python3
+"""PiOLED display service and driver
+
+PiOLED utilizes the luma.oled package.  A notable limitation of luma.oled is that only one process can send messages to the display.  PiOLED solves this limitation by setting up a client-sever configuration, where the server is started at boot and various clients may send display messages to the server.  The server is started via systemd at boot using the provided .service file.  Tool scripts communicate with the server using a shared display file and ipc semaphores. 
+
+PiOLED also supports a command line interface:
+- `pioled message` displays a multi-line message on the display, supporting list and dictionary formats - see doc.  Example:
+
+    pioled message "[0, 0, 18, 'Wherever you go...'], {'x':10, 'y':20, 'size':20, 'text':'there you are.', 'font':'ProggyTiny.ttf'}"
+
+- `pioled blank`  clears the display
+- `pioled status` displays the state of the server process, and the ipc semaphores
+- `pioled unlock` releases the ipc semaphores, which are normally released by the server process
+"""
+
+import importlib.metadata
+__version__ = importlib.metadata.version(__package__ or __name__)
+
+#==========================================================
+#
+#  Chris Nelson, Copyright 2024-2026
+#
+# Issues, enhancements
+# TODO oled taillog cli
+#   scroll page?
+#
+#==========================================================
+
+
+import time
+import datetime
+import argparse
+import sys
+import os
+import signal
+import ast
+from pathlib import Path
+from types import SimpleNamespace
+from threading import Thread
+from importlib_resources import files as ir_files
+
+from luma.core import cmdline
+from luma.core.render import canvas
+from PIL import ImageFont
+
+from cjnfuncs.core          import set_toolname, logging, set_logging_level, periodic_log, setuplogging
+from cjnfuncs.configman     import config_item
+from cjnfuncs.resourcelock  import resource_lock
+from cjnfuncs.deployfiles   import deploy_files
+import cjnfuncs.core as core
+
+
+# Configs / Constants
+TOOLNAME =                      'PiOLED'
+CONFIG_FILE =                   'PiOLED_server.cfg'       # Abs, or relative to the core.tool.config_dir
+PIOLED_GO_FLAG =                'PiOLED_go_flag'
+PIOLED_FILE_LOCK =              'PiOLED_file_lock'
+
+SERVER_FILE_LOGGING_FORMAT =    '{asctime} {module:>15}.{funcName:20} * {levelname:>8}:  {message}'
+SERVER_CONS_LOGGING_FORMAT =              '{module:>15}.{funcName:20} * {levelname:>8}:  {message}'
+CLI_CONSOLE_LOGGING_FORMAT =              '{module:>15}.{funcName:20} - {levelname:>8}:  {message}'
+
+DISPLAY_DRIVER_FONT =           'C&C Red Alert [INET].ttf'  # Default font for _oneliner    # TODO configurable, size and color
+PIOLED_TH_EXIT =                -99
+PIOLED_TH_PAUSE =               -98
+PIOLED_NEWMSG =                 -1
+PIOLED_SAVE =                   -2
+PIOLED_RESTORE =                -3
+
+PIOLED_PAGE_TIME =              7
+PIOLED_INTER_PAGE_TIME =        0.3
+PIOLED_INTER_MESSAGE_SET_TIME = 1
+
+pioled_logger = logging.getLogger('pioled')
+pioled_logger.setLevel(logging.WARNING)
+
+
+set_toolname (TOOLNAME)
+# print (core.tool)
+
+pioled_go_flag =                resource_lock(PIOLED_GO_FLAG)
+pioled_file_lock =              resource_lock(PIOLED_FILE_LOCK)
+
+
+
+#=====================================================================================
+#=====================================================================================
+#   pioled_display_driver class
+#=====================================================================================
+#=====================================================================================
+
+class pioled_display_driver:
+    """Driver for sending messages on the OLED display via a display_file
+    This driver/handler is instantiated within the client/tool script/app.
+    The config file is not used (used only by the server).
+
+    """
+    def __init__(self, queue, display_file,
+                 name='pioled_driver',
+                 page_time=PIOLED_PAGE_TIME,
+                 inter_page_time=PIOLED_INTER_PAGE_TIME,
+                 inter_message_set_time=PIOLED_INTER_MESSAGE_SET_TIME
+                 ):
+        global pioled_logger
+        self.queue = queue
+        self.name = name
+        self.page_time = page_time
+        self.inter_page_time = inter_page_time
+        self.inter_message_set_time = inter_message_set_time
+        self.saved_message_set = {'cmd:':None, 'cnt':None, 'pages':[[{'x':0,  'y':0,  'size':18, 'text':"Warning"},
+                                                                     {'x':10, 'y':20, 'size':12, 'text':"Message set Restored"},
+                                                                     {'x':10, 'y':32, 'size':12, 'text':"before Saved"}]]}
+
+        # Confirm access to display_file
+        self.display_file = Path(display_file)
+        try:
+            self.display_file.touch()
+        except Exception as e:
+            pioled_logger.warning (f"Unable to access oled display_file <{self.display_file}>\n  {type(e).__name__}: {e}")
+        else:
+            self.display_file.unlink()
+
+
+    def start(self):
+        self.this_thread = Thread(target=self.message_loop, name=self.name, daemon=True)    # daemon so that if the main thread errors this thread is auto-killed, avoiding hang
+        self.this_thread.start()
+        pioled_logger.debug (f"pioled message_loop thread created using display_file <{self.display_file}>")
+        return self.this_thread
+
+
+    def blank(self):
+        pioled_logger.debug ("pioled_blank")
+        self.message_page([[0, 0, 12, '']])     # Not sent thru the queue as the blank would be saved and restored
+        time.sleep (0.01)                       # Allow time for blank to be processed
+
+
+    def oneliner(self, x, y, size, text, message_time=0, font=None, color=None, cmd=None):
+        # message_time is blocking to the main code if not sent thru a queue to pioled message_loop
+        pioled_logger.debug (f"pioled_message - <{text}>")
+        self.queue.put ({'cmd':cmd, 'pages':[[{'x':x, 'y':y, 'size':size, 'text':text, 'font':font, 'color':color}]]})
+        if message_time:
+            time.sleep (message_time)
+            self.blank()
+        else:
+            time.sleep (0.01)                   # Allow time for queue to be processed
+
+
+    def message_loop(self):
+        """Run this functions in a thread, sending a full set of messages thru the queue.
+
+        New display message is serviced in < 0.15 sec
+        
+        queue structure:
+            message_set (list) of message_pages (list) of lines (list or dict)
+        eg:
+            [
+                [
+                    [0, 0, 20, 'Message1'],
+                    [5, 30, 12, 'To be, or not to be']
+                ],
+                [
+                    [0, 0, 20, 'Message2'],
+                    [5, 30, 12, 'This is the question']
+                ],
+                [
+                    [0, 0, 20, 'Message3'],
+                    [5, 30, 12, datetime.datetime(2024, 9, 12, 21, 45, 8)]
+                ]
+            ]
+
+            line_list structure:
+                [ x, y, font_size, text ]
+        
+            PIOLED_TH_EXIT to terminate the thread
+            PIOLED_TH_PAUSE to blank the display and wait for new message_set_list
+            cmds
+                exit
+                pause   TODO
+                number of times to loop (indefinitely)
+                save / new
+                restore
+        """
+
+        message_set = {'cmd:':None, 'cnt':None, 'pages':[]}
+        while True:                                                 # "Top-level Loop While"
+            prior_message_set = message_set
+            message_set = self.queue.get()
+            pioled_logger.debug (f"Received message_set: <{message_set}>")
+
+            try:
+                cmd = message_set.get('cmd', PIOLED_NEWMSG)
+                if cmd == PIOLED_SAVE:
+                    self.saved_message_set = prior_message_set
+                    pioled_logger.debug ("Prior pioled message_set saved")
+                if cmd == PIOLED_RESTORE:
+                    message_set = self.saved_message_set
+                    pioled_logger.debug ("Prior pioled message_set restored")
+
+                cnt = message_set.get('cnt', -1)                    # Default loop endlessly
+                pages = message_set.get('pages', None)
+
+                if cmd == PIOLED_TH_EXIT:
+                    if pages is not None:
+                        self.message_page(pages[0])
+                    else:
+                        self.blank()
+                    time.sleep (0.01)                               # Allow time for queue to be processed
+                    pioled_logger.debug ("pioled message_loop() exiting")
+                    sys.exit()                                      # On exit the locks are still set, cleared by the server
+                
+                elif cmd == PIOLED_TH_PAUSE:
+                    if pages is not None:
+                        self.message_page(pages[0])
+                    else:
+                        self.blank()
+                    pioled_logger.debug ("pioled message_loop() paused")
+
+                elif pages is None:
+                    pioled_logger.debug ("Empty pages - blanking display")
+                    self.blank()
+
+                else:                                               # PIOLED_NEWMSG, PIOLED_SAVE, PIOLED_RESTORE
+                    page_time =                 message_set.get('page_time', self.page_time)
+                    inter_page_time =           message_set.get('inter_page_time', self.inter_page_time)
+                    inter_message_set_time =    message_set.get('inter_message_set_time', self.inter_message_set_time)
+                    pioled_logger.debug (f"Timings:  page_time={page_time}, inter_page_time={inter_page_time}, inter_message_set_time={inter_message_set_time}")
+                    len_pages = len(pages)
+                    while cnt != 0:                                 # "Iterate Pages While"
+                        for index in range(len_pages):              # "For Pages"
+                            self.message_page(pages[index])
+                            wait_until = datetime.datetime.now() + datetime.timedelta(seconds=page_time)
+                            while datetime.datetime.now() < wait_until:
+                                if not self.queue.empty():          # Break wait if new message in queue
+                                    break
+                                time.sleep (0.1)
+
+                            if not self.queue.empty():              # Break "For Pages" loop if new message in queue
+                                break
+
+                            if len_pages == 1:                      # If just single page, then leave it up and break out of "For Pages"
+                                break
+
+
+                            # Blank between individual pages or between full pages list repeat
+                            wait_time = inter_page_time  if index < len_pages -1  else  inter_message_set_time
+                            if wait_time > 0:                       # NOTE - inter_message_set_time = 0 leaves last page on display
+                                self.blank()
+                                wait_until = datetime.datetime.now() + datetime.timedelta(seconds=wait_time)
+                                while datetime.datetime.now() < wait_until:
+                                    if not self.queue.empty():      # Break wait if new message in queue
+                                        break
+                                    time.sleep (0.1)
+
+                            if not self.queue.empty():              # Break "For Pages" loop if new message in queue
+                                break
+
+                        else:                                       # Code run on non-break "For Pages" exit
+                            if cnt != -1:
+                                cnt -= 1
+                            continue                                # Continue "Iterate Pages While"
+
+                        self.queue.task_done()                      # Code run on "For Pages" break
+                        break                                       # Break "Iterate Pages While"
+            except Exception as e:
+                pioled_logger.warning (f"Failed to parse/display pioled message <{message_set}> - Skipping\n  {type(e).__name__}: {e}")
+                self.queue.task_done()
+
+
+    def message_page(self, message_list, message_time=0):
+        # message_time is blocking to the main code if not sent thru a queue to pioled message_loop
+        # pioled_logger.info (message_list)
+        xx = ""
+        for line in message_list:
+            # pioled_logger.debug (f"{line}")
+            if isinstance(line, list):
+                xx += f"{{'x':{line[0]}, 'y':{line[1]}, 'size':{line[2]}, 'text':'''{line[3]}'''}}\n"
+            elif isinstance(line, dict):
+                xx += str(line) + '\n'
+            else:
+                pioled_logger.warning (f"Expecting list or dict, found type {type(line)}: <{line}> - Skipping\n  {message_list}")
+                return 1
+
+        if not pioled_file_lock.get_lock(lock_info='message_page'):
+            periodic_log(f"Failed to get pioled_file_lock. Current lock owner: <{pioled_file_lock.get_lock_info()}> - Skipping",
+                         category='get_lock', logger_name='pioled_logger', log_interval='1h', log_level=logging.WARNING)
+            return 1
+        pioled_logger.debug (f"Writing to display_file <{self.display_file}>:\n{xx[:-1]}")      # trim off final \n
+        with self.display_file.open('wt') as ofile:
+            ofile.write(xx)
+            ofile.flush()
+        pioled_go_flag.get_lock(lock_info='message_page')
+
+        if message_time > 0:
+            time.sleep(message_time)
+            self.blank()
+
+
+#=====================================================================================
+#=====================================================================================
+#   S E R V E R
+#=====================================================================================
+#=====================================================================================
+
+def service():
+    """ Display content of DISPLAY_FILE
+
+    Service mode provides a driver/service process for file-mode, which allows multiple processes to display
+    text content on the oled display.  (Content is not additive - the entire display is written with new data.)
+    Service mode should be started as a systemd service at system boot.
+
+    The DISPLAY_FILE encoding is lines of 
+        x-location, y-location, font-size, text
+      eg:  108, 0, 30, 3\n
+        Which displays '3' in the upper right corner at 30 pixels high
+
+    - The DISPLAY_FILE is left in place, to aid in debug.  
+    - Font sizes are defined in the oled base class:  11, 12, 18, 20, 30 pixels high
+    - Blank lines and lines starting with '#' are ignored (effectively commented out).
+    """
+
+    global pioled_disp        # Used in _oneliner() service_int_handler()
+    signal.signal(signal.SIGINT,  service_int_handler)      # Ctrl-C
+    signal.signal(signal.SIGTERM, service_int_handler)      # kill <pid>
+
+    pioled_disp = pioled()
+    _oneliner("PiOLED service started")
+    time.sleep(2)
+    _oneliner("")
+
+
+    # Lock handshake sequence
+    # oled_display_driver
+    #   oled_file_lock.get_lock()   # Prevent any other code from modifying the DISPLAY_FILE
+    #   Write the DISPLAY_FILE
+    #   Set oled_go_flag
+    #
+    # oled service
+    #   Check if oled_go_flag is set, then Process the DISPLAY_FILE
+    #   oled_go_flag.unget_lock()
+    #   oled_file_lock.unget_lock()
+
+    pioled_file_lock.unget_lock(where_called="PiOLED service startup", force=True)  # Restarting the server will clear the locks
+    pioled_go_flag.unget_lock(where_called="PiOLED service startup", force=True)
+
+    while 1:
+        if pioled_go_flag.is_locked():
+            if not display_file.exists():
+                logging.warning(f"display_file <{display_file}> not found - Skipping")
+                pioled_go_flag.unget_lock(where_called="service loop couldn't find the display_file", force=True)
+                pioled_file_lock.unget_lock(where_called="service loop couldn't find the display_file", force=True)
+            else:
+                try:
+                    contents = display_file.read_text()
+                    logging.debug (f"PiOLED Server received at {datetime.datetime.now()}\n{contents}")
+
+                    with canvas(pioled_disp.device) as draw:
+                        for line in contents.split('\n'):
+                            if len(line) > 0 and not line.startswith('#'):
+
+                                _line = ast.literal_eval(line)              # convert to dict
+                                x =     _line['x']
+                                y =     _line['y']
+                                size =  _line['size']
+                                text =  _line['text']
+
+                                try:
+                                    font_size = known_fonts.get_font(_line['font'], size)
+                                except:
+                                    font_size = known_fonts.get_font(config.getcfg('Default_font'), size)
+
+                                color = _line['color']  if ('color' in _line  and  _line['color'] is not None)  else config.getcfg('Default_color')
+                                draw.text((x, y), text, font=font_size, fill=color)
+
+                except Exception as e:
+                    logging.warning (f"Error processing contents: {contents}\n  {type(e).__name__}: {e}")
+
+                pioled_go_flag.unget_lock(where_called='service loop end', force=True)
+                pioled_file_lock.unget_lock(where_called='service loop end', force=True)
+
+        time.sleep(0.01)
+
+
+def _oneliner(text, color='white'):
+    """Private version used in service and service_int_handler"""
+    logging.debug (f"<{text}>")
+    with canvas(pioled_disp.device) as draw:
+        draw.text((0, 0), text, font=known_fonts.get_font(DISPLAY_DRIVER_FONT, 12), fill=color)
+
+
+def service_int_handler(signal, frame):
+    logging.warning(f"Signal {signal} received.  Exiting.")
+    _oneliner("PiOLED service exiting")
+    time.sleep(2)
+    pioled_file_lock.unget_lock(where_called='service_int_handler', force=True)
+    pioled_go_flag.unget_lock(where_called='service_int_handler', force=True)
+    sys.exit(0)     # Display is cleared by luma when the service process terminates
+
+
+#=====================================================================================
+#=====================================================================================
+#   class pioled
+#=====================================================================================
+#=====================================================================================
+
+class pioled:
+    def __init__(self):
+        global known_fonts
+        # Import luma config and instantiate self.device
+        if 'create_device args' not in config.sections():
+            logging.error (f"Missing section 'create_device args' in the config file - Aborting")
+            sys.exit(1)
+
+        self.device_args = SimpleNamespace()
+        for key in config.cfg['create_device args']:
+            setattr(self.device_args, key, config.cfg['create_device args'][key])
+
+        logging.debug (f"self.device_args: <{self.device_args}>")
+        self.device = cmdline.create_device(self.device_args)
+
+        known_fonts = pioled_font_manager()
+
+
+    def __repr__(self):
+        iface = ''
+        display_types = cmdline.get_display_types()
+        if self.args.display not in display_types['emulator']:
+            iface = f"Interface: {self.args.interface}\n"
+
+        lib_name = cmdline.get_library_for_display_type(self.args.display)
+        if lib_name is not None:
+            lib_version = cmdline.get_library_version(lib_name)
+        else:
+            lib_name = lib_version = 'unknown'
+
+        import luma.core
+        version = f"luma.{lib_name} {lib_version} (luma.core {luma.core.__version__})"
+        
+        return f"Version: {version}\nDisplay: {self.args.display}\n{iface}Dimensions: {self.device.width} x {self.device.height}\n"
+
+
+#=====================================================================================
+#=====================================================================================
+#   class pioled_font_manager
+#=====================================================================================
+#=====================================================================================
+
+class pioled_font_manager:
+    def __init__(self):
+        self.known_fonts =  {}
+        self.fonts_path =   Path (ir_files(core.tool.main_module)) / "fonts"
+        self.default_font = self.fonts_path / config.getcfg('Default_font')
+
+        if not self.default_font.exists():
+            logging.error (f"Default font <{self.default_font} not found - Aborting.")
+            sys.exit(1)
+        
+
+    def get_font (self, font_name, size):
+        font_name_size = font_name + '_' + str(size)
+        if not font_name_size in self.known_fonts:
+            try:
+                self.known_fonts[font_name_size] = ImageFont.truetype(self.fonts_path / font_name, size)
+                logging.debug (f"Created known_font <{font_name_size}>")
+            except Exception as e:
+                logging.warning (f"Failed creating known_font <{font_name_size}> - Using default font if possible\n  {type(e).__name__}: {e}")
+                self.known_fonts[font_name_size] = ImageFont.truetype(self.fonts_path / self.default_font, size)
+                # TODO any chance of failure?
+        
+        return self.known_fonts[font_name_size]
+
+
+#=====================================================================================
+#=====================================================================================
+#   cli
+#=====================================================================================
+#=====================================================================================
+
+def cli():
+    global config, args
+    global logging
+    global display_file
+    global pioled_logger
+
+    commands = ['message', 'blank', 'status', 'unlock']
+    parser = argparse.ArgumentParser(description=__doc__ + __version__, formatter_class=argparse.RawTextHelpFormatter)
+    parser.add_argument('Command', nargs='?', choices=commands,
+                        help=f"Interactive mode command")
+    parser.add_argument('Message', nargs='?',
+                        help=f"Message content for Command 'message' - see help for format")
+
+    parser.add_argument('--service', action='store_true',
+                        help="Enter endless loop in file-mode for use as a systemd service")
+    parser.add_argument('--config-file', '-c', type=str, default=CONFIG_FILE,
+                        help=f"Path to the config file (Default <{CONFIG_FILE})> in user/site config directory")
+    parser.add_argument('--log-console', '-z', action='store_true',
+                        help="Force server logging to the console, overriding config LogFile param")
+    parser.add_argument('--val-logfile', default=None,
+                        help=f"Path to server log file (abs or rel to core.tool.log_dir_base) used for validation testing (overrides LogFile in config file, default <{None}>)")
+    parser.add_argument('--verbose', '-v', action='count', default=0,
+                        help="Log status and activity messages (-vv for debug logging)")
+
+    parser.add_argument('--setup-user', action='store_true',
+                        help="Install starter files in user space")
+    parser.add_argument('--version', '-V', action='version', version=f"{core.tool.toolname} {__version__}",
+                        help="Return version number and exit")
+    args = parser.parse_args()
+
+    if args.Command is None  and  not args.service  and  not args.setup_user:
+        parser.print_help()
+        sys.exit()
+
+    # Deploy starter files
+    if args.setup_user:
+        logging.getLogger('cjnfuncs.deployfiles').setLevel(logging.INFO)
+        deploy_files([
+            { 'source': CONFIG_FILE,           'target_dir': 'USER_CONFIG_DIR', 'file_stat': 0o644, 'dir_stat': 0o755},
+            { 'source': 'PiOLED_server.service', 'target_dir': 'USER_CONFIG_DIR', 'file_stat': 0o644},
+            ]) #, overwrite=True)
+        sys.exit()
+
+
+    # Load config file and setup logging
+    call_logfile_override = True  if (not args.service  or  args.log_console  or  args.val_logfile)  else False
+    try:
+        config = config_item(args.config_file)
+        config.loadconfig(call_logfile_wins=call_logfile_override, call_logfile=args.val_logfile)
+    except Exception as e:
+        logging.exception(f"Failed loading config file <{args.config_file}> - Aborting\n  {type(e).__name__}: {e}")
+        sys.exit(1)
+
+    display_file = Path(config.getcfg('Display_file'))
+
+    logging.warning (f"========== {core.tool.toolname} ({__version__}), pid {os.getpid()} ==========")
+    logging.warning (f"Config file <{config.config_full_path}>, display_file: <{display_file}>")
+
+
+    """
+    Three modes
+        Server (cli() code called with --service)
+        Tool script import of pioled_display_driver (cli() code not called/used)
+        CLI interactive (cli() code called)
+
+    Server normal to log file
+        logs to root logger 'logging'
+        use config FileLogFormat
+        use config LogFile
+        use config LogLevel
+            if cli --verbose, do setloglevel on root logger called after loadconfig
+        
+    Server val logging
+        logs to root logger 'logging'
+        use config FileLogFormat
+        use cli --val-logfile
+        use config LogLevel
+            if cli --verbose, do setloglevel on root logger called after loadconfig
+
+    Server direct to console
+            set --log-console and dont set --val-logfile (= None)
+        logs to root logger 'logging'
+        use config ConsoleLogFormat
+        use config LogLevel
+            if cli --verbose, do setloglevel on root logger called after loadconfig
+
+    Tool script imports/instantiates pioled_display_driver
+        Does not load the server config, nor set up logging
+        logs to 'pioled_logger' using script's root logger format, and log level set on 'pioled_logger' by tool script
+
+    Interactive - instantiates pioled_display_driver
+        Loads server config file, which sets up logging using config ConsoleLogFormat and LogLevel
+        logs to 'pioled_logger'
+        Call setuplogging to override logging format to CLI_CONS_LOGGING_FORMAT ('*' > '-')
+        use config LogLevel
+            if cli --verbose, do setloglevel on root logger called after loadconfig
+    """
+
+    if args.service:
+        set_logging_level ([logging.WARNING, logging.INFO, logging.DEBUG][args.verbose])    # set root logger level for service process
+        if args.verbose == 2:
+            logging.getLogger('cjnfuncs.resourcelock').setLevel(logging.DEBUG)
+        if args.val_logfile:
+            setuplogging (call_logfile=args.val_logfile, call_logfile_wins=True, FileLogFormat=SERVER_CONS_LOGGING_FORMAT)
+        service()                                                                           # service never returns
+
+
+    if args.Command == 'status':
+        import subprocess
+        print ("-----------------------------")
+        print (f"\n{subprocess.run(['systemctl', 'status', 'PiOLED_server'],  capture_output=True, text=True).stdout}")
+        print ("-----------------------------")
+        print (f"\nPiOLED_go_flag is currently set?      <{pioled_go_flag.is_locked()}>,  last locked by: <{pioled_go_flag.get_lock_info()}>")
+        print (f"\nPiOLED_file_lock is currently locked? <{pioled_file_lock.is_locked()}>,  last locked by: <{pioled_file_lock.get_lock_info()}>")
+        print ("-----------------------------")
+        sys.exit()
+
+    if args.Command == 'unlock':
+        print (f"Before forced unlock:  PiOLED_go_flag is currently set?      <{pioled_go_flag.is_locked()}>")
+        pioled_go_flag.unget_lock(force=True, where_called='PiOLED.main - UNLOCK forced unlock')
+        print (f"After  forced unlock:  PiOLED_go_flag is currently set?      <{pioled_go_flag.is_locked()}>")
+        print (f"Before forced unlock:  PiOLED_file_lock is currently locked? <{pioled_file_lock.is_locked()}>")
+        pioled_file_lock.unget_lock(force=True, where_called='PiOLED.main - UNLOCK forced unlock')
+        print (f"After  forced unlock:  PiOLED_file_lock is currently locked? <{pioled_file_lock.is_locked()}>")
+        sys.exit()
+
+
+    # Interactive mode setup
+
+    setuplogging(ConsoleLogFormat=CLI_CONSOLE_LOGGING_FORMAT)
+    set_logging_level ([logging.WARNING, logging.INFO, logging.DEBUG][args.verbose], logger_name='pioled')
+    if args.verbose == 2:
+        logging.getLogger('cjnfuncs.resourcelock').setLevel(logging.DEBUG)
+
+    import queue
+    pioled_q =    queue.Queue()
+    pioled =      pioled_display_driver(pioled_q, display_file=display_file)
+    pioled_th =   pioled.start()
+
+    if args.Command == 'blank':
+        pioled.blank()
+
+    if args.Command == 'message':
+        # pioled message "[0, 0, 18, 'Wherever you go...'], {'x':10, 'y':20, 'size':20, 'text':'there you are.', 'font':'ProggyTiny.ttf'}"
+        # Given args.Message input and value passed to message_page
+        #   "0, 0, 12, 'Wherever you go...'"
+        #       [[0, 0, 12, 'Wherever you go...']]
+        #   "[0, 0, 12, 'Wherever you go...']"
+        #       [[0, 0, 12, 'Wherever you go...']]
+        #   "{'x':0, 'y':0, 'size':12, 'text':'Wherever you go...'}"
+        #       [{'x':0, 'y':0, 'size':12, 'text':'Wherever you go...'}]
+        #   "[0, 0, 18, 'Wherever you go...'], [0, 20, 15, 'there you are.']"
+        #       [[0, 0, 18, 'Wherever you go...'], [0, 20, 15, 'there you are.']]
+        #   "[0, 0, 18, 'Wherever you go...'], {'x':0, 'y':20, 'size':15, 'text':'there you are.'}]"
+        #       [[0, 0, 18, 'Wherever you go...'], {'x':0, 'y':20, 'size':15, 'text':'there you are.'}]
+
+        try:
+            message = args.Message.strip()
+            if not (message.startswith('[')  or  message.startswith('{')):      # 0, 0, 12, 'Wherever you go...'
+                message = '[' + message + ']'                                   # [0, 0, 12, 'Wherever you go...']
+            message = '[' + message + ']'                                       # [[0, 0, 12, 'Wherever you go...']]
+            message = ast.literal_eval(message)                                 # <class 'list'> - [[0, 0, 12, 'Wherever you go...']]
+
+            pioled.message_page(message)
+        except Exception as e:
+            logging.error (f"Failed to process message <{args.Message}>:\n  {type(e).__name__}: {e}")
+
+
+if __name__ == '__main__':
+    sys.exit(cli())

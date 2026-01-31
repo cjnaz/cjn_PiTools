@@ -1,0 +1,10 @@
+[Unit]
+Description=PiOLED display service
+
+[Service]
+ExecStart=/path_to/pioled --service
+User=me
+Group=me
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,7 @@
+*__pycache__*
+build/
+dist/
+mylive/
+mydev/
+*.egg-info/
+*.log
