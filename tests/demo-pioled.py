@@ -51,7 +51,7 @@ parser.add_argument('-v', '--verbose', action='store_true',
 args = parser.parse_args()
 
 if args.verbose:
-    logging.getLogger('pioled').setLevel(logging.DEBUG)
+    logging.getLogger('cjn_PiFuncs.pioled').setLevel(logging.DEBUG)
     logging.getLogger('cjnfuncs.resourcelock').setLevel(logging.DEBUG)
 
 
@@ -827,6 +827,32 @@ if check_tnum('51', include0=False):
             [ [0, 0, 15, "Page 1"], [0, 20, 15, "Page 1 2nd line"] ],
             [ {'x':0, 'y':0,  'size':15, 'text':"Page 2"},
               {'x':0, 'y':20, 'size':12, 'text':"Page 2 2nd line", 'font':'FreePixel.ttf', 'color':'PapayaWhip'} ]
+            ]
+        }  )
+    time.sleep(10)
+    pioled_q.put({})    # Effectively terminate the above looping and blank the display
+
+    time.sleep (4)
+    
+    pioled_q.put ({'cmd':PIOLED_TH_EXIT, 'pages':[[[20, 20, 18, 'Exited']]]})
+    pioled_th.join()
+
+#===============================================================================================
+if check_tnum('52', include0=False):
+    print_test_header ("Multi-color on ssd1351")
+
+    pioled_q, pioled, pioled_th = do_setup()
+
+    pioled_q.put(  {
+        'cnt':2,
+        'page_time':1,
+        'inter_page_time':0.5,
+        'inter_message_set_time':1.5,
+        'pages': [
+            [ {'x':0, 'y':0,  'size':15, 'text':"Page 1",           'font':'GLECB.ttf',         'color':'Yellow'},
+              {'x':0, 'y':20, 'size':12, 'text':"Page 1 2nd line",  'font':'pixelmix.ttf',      'color':'Purple'} ],
+            [ {'x':0, 'y':0,  'size':15, 'text':"Page 2",           'font':'ChiKareGo.ttf',     'color':'Blue'},
+              {'x':0, 'y':20, 'size':12, 'text':"Page 2 2nd line",  'font':'FreePixel.ttf',     'color':'PapayaWhip'} ]
             ]
         }  )
     time.sleep(10)

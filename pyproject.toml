@@ -1,6 +1,7 @@
 [project]
 name = 'cjn_PiFuncs'
-version = "1.0b1"
+version = "1.0b2"
+    # 1.0b2 - 
     # 1.0b1 - Gathered PiOLED, piblinky
 description = "cjn's library of Raspberry Pi functions, drivers, tools, ..."
 readme = "README.md"

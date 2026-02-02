@@ -1,4 +1,4 @@
-# piblinky - A multiple LED driver for Raspberry Pi
+# piblinky - A threaded, multiple LED driver for Raspberry Pi
 
 Why?  To run an LED on a RaspberryPi is done simply by turning a GPIO pin on and off.  Often, that's just fine, but if you want more scheduling capability and features, then this driver may be what you're looking for.
 
@@ -9,23 +9,9 @@ Features
 - Supports both RPi.GPIO and pigpio driver libraries.  pigpio supports running LEDs on remote systems.
 - LED flashing sequences are completely user defined, including the bit-sequence, bit-time, and number of times to repeat (or indefinitely).
 - Advanced features include saving the currently running sequence, then applying a new sequence, and later restoring the saved sequence.  Useful if two different operations need to share an LED.
-- Setup and usage in your code is simple.  No external dependencies, other than the RPi.GPIO or pigpio driver. Supported on Python 3.9+ (an probably works on 3.x).
+- Setup and usage in your code is simple.  No external dependencies, other than the RPi.GPIO or pigpio driver.
 
 For example, one of my apps flashes a yellow LED for 50ms once per loop of the measurement thread (1s loop time) to indicate that the thread is still alive, flashes a blue LED 0.5s on / 0.5s off continuously while watering is running, and turns a red LED on solid if there are any detected problems, or on exit of the app.  Normally, I should see the yellow LED flash once per seconds, see the blue LED flash while watering, and never see the red LED.
-
-<br>
-
-## Setup / Installation
-
-If using the RPi.GPIO driver:
-
-    pip install piblinky[GPIO]
-
-If using the pigpio driver:
-
-    pip install piblinky[pigpio]
-
-You will also need to install the `pigpiod` daemon and start it manually or at boot:
 
 <br>
 
@@ -49,11 +35,11 @@ You will also need to install the `pigpiod` daemon and start it manually or at b
 - A new command entered into the queue will interrupt/replace any currently being executed command.
 - Repeat count not supported with CMD_EXIT.  The bitstream is executed once.
 - On any error, piblinky logs a warning message and returns.  No exception raised.
-- Debug level logging may be enabled to trace execution within a piblinky operation by adding `logging.getLogger('piblinky').setLevel(logging.DEBUG)` in your tool script code.
+- Debug level logging may be enabled to trace execution within a piblinky operation by adding `logging.getLogger('cjn_PiFuncs.piblinky').setLevel(logging.DEBUG)` in your tool script code.
 
 <br/>
 
-## Usage example - This `README_ex.py` code example is in the tests directory in the github repo
+## Usage example - This `PiBlinky_README_ex.py` code example is in the docs directory in the github repo
 
 The LED is connected from GPIO pin 4 to ground through an appropriate current limiting resistor.
 
@@ -61,7 +47,7 @@ The LED is connected from GPIO pin 4 to ground through an appropriate current li
 #!/usr/bin/env python3
 
 # Set up a piblinky instance
-from piblinky.piblinky import piblinky, CMD_EXIT, CMD_SAVE, CMD_RESTORE
+from cjn_PiFuncs.PiBlinky import piblinky, CMD_EXIT, CMD_SAVE, CMD_RESTORE
 import queue
 import time
 
@@ -117,14 +103,3 @@ optional arguments:
   --port PORT           Port number for pigpio (Default <8888>)
   -v, --verbose         Print status and activity messages
 ```
-<br/>
-
-## Notable changes since prior release
-First release to PyPI
-
-<br/>
-
-## Version history
-- 1.1.1 260106 - Added named logger, release packagized version to PyPI
-- 1.1 240929 - named the threads, changed run to start
-- 0.1 230226 - New

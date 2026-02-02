@@ -71,7 +71,7 @@ PIOLED_PAGE_TIME =              7
 PIOLED_INTER_PAGE_TIME =        0.3
 PIOLED_INTER_MESSAGE_SET_TIME = 1
 
-pioled_logger = logging.getLogger('pioled')
+pioled_logger = logging.getLogger('cjn_PiFuncs.pioled')
 pioled_logger.setLevel(logging.WARNING)
 
 
@@ -605,7 +605,7 @@ def cli():
     # Interactive mode setup
 
     setuplogging(ConsoleLogFormat=CLI_CONSOLE_LOGGING_FORMAT)
-    set_logging_level ([logging.WARNING, logging.INFO, logging.DEBUG][args.verbose], logger_name='pioled')
+    set_logging_level ([logging.WARNING, logging.INFO, logging.DEBUG][args.verbose], logger_name='cjn_PiFuncs.pioled')
     if args.verbose == 2:
         logging.getLogger('cjnfuncs.resourcelock').setLevel(logging.DEBUG)
 

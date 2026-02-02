@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Set up a piblinky instance
-from piblinky.piblinky import piblinky, CMD_EXIT, CMD_SAVE, CMD_RESTORE
+from cjn_PiFuncs.PiBlinky import piblinky, CMD_EXIT, CMD_SAVE, CMD_RESTORE
 import queue
 import time
 

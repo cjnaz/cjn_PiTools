@@ -121,9 +121,9 @@ def main():
         
     BLU_LED_q.put ([0, "0", 1, CMD_EXIT])
     YEL_LED_q.put ([0, "0", 1, CMD_EXIT])
-    RED_LED_q.put ([50, "100 100 100 100", 1, CMD_EXIT])    # Blink RED on exit
+    RED_LED_q.put ([100, "0 111 001 001 001", 1, CMD_EXIT]) # Blink RED then on solid on exit
 
-    time.sleep(0.7)                                         # Wait for any in-flight LED writes
+    time.sleep(2)                                           # Wait for any in-flight LED writes
     BLU_LED_th.join()
     RED_LED_th.join()
     YEL_LED_th.join()
@@ -149,7 +149,7 @@ if __name__ == '__main__':
     logging.basicConfig()
 
     if args.verbose:
-        logging.getLogger('piblinky').setLevel(logging.DEBUG)
+        logging.getLogger('cjn_PiFuncs.piblinky').setLevel(logging.DEBUG)
 
     if args.host == 'GPIO':
         daemon = 'GPIO'

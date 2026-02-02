@@ -1,31 +1,22 @@
-# PiOLED - Display multi-line messages on a Raspberry Pi connected OLED display
+# PiOLED - Display multi-line messages on a shared OLED display on Raspberry Pi
 
 PiOLED utilizes the luma.oled package.  A notable limitation of luma.oled is that only one process
-can send messages to the display.  PiOLED solves this limitation by setting up a client-sever configuration,
-where the server is started at boot and various clients may send display messages to the server.
+can send messages to the display.  PiOLED solves this limitation by setting up a client-sever configuration, where the server is started at boot and various clients may send display messages to the server.
 
 Notable features (and limitations):
 - Designed and tested (and supported) on Raspberry Pi devices with SPI or I2C connected OLED displays supported by luma.oled (see https://luma-oled.readthedocs.io/en/latest/index.html).
-- Displays 'pages' of text (no graphics) using TrueType fonts at user-specified sizes.
+- Displays 'pages' of text (no graphics) using TrueType fonts at user-specified locations and sizes.
 - Multiple pages may be defined and are automatically cycled through without blocking the tool script code (using a background thread).
 
 
 ### My usage, as an example
 
-I have a handful of tools that I run on Raspberry Pis...  Garden Watering System, Temperature Monitor for freezers, Power Monitor (tracks power backup battery status and power outage notifications), PoolSolar (thermostat pump control), and a 'PiControl' tool that acts as system administration interface.  My main circuit board has three buttons for selecting which tool sends messages to the shared OLED display.  Here's a picture of my development/debug setup with a Pi Zero 2W (pardon the defective display, the blown out fuzzy text (picture artifact), and dust & clutter):
+I have a handful of tools that I run on Raspberry Pis...  Garden Watering System, Temperature Monitor for freezers, Power Monitor (tracks power backup battery status and power outage notifications), PoolSolar (thermostat pump control), and a 'PiControl' tool that acts as system administration interface.  My main circuit board (I2C Switch Bd) has a connector for the SPI port and three buttons for selecting which tool sends messages to the shared OLED display.  Here's a picture of my development/debug setup with a Pi Zero 2W (pardon the defective display, the blown out fuzzy text (picture artifact), and dust & clutter):
 
-![Screenshot](tools/Development_board_with_OLED.png)
+![pic](Development_board_with_OLED.png)
 
 
 Coordination between tool scripts for which has display access is beyond the scope of this documentation, but hints...  When activated by a button push PiControl sets a resourcelock semaphore that all other running tool scripts respect, and which tool script normally has the display is also controlled by button pushes.
-
-
-<br/>
-
-
-## Notable changes since prior release
-V2.0 - First public release
-
 
 <br/>
 
@@ -40,7 +31,7 @@ sets an IPC semaphore (see cjnfuncs.resourcelock) to notify the server of a new 
 1. The _PiOLED display server_ is started at Raspberry Pi system boot.  The server monitors for the IPC semaphore and displays the message page
 found in the display file, then clears the semaphore.
 
-1. PiOLED also supports a commmand line interface, using the alias 'pioled', which can display a message page, blank the display, 
+1. PiOLED also supports a _commmand line interface_, using the alias 'pioled', which can display a message page, blank the display, 
 check status of the server and semaphores, and clear the semaphores.
 
 
@@ -48,38 +39,38 @@ check status of the server and semaphores, and clear the semaphores.
 
 ## Setup / Installation
 
-1. `pip install cjn_PiOLED`
+1. After installing the cjn_PiFuncs package...
 
-1. Run the initial user setup:  `pioled --setup-user`.  (Note that the CLI name is lower case `pioled`, while the formal name is mixed-case `PiOLED`.)  This will create /home/<me>/.config/PiOLED, with two files:
+1. Run the initial user setup:  `pioled --setup-user`.  (Note that the CLI name is lower case `pioled`, while the formal name is mixed-case `PiOLED`.)  This will create `/home/<me>/.config/PiOLED`, with two files:
    - `PiOLED_server.cfg` - Defines parameters for the PiOLED display server
    - `PiOLED_server.service` - A systemd service file for starting the PiOLED display server at boot
 
-1. Customize `PiOLED_server.cfg` for your display specifics and specify the `LogFile` and `Display_file` paths.  Use of a tmpfs (RAM disk) for `Display_file` is highly recommended to avoid microSD wear.
+1. Customize `PiOLED_server.cfg` for your display specifics and specify the `LogFile` and `Display_file` paths.  Use of a tmpfs (RAM disk) for the `Display_file` is highly recommended to avoid microSD wear.
 
 1. Customize `PiOLED_server.service` for the installed path of the `pioled` command and your User and Group settings, and install this file into systemd (`sudo cp PiOLED_server.service /etc/systemd/system; sudo systemctl daemon-reload; sudo systemctl enable --now PiOLED_server.service`).  This gets the server up and running.  Check server status with `pioled status`.
 
-1. In your tool script import the driver class and instantiate it, then send page display messages to the queue:
+1. In your tool script import the driver class and instantiate it, then send page display messages to the queue (PiOLED_README_ex.py):
 
-    ```
-    #!/usr/bin/env python3
+      ```
+      #!/usr/bin/env python3
 
-    import queue
-    from cjn_PiOLED.PiOLED import pioled_display_driver, PIOLED_TH_EXIT
+      import queue
+      from cjn_PiFuncs.PiOLED import pioled_display_driver, PIOLED_TH_EXIT
 
-    # Configure the server interface settings
-    DISPLAY_FILE =      '/mnt/RAMDRIVE/pioled_display.txt'
+      # Configure the server interface settings
+      DISPLAY_FILE =      '/mnt/RAMDRIVE/pioled_display.txt'
 
-    # Instantiate the local queue and thread
-    pioled_q =          queue.Queue()
-    pioled =            pioled_display_driver(pioled_q, display_file=DISPLAY_FILE)
-    pioled_th =         pioled.start()
+      # Instantiate the local queue and thread
+      pioled_q =          queue.Queue()
+      pioled =            pioled_display_driver(pioled_q, display_file=DISPLAY_FILE)
+      pioled_th =         pioled.start()
 
-    # Display a message and exit
-    pioled_q.put ({'cmd':PIOLED_TH_EXIT, 'pages':[[[0, 0, 12, 'Hello my name is Marvin'],[10, 20, 12, "I'm so depressed..."]]]})
+      # Display a message and exit
+      pioled_q.put ({'cmd':PIOLED_TH_EXIT, 'pages':[[[0, 0, 12, 'Hello my name is Marvin'],[10, 20, 12, "I'm so depressed..."]]]})
 
-    # Exit cleanup code
-    pioled_th.join()
-    ```
+      # Exit cleanup code
+      pioled_th.join()
+      ```
 
 <br>
 
@@ -215,7 +206,7 @@ optional arguments:
 
 `pioled message` supports only a single page display, with these format variations...
   - Minimmally, `pioled message "0, 0, 18, 'Wherever you go...'"`, without `[]` around the message definition.
-    - Note the surrounding `"..."` is required to avoid the shell trying to decipher the message.  Watch out shell special characters, such as `!`.
+    - Note the the surrounding quotes `"..."` are required to avoid the shell trying to decipher the message.  Watch out shell special characters, such as `!`.
   
   - `[]` around the message definition is also accepted:  `pioled message "[0, 0, 18, 'Wherever you go...']"`
   
@@ -229,9 +220,9 @@ optional arguments:
 
 ## Lower level details
 - Two semaphores are used between a tool script and the PiOLED display server:
-  - PiOLED_file_lock is requested by the tool script (pioled_display_driver) for writing the new display page to the shared Display_file.
-  - PiOLED_go_flag is set by the tool script (pioled_display_driver) to tell the PiOLED server to process the display file.
-  - After being displayed the display file is left in place, which may aid debug/validation of your tool script code.
+  - `PiOLED_file_lock` is requested by the tool script (within pioled_display_driver) for writing the new display page to the shared Display_file.
+  - `PiOLED_go_flag` is set by the tool script (within pioled_display_driver) to tell the PiOLED server to process the display file.
+  - After being displayed the display file is left in place (which may aid debug/validation of your tool script code) and the server releases first the `PiOLED_file_lock` and then the `PiOLED_go_flag`.
 
 
 <br/>
@@ -240,23 +231,25 @@ optional arguments:
 
 ## Debug logging
 
-Debug logging may be enabled for both the server and the client-side code into a combined stream to the concole.  Logging to a file may also be done - see the tests/demo-pioled.py doc string.
+Debug logging may be enabled for both the server and the client-side code into a combined stream to the console.  Logging to a file may also be done - see the tests/demo-pioled.py doc string.
 
-1. Run the server with debug logging and output to the console
+1. Run the server with debug logging and output to the console:
 
         $ pioled --service --log-console -vv &
 
 2. Within the tool-script, enable debug logging from the pioled_display_driver code:
 
-        logging.getLogger('pioled').setLevel(logging.DEBUG)
+        logging.getLogger('cjn_PiFuncs.pioled').setLevel(logging.DEBUG)
 
-3. Debug logging of the cjnfuncs.resourcelock transactions may also be enabled?
+3. Debug logging of the cjnfuncs.resourcelock transactions may also be enabled:
 
         logging.getLogger('cjnfuncs.resourcelock').setLevel(logging.DEBUG)
 
 Note that the server logs use a '*' separator, while the client-side code uses a '-' separator.  Some log lines may shift in sequence due to combining the streams of two separate processes.
 
 Example output:
+
+    $ ./demo-pioled.py -t 1b -vv
 
     ======================================================================================================
     ***** Test number 1b: Demo single message via queue - dict format *****
@@ -286,10 +279,3 @@ Example output:
     resourcelock.unget_lock           *    DEBUG:  <PiOLED_go_flag> lock force released  <service loop end>
     resourcelock.unget_lock           *    DEBUG:  <PiOLED_file_lock> lock force released  <service loop end>
 
-
-<br/>
-
----
-
-## Version history
-- 2.0 260207 - First packaged public release

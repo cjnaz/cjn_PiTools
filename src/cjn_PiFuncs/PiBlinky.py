@@ -39,7 +39,7 @@ CMD_SAVE    = 1
 CMD_RESTORE = 2
 CMD_EXIT    = -99
 
-piblinky_logger = logging.getLogger('piblinky')
+piblinky_logger = logging.getLogger('cjn_PiFuncs.piblinky')
 piblinky_logger.setLevel(logging.WARNING)
 
 class piblinky:
@@ -119,6 +119,7 @@ class piblinky:
                     if not self.queue.empty():
                         break
                     try:
+                        # piblinky_logger.debug (f"{self.name} bit <{bit}>")
                         if self.daemon == 'GPIO':
                             GPIO.output(self.gpio_num, int(bit))
                         else:
