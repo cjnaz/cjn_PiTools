@@ -2,7 +2,7 @@
 Description=PiOLED display service
 
 [Service]
-ExecStart=/path_to/pioled --service
+ExecStart=/path_to/PiOLED --service
 User=me
 Group=me
 

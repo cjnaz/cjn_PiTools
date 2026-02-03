@@ -1,0 +1,22 @@
+[Unit]
+Description=Initialize W1 busses therm_bulk_read permission
+After=pigpiod.service
+
+
+[Service]
+ExecStart=/<path to>/initW1buses
+# Specify a GPIO number to be set to 1 to enable power to the DS18B20 sensors, if needed
+#ExecStart=/<path to>/initW1buses --GPIO 21
+
+# Runs as root because the file therm_bulk_read is owned by root
+User=root
+
+# The service manager will consider the unit up after the main process exits
+Type=oneshot
+
+# Shows this service as "active (exited)" if it exits cleanly (exit code 0)
+RemainAfterExit=true
+
+
+[Install]
+WantedBy=multi-user.target

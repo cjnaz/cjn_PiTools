@@ -41,7 +41,7 @@ check status of the server and semaphores, and clear the semaphores.
 
 1. After installing the cjn_PiFuncs package...
 
-1. Run the initial user setup:  `pioled --setup-user`.  (Note that the CLI name is lower case `pioled`, while the formal name is mixed-case `PiOLED`.)  This will create `/home/<me>/.config/PiOLED`, with two files:
+1. Run the initial user setup:  `PiOLED --setup-user`.  This will create `/home/<me>/.config/PiOLED`, with two files:
    - `PiOLED_server.cfg` - Defines parameters for the PiOLED display server
    - `PiOLED_server.service` - A systemd service file for starting the PiOLED display server at boot
 

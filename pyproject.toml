@@ -1,7 +1,8 @@
 [project]
 name = 'cjn_PiFuncs'
-version = "1.0b2"
-    # 1.0b2 - 
+version = "1.0b3"
+    # 1.0b3 - Added DS18B20, initW1buses
+    # 1.0b2 - Scrubbed package structure, general cleanup
     # 1.0b1 - Gathered PiOLED, piblinky
 description = "cjn's library of Raspberry Pi functions, drivers, tools, ..."
 readme = "README.md"
@@ -32,19 +33,21 @@ build-backend = "setuptools.build_meta"
 
 
 [project.scripts]
-pioled ='cjn_PiFuncs.PiOLED:cli'
+PiOLED =        'cjn_PiFuncs.PiOLED:cli'
+DS18B20 =       'cjn_PiFuncs.DS18B20:cli'
+initW1buses =   'cjn_PiFuncs.initW1buses:cli'
 
 
 [project.urls]
 repository = "https://github.com/cjnaz/cjn_PiFuncs"
 
 
-[tool.setuptools]
-include-package-data = true
-
-
 [tool.setuptools.packages.find]
 where = ["src"]
+
+
+[tool.setuptools]
+include-package-data = true
 
 
 [tool.setuptools.package-data]

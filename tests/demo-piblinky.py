@@ -149,7 +149,7 @@ if __name__ == '__main__':
     logging.basicConfig()
 
     if args.verbose:
-        logging.getLogger('cjn_PiFuncs.piblinky').setLevel(logging.DEBUG)
+        logging.getLogger('cjn_PiFuncs.PiBlinky').setLevel(logging.DEBUG)
 
     if args.host == 'GPIO':
         daemon = 'GPIO'

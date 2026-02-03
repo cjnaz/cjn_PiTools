@@ -39,7 +39,7 @@ CMD_SAVE    = 1
 CMD_RESTORE = 2
 CMD_EXIT    = -99
 
-piblinky_logger = logging.getLogger('cjn_PiFuncs.piblinky')
+piblinky_logger = logging.getLogger('cjn_PiFuncs.PiBlinky')
 piblinky_logger.setLevel(logging.WARNING)
 
 class piblinky:
