@@ -4,5 +4,5 @@ dist/
 mylive/
 mydev/
 *.egg-info/
-*.log
+.vscode/
 testrun.log
