@@ -1,0 +1,95 @@
+DEBUG:cjn_PiTools.PiBlinky:Setting up piblinky instance <BLU> using pigpio, pin# <4>
+DEBUG:cjn_PiTools.PiBlinky:BLU thread on GPIO  4 created
+DEBUG:cjn_PiTools.PiBlinky:Setting up piblinky instance <RED> using pigpio, pin# <17>
+DEBUG:cjn_PiTools.PiBlinky:RED thread on GPIO 17 created
+DEBUG:cjn_PiTools.PiBlinky:Setting up piblinky instance <YEL> using pigpio, pin# <20>
+DEBUG:cjn_PiTools.PiBlinky:YEL thread on GPIO 20 created
+INFO:cjn_PiTools.PiBlinky:
+
+======================================================================================================
+***** Test number 1: Blink all three LEDs 10 times fast *****
+======================================================================================================
+DEBUG:cjn_PiTools.PiBlinky:BLU Command:  <[50, '10', 10]>
+DEBUG:cjn_PiTools.PiBlinky:RED Command:  <[50, '10', 10]>
+DEBUG:cjn_PiTools.PiBlinky:YEL Command:  <[50, '10', 10]>
+DEBUG:cjn_PiTools.PiBlinky:BLU Stream:   Period 0.05s, bitstream ['1', '0'], repeat 10
+DEBUG:cjn_PiTools.PiBlinky:RED Stream:   Period 0.05s, bitstream ['1', '0'], repeat 10
+DEBUG:cjn_PiTools.PiBlinky:YEL Stream:   Period 0.05s, bitstream ['1', '0'], repeat 10
+INFO:cjn_PiTools.PiBlinky:
+
+======================================================================================================
+***** Test number 2: Blink YEL continuously, interrupted by new command after 3s, BLU on, Red off *****
+======================================================================================================
+DEBUG:cjn_PiTools.PiBlinky:RED Command:  <[0, '0', 1]>
+DEBUG:cjn_PiTools.PiBlinky:YEL Command:  <[100, '10', -1]>
+DEBUG:cjn_PiTools.PiBlinky:BLU Command:  <[0, '1', 1]>
+DEBUG:cjn_PiTools.PiBlinky:RED Stream:   Period 0.0s, bitstream ['0'], repeat 1
+DEBUG:cjn_PiTools.PiBlinky:YEL Stream:   Period 0.1s, bitstream ['1', '0'], repeat -1
+DEBUG:cjn_PiTools.PiBlinky:BLU Stream:   Period 0.0s, bitstream ['1'], repeat 1
+DEBUG:cjn_PiTools.PiBlinky:YEL Command:  <[0, '0', 1]>
+DEBUG:cjn_PiTools.PiBlinky:YEL Stream:   Period 0.0s, bitstream ['0'], repeat 1
+INFO:cjn_PiTools.PiBlinky:
+
+======================================================================================================
+***** Test number 3a: Error Restore without Save *****
+======================================================================================================
+DEBUG:cjn_PiTools.PiBlinky:BLU Command:  <[100, '10', 5, 2]>
+WARNING:cjn_PiTools.PiBlinky:BLU Attempted command restore with no prior save - <[100, '10', 5, 2]> - Skipped
+INFO:cjn_PiTools.PiBlinky:
+
+======================================================================================================
+***** Test number 3b: Save a blink pattern, apply a new one, then restore the prior one *****
+======================================================================================================
+DEBUG:cjn_PiTools.PiBlinky:BLU Command:  <[500, '10', 2]>
+DEBUG:cjn_PiTools.PiBlinky:BLU Stream:   Period 0.5s, bitstream ['1', '0'], repeat 2
+DEBUG:cjn_PiTools.PiBlinky:BLU Command:  <[50, '1000', -1, 1]>
+DEBUG:cjn_PiTools.PiBlinky:BLU Saving prior piblinky command
+DEBUG:cjn_PiTools.PiBlinky:BLU Stream:   Period 0.05s, bitstream ['1', '0', '0', '0'], repeat -1
+DEBUG:cjn_PiTools.PiBlinky:BLU Command:  <[0, '0', 0, 2]>
+DEBUG:cjn_PiTools.PiBlinky:BLU Restoring prior piblinky command
+DEBUG:cjn_PiTools.PiBlinky:BLU Stream:   Period 0.5s, bitstream ['1', '0'], repeat 2
+DEBUG:cjn_PiTools.PiBlinky:BLU Command:  <[0, '0', 0, 2]>
+DEBUG:cjn_PiTools.PiBlinky:BLU Restoring prior piblinky command
+DEBUG:cjn_PiTools.PiBlinky:BLU Stream:   Period 0.5s, bitstream ['1', '0'], repeat 2
+INFO:cjn_PiTools.PiBlinky:
+
+======================================================================================================
+***** Test number 4: Bad bittime value *****
+======================================================================================================
+DEBUG:cjn_PiTools.PiBlinky:BLU Command:  <['500x', '10', 2]>
+WARNING:cjn_PiTools.PiBlinky:BLU Invalid command received - <['500x', '10', 2]> - Skipped
+INFO:cjn_PiTools.PiBlinky:
+
+======================================================================================================
+***** Test number 5: Bad bitstream *****
+======================================================================================================
+DEBUG:cjn_PiTools.PiBlinky:BLU Command:  <[100, '102', 2]>
+WARNING:cjn_PiTools.PiBlinky:BLU Invalid bitstream <['1', '0', '2']> - Skipped
+INFO:cjn_PiTools.PiBlinky:
+
+======================================================================================================
+***** Test number 6: Bad repeat count *****
+======================================================================================================
+DEBUG:cjn_PiTools.PiBlinky:BLU Command:  <[100, '10', 'a']>
+WARNING:cjn_PiTools.PiBlinky:BLU Invalid command received - <[100, '10', 'a']> - Skipped
+INFO:cjn_PiTools.PiBlinky:
+
+======================================================================================================
+***** Test number 7: Bad option flag *****
+======================================================================================================
+DEBUG:cjn_PiTools.PiBlinky:BLU Command:  <[100, '10', 5, 7]>
+WARNING:cjn_PiTools.PiBlinky:BLU Invalid option flag received - <[100, '10', 5, 7]> - Skipped
+INFO:cjn_PiTools.PiBlinky:
+
+======================================================================================================
+Cleanup
+======================================================================================================
+DEBUG:cjn_PiTools.PiBlinky:RED Command:  <[100, '0 111 001 001 001', 1, -99]>
+DEBUG:cjn_PiTools.PiBlinky:RED Stream:   Period 0.1s, bitstream ['0', '1', '1', '1', '0', '0', '1', '0', '0', '1', '0', '0', '1'], repeat 1
+DEBUG:cjn_PiTools.PiBlinky:YEL Command:  <[0, '0', 1, -99]>
+DEBUG:cjn_PiTools.PiBlinky:YEL Stream:   Period 0.0s, bitstream ['0'], repeat 1
+DEBUG:cjn_PiTools.PiBlinky:BLU Command:  <[0, '0', 1, -99]>
+DEBUG:cjn_PiTools.PiBlinky:BLU Stream:   Period 0.0s, bitstream ['0'], repeat 1
+DEBUG:cjn_PiTools.PiBlinky:YEL Thread exiting
+DEBUG:cjn_PiTools.PiBlinky:BLU Thread exiting
+DEBUG:cjn_PiTools.PiBlinky:RED Thread exiting

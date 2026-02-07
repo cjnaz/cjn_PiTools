@@ -5,3 +5,4 @@ mylive/
 mydev/
 *.egg-info/
 *.log
+testrun.log

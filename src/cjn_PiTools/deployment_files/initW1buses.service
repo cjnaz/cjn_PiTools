@@ -1,11 +1,10 @@
 [Unit]
 Description=Initialize W1 busses therm_bulk_read permission
-After=pigpiod.service
 
 
 [Service]
 ExecStart=/<path to>/initW1buses
-# Specify a GPIO number to be set to 1 to enable power to the DS18B20 sensors, if needed
+# Or optionally specify a GPIO pin to be driven to logic 1 using the --GPIO switch
 #ExecStart=/<path to>/initW1buses --GPIO 21
 
 # Runs as root because the file therm_bulk_read is owned by root

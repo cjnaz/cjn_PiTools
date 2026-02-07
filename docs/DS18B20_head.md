@@ -21,39 +21,26 @@ Supports:
 
 Tested on Python 3.9.2 and kernel version 6.1.21-v7+ #1642 SMP Mon Apr  3 17:20:52 BST 2023, and should work on similar kernel versions since about 2020.
 
-Do read the fine [datasheet](https://www.analog.com/media/en/technical-documentation/data-sheets/DS18B20.pdf).
+Do read the [fine datasheet](https://www.analog.com/media/en/technical-documentation/data-sheets/DS18B20.pdf).
 
 
 <br>
 
 ## Setup / Installation
 
-If you wish to use the bulk read trigger capability you must install the provided initW1busses.service file, as follows:
+It may be necessary to setup/install the W1 bus initialization module [initW1buses](https://github.com/cjnaz/cjn_PiTools/initW1buses.md).
 
-1. After installing the cjn_PiFuncs package...
-
-1. Run the initial user setup:  `DS18B20 --setup-user`.  This will extract `/home/<me>/.config/DS18B20/initW1buses.service` from the package distribution.
-
-1. Adjust `initW1buses.service` for the path to initW1buses stub/alias (`which initW1buses`).
-
-1. Install `initW1buses.service` into systemd:
-   - `sudo cp initW1buses.service /etc/systemd/system; sudo systemctl daemon-reload; sudo systemctl enable --now initW1buses.service`
-
-The initW1buses.service runs at boot and does these operations:
- - Optionally sets a GPIO pin to output mode and sets the pin high.  This signal may be used for enabling power to the DS18B20 sensors.
- - Waits a delay time for the kernel to finish discovery of DS18B20 sensors on the W1 bus(es).
- - Sets user write permission on the `therm_bulk_read` file for each found bus.
 
 <br>
 
 ## Command Line Interface and Demo
 
-Once installed (pip install DS18B20dvr), a cli tool is available.  The cli tool provides some useful debug and configuration features (such as setting and permanently saving 
+Once installed a cli tool is available.  The cli tool provides some useful debug and configuration features (such as setting and permanently saving 
 the resolution setting), and also a few demonstration cases (such as triggering a bulk/parallel conversion on multiple sensors and reading back their values).
 
 ```
 $ DS18B20 --help
-usage: DS18B20 [-h] [-m MODE] [-n NAME] [-r RESOLUTION] [-L TL] [-H TH] [-c CONV_TIME] [-v] [--setup-user] [-V] [DeviceID]
+usage: DS18B20 [-h] [-m MODE] [-n NAME] [-r RESOLUTION] [-L TL] [-H TH] [-c CONV_TIME] [-v] [-V] [DeviceID]
 
 DS18B20 driver and CLI/demo for Raspberry Pi
 
@@ -91,7 +78,6 @@ optional arguments:
   -c CONV_TIME, --conv-time CONV_TIME
                         Conversion time setting or trigger measurement operation  (default 0 - set to spec value)
   -v, --verbose         Print debug-level status and activity messages
-  --setup-user          Install starter files in user space
   -V, --version         Print version number and exit
 ```
 

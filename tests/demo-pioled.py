@@ -3,11 +3,13 @@
 
 Produce / compare to golden results:
     # Note:  Logs from the server use a '*' separator, while logs from the demo/test file use a '-' separator.
-    cd to test directory
-    pioled --service --val-logfile ./testrun.log -vv &
-    ./demo-pioled.py -vv >> testrun.log
-    killall pioled
-    diff testrun.log to the golden file
+        cd to test directory
+        rm testrun.log
+        PiOLED --service --val-logfile ./testrun.log -vv &
+        ./demo-pioled.py -vv >> testrun.log
+        fg
+        (ctrl-C)
+        diff testrun.log to the golden file
     
     Expected differences:
         timestamps
@@ -32,7 +34,7 @@ from pathlib import Path
 from cjnfuncs.resourcelock  import resource_lock
 
 import queue
-from cjn_PiFuncs.PiOLED import pioled_display_driver, PIOLED_TH_EXIT, PIOLED_TH_PAUSE, PIOLED_SAVE, PIOLED_RESTORE
+from cjn_PiTools.PiOLED import pioled_display_driver, PIOLED_TH_EXIT, PIOLED_TH_PAUSE, PIOLED_SAVE, PIOLED_RESTORE
 
 DISPLAY_FILE =      '/mnt/RAMDRIVE/pioled_display.txt'
 PIOLED_GO_FLAG =    'PiOLED_go_flag'
@@ -51,7 +53,7 @@ parser.add_argument('-v', '--verbose', action='store_true',
 args = parser.parse_args()
 
 if args.verbose:
-    logging.getLogger('cjn_PiFuncs.pioled').setLevel(logging.DEBUG)
+    logging.getLogger('cjn_PiTools.PiOLED').setLevel(logging.DEBUG)
     logging.getLogger('cjnfuncs.resourcelock').setLevel(logging.DEBUG)
 
 
@@ -102,7 +104,6 @@ if check_tnum('1b'):
     print_test_header ("Demo single message via queue - dict format")
 
     pioled_q, pioled, pioled_th = do_setup()
-    # logging.getLogger('cjnfuncs.resourcelock').setLevel(logging.DEBUG)
 
     m1 = [{'x':0, 'y':0, 'size':20, 'text':"Hello'"}]
     msg_set = [m1]
@@ -111,7 +112,6 @@ if check_tnum('1b'):
 
     pioled_q.put ({'cmd':PIOLED_TH_EXIT, 'pages':[[{'x':20, 'y':20, 'size':18, 'text':"Exited"}]]})
     pioled_th.join()
-    # logging.getLogger('cjnfuncs.resourcelock').setLevel(logging.WARNING)
 
 
 #===============================================================================================
@@ -428,6 +428,33 @@ if check_tnum('3k'):
 
 
 #===============================================================================================
+if check_tnum('3l'):
+    print_test_header ("Multi-color on ssd1351")
+
+    pioled_q, pioled, pioled_th = do_setup()
+
+    pioled_q.put(  {
+        'cnt':2,
+        'page_time':1,
+        'inter_page_time':0.5,
+        'inter_message_set_time':1.5,
+        'pages': [
+            [ {'x':0, 'y':0,  'size':15, 'text':"Page 1",           'font':'GLECB.TTF',         'color':'Yellow'},
+              {'x':0, 'y':20, 'size':12, 'text':"Page 1 2nd line",  'font':'pixelmix.ttf',      'color':'Purple'} ],
+            [ {'x':0, 'y':0,  'size':15, 'text':"Page 2",           'font':'ChiKareGo.ttf',     'color':'Blue'},
+              {'x':0, 'y':20, 'size':12, 'text':"Page 2 2nd line",  'font':'FreePixel.ttf',     'color':'PapayaWhip'} ]
+            ]
+        }  )
+    time.sleep(10)
+    pioled_q.put({})    # Effectively terminate the above looping and blank the display
+
+    time.sleep (2)
+    
+    pioled_q.put ({'cmd':PIOLED_TH_EXIT, 'pages':[[[20, 20, 18, 'Exited']]]})
+    pioled_th.join()
+
+
+#===============================================================================================
 if check_tnum('4'):
     print_test_header ("One-liners with timeout and permanent")
 
@@ -516,8 +543,8 @@ if check_tnum('8a'):
 
     m1 = [[0, 0, 20, "Message2.1"], [5, 30, 12, "Saved Message1"]]
     m2 = [[0, 0, 20, "Message2.2"], [5, 30, 18, "Page 2"]]
-    msg_set = [m1, m2]
-    pioled_q.put ({'cmd':PIOLED_SAVE, 'pages':msg_set})
+    msg_set2 = [m1, m2]
+    pioled_q.put ({'cmd':PIOLED_SAVE, 'pages':msg_set2})
     time.sleep (7)
 
     pioled_q.put ({'cmd':PIOLED_RESTORE})
@@ -528,6 +555,9 @@ if check_tnum('8a'):
 
     pioled_q.put ({'cmd':PIOLED_RESTORE})
     time.sleep (7)
+
+    pioled_q.put ({})       # Empty message_set blanks the display
+    time.sleep (2)
 
     pioled_q.put ({'cmd':PIOLED_TH_EXIT, 'pages':[[[20, 20, 18, 'Exited']]]})
     pioled_th.join()
@@ -603,7 +633,7 @@ if check_tnum('10'):
 
 
 #===============================================================================================
-if check_tnum('11'):
+if check_tnum('11a'):
     print_test_header ("Zero blank time between pages and loops")
 
     pioled_q, pioled, pioled_th = do_setup(page_time=1, inter_page_time=0, inter_message_set_time=0)
@@ -626,7 +656,7 @@ if check_tnum('11'):
 
 
 #===============================================================================================
-if check_tnum('11a'):
+if check_tnum('11b'):
     print_test_header ("Page/blank timing set via pioled_q.put(), overriding defaults set at thread instantiation")
 
 
@@ -753,9 +783,11 @@ if check_tnum('13f'):
 
     pioled_q, pioled, pioled_th = do_setup()
 
-    pioled_q.put ({'pages':[[[0, 0, -1, "Bad size"]]]})
+    pioled_q.put ({'pages':[[[0, 0, -1, "Bad size"],[0, 20, -1, "Create default font & size"]]]})
+    time.sleep (0.5)
 
-    time.sleep (0.1)
+    pioled_q.put ({'pages':[[[0, 0, -1, "Bad size"],[0, 20, -1, "Use default"]]]})
+    time.sleep (0.5)
 
     pioled_q.put ({'cmd':PIOLED_TH_EXIT, 'pages':[[[20, 20, 18, 'Exited']]]})
     pioled_th.join()
@@ -769,24 +801,25 @@ if check_tnum('13g'):
 
     pioled_q.put ({'pages':[[{'x':0, 'y':0, 'size':10, 'font':'xyz', 'text':"Bad fontname"}]]})
 
-    time.sleep (1)
+    time.sleep (0.5)
 
     pioled_q.put ({'cmd':PIOLED_TH_EXIT, 'pages':[[[20, 20, 18, 'Exited']]]})
     pioled_th.join()
 
 
 #===============================================================================================
-if check_tnum('13m'):
+if check_tnum('13h'):
     print_test_header ("display file is locked")
 
     pioled_q, pioled, pioled_th = do_setup()
 
-    pioled_file_lock.get_lock(lock_info='Test 13d')
+    pioled_file_lock.get_lock(lock_info='Test 13h setup')
 
     pioled_q.put ({'pages':[[[0, 0, 20, "display file is locked"]]]})
 
-    time.sleep (0.1)
+    time.sleep (1.5)
 
+    pioled_file_lock.unget_lock(where_called='Test 13h end', force=True)
     pioled_q.put ({'cmd':PIOLED_TH_EXIT, 'pages':[[[20, 20, 18, 'Exited']]]})
     pioled_th.join()
 
@@ -797,15 +830,18 @@ if check_tnum('50', include0=False):
 
     pioled_q, pioled, pioled_th = do_setup()
 
-    pioled_q.put({'cmd':PIOLED_SAVE,
-                  'cnt':2,
-                  'page_time':2,
-                  'inter_page_time':0.5,
-                  'inter_message_set_time':1.5,
-                  'pages':[
-                      [[0, 0, 15, "Page 1"],[0, 20, 15, "Page 1 2nd line"]],
-                      [[0, 0, 15, "Page 2"],[0, 20, 15, "Page 2 2nd line"]],
-                      ]})
+    pioled_q.put(  {
+        'cmd':PIOLED_SAVE,
+        'cnt':2,
+        'page_time':1,
+        'inter_page_time':0.5,
+        'inter_message_set_time':1.5,
+        'pages': [
+            [ [0, 0, 15, "Page 1"], [0, 20, 15, "Page 1 2nd line"] ],
+            [ {'x':0, 'y':0,  'size':15, 'text':"Page 2"},
+              {'x':0, 'y':20, 'size':12, 'text':"Page 2 2nd line", 'font':'FreePixel.ttf', 'color':'PapayaWhip'} ]
+            ]
+        }  )
     time.sleep(12)
     
     pioled_q.put ({'cmd':PIOLED_TH_EXIT, 'pages':[[[20, 20, 18, 'Exited']]]})
@@ -824,41 +860,15 @@ if check_tnum('51', include0=False):
         'inter_page_time':0.5,
         'inter_message_set_time':1.5,
         'pages': [
-            [ [0, 0, 15, "Page 1"], [0, 20, 15, "Page 1 2nd line"] ],
-            [ {'x':0, 'y':0,  'size':15, 'text':"Page 2"},
-              {'x':0, 'y':20, 'size':12, 'text':"Page 2 2nd line", 'font':'FreePixel.ttf', 'color':'PapayaWhip'} ]
+            [
+              {'x':0, 'y':0,  'size':12, 'text':"GLECB.TTF_12", 'font':'GLECB.TTF'},
+              {'x':0, 'y':20, 'size':15, 'text':"GLECB.TTF_15", 'font':'GLECB.ttf'},
+              {'x':0, 'y':40, 'size':18, 'text':"GLECB.TTF_18", 'font':'GLECB.TTF'},
+            ]
             ]
         }  )
-    time.sleep(10)
-    pioled_q.put({})    # Effectively terminate the above looping and blank the display
-
-    time.sleep (4)
+    time.sleep(12)
     
     pioled_q.put ({'cmd':PIOLED_TH_EXIT, 'pages':[[[20, 20, 18, 'Exited']]]})
     pioled_th.join()
 
-#===============================================================================================
-if check_tnum('52', include0=False):
-    print_test_header ("Multi-color on ssd1351")
-
-    pioled_q, pioled, pioled_th = do_setup()
-
-    pioled_q.put(  {
-        'cnt':2,
-        'page_time':1,
-        'inter_page_time':0.5,
-        'inter_message_set_time':1.5,
-        'pages': [
-            [ {'x':0, 'y':0,  'size':15, 'text':"Page 1",           'font':'GLECB.ttf',         'color':'Yellow'},
-              {'x':0, 'y':20, 'size':12, 'text':"Page 1 2nd line",  'font':'pixelmix.ttf',      'color':'Purple'} ],
-            [ {'x':0, 'y':0,  'size':15, 'text':"Page 2",           'font':'ChiKareGo.ttf',     'color':'Blue'},
-              {'x':0, 'y':20, 'size':12, 'text':"Page 2 2nd line",  'font':'FreePixel.ttf',     'color':'PapayaWhip'} ]
-            ]
-        }  )
-    time.sleep(10)
-    pioled_q.put({})    # Effectively terminate the above looping and blank the display
-
-    time.sleep (4)
-    
-    pioled_q.put ({'cmd':PIOLED_TH_EXIT, 'pages':[[[20, 20, 18, 'Exited']]]})
-    pioled_th.join()

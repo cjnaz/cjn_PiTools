@@ -15,39 +15,42 @@ For example, one of my apps flashes a yellow LED for 50ms once per loop of the m
 
 <br>
 
-## Coding usage
+## Command interface
 
-- Once set up, piblinky commands are passed through a queue to the support thread
-- Command list structure:
+Commands to a LED piblinky instance are passed (as a list) thru a queue to the thread managing the given LED - one thread and queue per LED.  
 
-        cmd[0]: Bittime (period in milliseconds for each bit), EG, 0.5s is 500.
-        cmd[1]: Bitstream - First bit is on the left, 1=On, 0=Off.
-            Spaces may be used in the bitstream for readability.
-            Bitstream is minimally checked for errors.
-        cmd[2]: Repeat count - Number of times to play the bitstream.
-            -1 will repeat forever, until another command is queued.
-        cmd[3]: Options flag (optional)
-                    piblinky.CMD_SAVE:     Save prior command for later restore.  
-                    piblinky.CMD_RESTORE:  Restore prior command.  (fields 0-2 are ignored)
-                        The restore stack is 1 deep.  Once saved, a command may be restored more than once.
-                    piblinky.CMD_EXIT:     Execute current command and exit the thread.
+Command list structure:
+
+        cmd[0]: Bittime (int or float) - Period in milliseconds for each bit
+            EG, <500> is 0.5s per bit
+        cmd[1]: Bitstream (str) - First bit is on the left, 1=On, 0=Off
+            Spaces may be used in the bitstream for readability
+            The bitstream is checked to contain only '0' and '1'
+        cmd[2]: Repeat count (int) - Number of times to play the bitstream
+            -1 will repeat forever, until another command is queued
+            1 means play the bitstream once
+        cmd[3]: Options flag (optional enum)
+            piblinky.CMD_SAVE:     Save prior command for later restore, and play the new command
+            piblinky.CMD_RESTORE:  Restore prior command (fields 0-2 are ignored)
+                The restore stack is 1 deep.  Once saved, a command may be restored more than once.
+            piblinky.CMD_EXIT:     Play the bitstream once then exit the thread
 
 - A new command entered into the queue will interrupt/replace any currently being executed command.
-- Repeat count not supported with CMD_EXIT.  The bitstream is executed once.
-- On any error, piblinky logs a warning message and returns.  No exception raised.
-- Debug level logging may be enabled to trace execution within a piblinky operation by adding `logging.getLogger('cjn_PiFuncs.piblinky').setLevel(logging.DEBUG)` in your tool script code.
+- On any error, piblinky logs a warning message and returns.  No exception is raised.
+- Debug level logging may be enabled to trace execution within a piblinky operation by adding `logging.getLogger('cjn_PiTools.PiBlinky').setLevel(logging.DEBUG)` in your tool script code.
 
 <br/>
 
-## Usage example - This `PiBlinky_README_ex.py` code example is in the docs directory in the github repo
+## Usage example
 
-The LED is connected from GPIO pin 4 to ground through an appropriate current limiting resistor.
+The LED is connected from GPIO pin 4 to ground through an appropriate current limiting resistor. 
 
 ```
 #!/usr/bin/env python3
+# PiBlinky_README_ex.py available in the docs directory in the github repo
 
 # Set up a piblinky instance
-from cjn_PiFuncs.PiBlinky import piblinky, CMD_EXIT, CMD_SAVE, CMD_RESTORE
+from cjn_PiTools.PiBlinky import piblinky, CMD_EXIT, CMD_SAVE, CMD_RESTORE
 import queue
 import time
 
@@ -80,7 +83,7 @@ time.sleep (3)
 # Terminate gracefully
 print ("Off solid (no blink)")
 BLU_LED_q.put ([0, "0", 1, CMD_EXIT])
-BLU_LED_th.join()
+BLU_LED_th.join()```
 ```
 
 <br>
@@ -93,8 +96,16 @@ This demo runs three LEDs concurrently.  See the github repo tests directory for
 $ ./demo-piblinky.py -h
 usage: demo-piblinky.py [-h] [-t TEST] [--host HOST] [--port PORT] [-v]
 
-Demo/test for piblinky
-1.1.1
+Demo/test for PiBlinky
+
+Produce / compare to golden results:
+    ./demo-piblinky.py -vv &> testrun.log
+  or
+    ./demo-piblinky.py --host GPIO -vv &> testrun.log
+
+    Expected differences:
+        Log order can shift due to 3 independent threads
+1.0
 
 optional arguments:
   -h, --help            show this help message and exit

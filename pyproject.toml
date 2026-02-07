@@ -1,21 +1,20 @@
 [project]
-name = 'cjn_PiFuncs'
-version = "1.0b3"
-    # 1.0b3 - Added DS18B20, initW1buses
-    # 1.0b2 - Scrubbed package structure, general cleanup
-    # 1.0b1 - Gathered PiOLED, piblinky
+name = 'cjn_PiTools'
+version = "1.0"
+    # 1.0 - New.  Bundled PiBlinky, PiOLED, initW1buses, and DS18B20 modules
 description = "cjn's library of Raspberry Pi functions, drivers, tools, ..."
 readme = "README.md"
 requires-python = ">=3.9"
 authors = [ {name = "Chris Nelson", email = "github@cjnaz.com"} ]
 license = "MIT"
 dependencies = [
-    'cjnfuncs >= 3.1.1rc2',
+    'cjnfuncs >= 3.1.1',
     'luma.oled',
     'pillow',
     'spidev',
     'RPi.GPIO',
     ]
+keywords = ['cjnaz', 'library', 'cjnfuncs']
 classifiers = [                 # https://pypi.org/classifiers/
     "Topic :: Software Development :: Libraries :: Python Modules",
     ]
@@ -33,13 +32,13 @@ build-backend = "setuptools.build_meta"
 
 
 [project.scripts]
-PiOLED =        'cjn_PiFuncs.PiOLED:cli'
-DS18B20 =       'cjn_PiFuncs.DS18B20:cli'
-initW1buses =   'cjn_PiFuncs.initW1buses:cli'
+PiOLED =        'cjn_PiTools.PiOLED:cli'
+DS18B20 =       'cjn_PiTools.DS18B20:cli'
+initW1buses =   'cjn_PiTools.initW1buses:cli'
 
 
 [project.urls]
-repository = "https://github.com/cjnaz/cjn_PiFuncs"
+repository = "https://github.com/cjnaz/cjn_PiTools"
 
 
 [tool.setuptools.packages.find]

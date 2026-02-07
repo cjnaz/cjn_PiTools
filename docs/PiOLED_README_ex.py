@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
+# PiOLED_README_ex.py available in the docs directory in the github repo
 
 import queue
-from cjn_PiFuncs.PiOLED import pioled_display_driver, PIOLED_TH_EXIT
+from cjn_PiTools.PiOLED import pioled_display_driver, PIOLED_TH_EXIT
 
 # Configure the server interface settings
 DISPLAY_FILE =      '/mnt/RAMDRIVE/pioled_display.txt'

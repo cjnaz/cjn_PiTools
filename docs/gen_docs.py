@@ -13,7 +13,7 @@ import re
 
 
 modules = [
-    {'outfile':'../DS18B20.md',     'head':'./DS18B20_head.md',         'source':'../src/cjn_PiFuncs/DS18B20.py'},
+    {'outfile':'../DS18B20.md',     'head':'./DS18B20_head.md',         'source':'../src/cjn_PiTools/DS18B20.py'},
 ]
 
 def main():

@@ -17,7 +17,6 @@ import logging
 from pathlib import Path
 
 from cjnfuncs.core          import set_toolname
-from cjnfuncs.deployfiles   import deploy_files
 
 # Configs / Constants
 TOOLNAME =      'DS18B20'
@@ -30,7 +29,7 @@ w1_root_path =  Path('/sys/bus/w1/devices/')
 set_toolname (TOOLNAME)
 # print (core.tool)
 
-ds18b20_logger = logging.getLogger('cjn_PiFuncs.DS18B20')
+ds18b20_logger = logging.getLogger('cjn_PiTools.DS18B20')
 ds18b20_logger.setLevel(logging.WARNING)
 
 
@@ -386,8 +385,9 @@ Values must be between -55C and +125C.  w1_therm sets TL to the lower of the two
 
 ***DS18B20() class member function***
 
-Requires root privilege (sudo), or <chmod 666 /sys/bus/w1/devices/w1_bus_masterX/therm_bulk_read>.
-Note that the chmod must be redone after each boot.
+Requires root privilege (sudo), or `chmod 666 /sys/bus/w1/devices/w1_bus_masterX/therm_bulk_read`.
+Note that the chmod must be redone after each boot.  Install the `initW1buses.service` at boot to set 
+write permission on the therm_bulk_read file.
 
 Follow with calls to <sensor>.read_temperature2() for each sensor on the bus.
 
@@ -594,19 +594,9 @@ Modes:
 
     parser.add_argument('-v', '--verbose', action='count', default=0,
                         help="Print debug-level status and activity messages")
-    parser.add_argument('--setup-user', action='store_true',
-                        help=f"Install starter files in user space")
     parser.add_argument('-V', '--version', action='version', version='%(prog)s ' + __version__,
                         help="Print version number and exit")
     args = parser.parse_args()
-
-    # Deploy starter files
-    if args.setup_user:
-        logging.getLogger('cjnfuncs.deployfiles').setLevel(logging.INFO)
-        deploy_files([
-            { 'source': 'initW1buses.service', 'target_dir': 'USER_CONFIG_DIR', 'file_stat': 0o644},
-            ]) #, overwrite=True)
-        sys.exit()
 
 
     ds18b20_logger.setLevel([logging.WARNING, logging.INFO, logging.DEBUG][args.verbose])
@@ -615,7 +605,7 @@ Modes:
         sensor_list = sorted(w1_root_path.glob('28*'))
         for sens in sensor_list:
             sensor = DS18B20(sens.stem)
-            ds18b20_logger.debug (f"\nSensor <{sens}> on bus master <{sensor.bus_master_path}>:")
+            ds18b20_logger.debug (f"Sensor <{sens}> on bus master <{sensor.bus_master_path}>:")
             sensor.read_scratchpad()
             sensor.get_conv_time()
             sensor.get_ext_power()
