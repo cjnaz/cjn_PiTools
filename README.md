@@ -2,7 +2,7 @@
 
 ## cjn_PiTools is comprised of several modules (follow links to respective documentation)
 
-NOTE:  These link point to the github repo since relative links to other .md files do not work on PyPI.
+NOTE:  These links point to the github repo since relative links to other .md files do not work on PyPI.
 
 Module | Description/Purpose
 --|--

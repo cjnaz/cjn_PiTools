@@ -153,7 +153,6 @@ Font files provided with cjn_PiTools:
 - pixelmix.ttf
 - Volter__28Goldfish_29.ttf
 - ChiKareGo.ttf
-- creep.bdf
 - FreePixel.ttf
 - miscfs_.ttf
 - ProggyTiny.ttf
@@ -248,6 +247,12 @@ optional arguments:
   - `PiOLED_go_flag` is set by the tool script (within pioled_display_driver) to tell the PiOLED server to process the display file.
   - After being displayed, the display file is left in place (to aid debug/validation of your tool script code) and the server releases first the `PiOLED_file_lock` and then the `PiOLED_go_flag`.
 
+- When the tool script code instantiates the pioled_display_driver instance (`pioled = pioled_display_driver(pioled_q, display_file=DISPLAY_FILE)`), pioled_display_driver() attempts to confirm access to the PiOLED_file_lock and the display_file itself.  Access failures are non-fatal, and are logged to the tool script's log file, and likely, attempts to display OLED messages will also fail (logged using cjnfuncs.core.periodic_log once per hour to avoid flooding the log).  Once the access issues are resolved then display message may operate normally.  Check the tool script log file for warnings, and confirm write access to the display file and perhaps unlock the semaphores:
+
+      resourcelock PiOLED_file_lock unget
+      resourcelock PiOLED_go_flag unget
+
+- Errors in message_sets that are flagged by the PiOLED server, such as can't find the font file, or bad font size, are logged to the server log file as warnings, not to the tool script log file.
 
 <br/>
 

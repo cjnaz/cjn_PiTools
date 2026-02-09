@@ -48,6 +48,7 @@ from PIL import ImageFont
 from cjnfuncs.core          import set_toolname, logging, set_logging_level, periodic_log, setuplogging
 from cjnfuncs.configman     import config_item
 from cjnfuncs.resourcelock  import resource_lock
+from cjnfuncs.rwt           import run_with_timeout
 from cjnfuncs.deployfiles   import deploy_files
 import cjnfuncs.core as core
 
@@ -106,6 +107,7 @@ class pioled_display_driver:
                  ):
         global pioled_logger
         self.queue = queue
+        self.display_file = Path(display_file)
         self.name = name
         self.page_time = page_time
         self.inter_page_time = inter_page_time
@@ -114,14 +116,16 @@ class pioled_display_driver:
                                                                      {'x':10, 'y':20, 'size':12, 'text':"Message set Restored"},
                                                                      {'x':10, 'y':32, 'size':12, 'text':"before Saved"}]]}
 
-        # Confirm access to display_file
-        self.display_file = Path(display_file)
-        try:
-            self.display_file.touch()
-        except Exception as e:
-            pioled_logger.warning (f"Unable to access oled display_file <{self.display_file}>\n  {type(e).__name__}: {e}")
+        # Check access to pioled_file_lock and display_file
+        if not pioled_file_lock.get_lock(lock_info='pioled_display_driver startup file access check'):
+            pioled_logger.warning (f"Failed to get pioled_file_lock during pioled_display_driver startup - Continuing. Current lock owner: <{pioled_file_lock.get_lock_info()}>")
         else:
-            self.display_file.unlink()
+            try:
+                self.display_file.touch()
+                self.display_file.unlink()
+            except Exception as e:
+                pioled_logger.warning (f"Unable to access oled display_file <{self.display_file}> - Continuing\n  {type(e).__name__}: {e}")
+            pioled_file_lock.unget_lock(where_called="pioled_display_driver startup file access check")
 
 
     def start(self):
@@ -242,6 +246,7 @@ class pioled_display_driver:
 
     def message_page(self, message_list, message_time=0):
         # message_time is blocking to the main code if not sent thru a queue to pioled message_loop
+        # returns 0 on success, 1 on failure
         xx = ""
         for line in message_list:
             if isinstance(line, list):
@@ -258,14 +263,27 @@ class pioled_display_driver:
             return 1
 
         pioled_logger.debug (f"Writing to display_file <{self.display_file}>:\n{xx[:-1]}")      # trim off final \n
-        with self.display_file.open('wt') as ofile:
-            ofile.write(xx)
-            ofile.flush()
+
+        def _write_display_file():
+            with self.display_file.open('wt') as ofile:
+                ofile.write(xx)
+                ofile.flush()
+
+        try:
+            run_with_timeout(_write_display_file, rwt_timeout=0.2)
+        except Exception as e:
+            periodic_log(f"Failed to write the display_file - Skipping\n  {type(e).__name__}: {e}",
+                         category='display_file write', logger_name='pioled_logger', log_interval='1h', log_level=logging.WARNING)
+            pioled_file_lock.unget_lock(where_called='message_page failed to write the display file')
+            return 1
+
         pioled_go_flag.get_lock(lock_info='message_page')
 
         if message_time > 0:
             time.sleep(message_time)
             self.blank()
+
+        return 0
 
 
 #=====================================================================================

@@ -75,10 +75,10 @@ def check_tnum(tnum_in, include0='0'):      # include0=False to disable in '0' r
     except:  pass
     return False
 
-def do_setup(page_time=1, inter_page_time=0.2, inter_message_set_time=2):
+def do_setup(page_time=1, inter_page_time=0.2, inter_message_set_time=2, display_file=DISPLAY_FILE):
     # Returns tuple:  queue handle, pioled class instance, and pioled thread handle
     pioled_q =    queue.Queue()
-    pioled =      pioled_display_driver(pioled_q, display_file=DISPLAY_FILE,
+    pioled =      pioled_display_driver(pioled_q, display_file=display_file,
                     page_time=page_time, inter_page_time=inter_page_time, inter_message_set_time=inter_message_set_time)
     return pioled_q, pioled, pioled.start()
 
@@ -125,7 +125,7 @@ if check_tnum('2a'):
     m3 = [[0, 0, 20, "Message1.3"], [5, 30, 12, datetime.datetime(2021, 2, 3, 4, 5, 6)]]
     msg_set = [m1, m2, m3]
     pioled_q.put ({'pages':msg_set})
-    time.sleep (12)
+    time.sleep (11.5)    # should be during Message1.1
 
     m1 = [[0, 0, 20, "Message2.1"], [5, 30, 12, "New msg interrupted"]]
     m2 = [[0, 0, 20, "Message2.2"], [5, 30, 12, "Ha, clobbered it !"]]
@@ -149,7 +149,7 @@ if check_tnum('2b'):
 
     msg_set = [m1, m2, m3]
     pioled_q.put ({'pages':msg_set})
-    time.sleep (12)
+    time.sleep (11.5)    # should be during Message1.1
 
     m1 = [{'x':0, 'y':0, 'size':20, 'text':"Message2.1"}, {'x':5, 'y':30, 'size':12, 'text':"New msg interrupted"}]
     m2 = [{'x':0, 'y':0, 'size':20, 'text':"Message2.2"}, {'x':5, 'y':30, 'size':12, 'text':"Ha, clobbered it !"}]
@@ -513,7 +513,7 @@ if check_tnum('7'):
     m3 = [[0, 0, 20, "Message1.3"], [5, 30, 12, datetime.datetime(2021, 2, 3, 4, 5, 6)]]
     msg_set = [m1, m2, m3]
     pioled_q.put ({'pages':msg_set})
-    time.sleep (12)
+    time.sleep (11.5)
 
     pioled_q.put ({'cmd':PIOLED_TH_PAUSE, 'pages':[[[20, 20, 18, 'Paused']]]})
     time.sleep(3)
@@ -539,25 +539,25 @@ if check_tnum('8a'):
     m3 = [[0, 0, 20, "Message1.3"], [5, 30, 12, datetime.datetime(2021, 2, 3, 4, 5, 6)]] # datetime.datetime(2026, 1, 21, 22, 9, 12)
     msg_set = [m1, m2, m3]
     pioled_q.put ({'pages':msg_set})
-    time.sleep (7)
+    time.sleep (6)
 
     m1 = [[0, 0, 20, "Message2.1"], [5, 30, 12, "Saved Message1"]]
     m2 = [[0, 0, 20, "Message2.2"], [5, 30, 18, "Page 2"]]
     msg_set2 = [m1, m2]
     pioled_q.put ({'cmd':PIOLED_SAVE, 'pages':msg_set2})
-    time.sleep (7)
+    time.sleep (5)
 
     pioled_q.put ({'cmd':PIOLED_RESTORE})
-    time.sleep (7)
+    time.sleep (6)
 
     pioled_q.put ({'cmd':PIOLED_TH_PAUSE, 'pages':[[[20, 20, 18, 'Paused']]]})
     time.sleep (5)
 
     pioled_q.put ({'cmd':PIOLED_RESTORE})
-    time.sleep (7)
+    time.sleep (6)
 
     pioled_q.put ({})       # Empty message_set blanks the display
-    time.sleep (2)
+    time.sleep (1)
 
     pioled_q.put ({'cmd':PIOLED_TH_EXIT, 'pages':[[[20, 20, 18, 'Exited']]]})
     pioled_th.join()
@@ -643,13 +643,13 @@ if check_tnum('11a'):
     m3 = [[0, 0, 20, "Message1.3"], [5, 30, 12, datetime.datetime(2021, 2, 3, 4, 5, 6)]]
     msg_set = [m1, m2, m3]
     pioled_q.put ({'pages':msg_set})
-    time.sleep (10)
+    time.sleep (6.5)    # should be during Message1.1
 
     m1 = [[0, 0, 20, "Message2.1"]]
     m2 = [[0, 0, 20, "Message2.2"], [5, 30, 12, "No final wait leaves"], [5, 45, 12, "last page displayed."]]
     msg_set = [m1, m2]
     pioled_q.put ({'cnt':2, 'pages':msg_set})
-    time.sleep (10)
+    time.sleep (6)
 
     pioled_q.put ({'cmd':PIOLED_TH_EXIT, 'pages':[[[20, 20, 18, 'Exited']]]})
     pioled_th.join()
@@ -667,13 +667,13 @@ if check_tnum('11b'):
     m3 = [[0, 0, 20, "Message1.3"], [5, 30, 12, datetime.datetime(2021, 2, 3, 4, 5, 6)]]
     msg_set = [m1, m2, m3]
     pioled_q.put ({'pages':msg_set, 'page_time':0.5, 'inter_page_time':0.5, 'inter_message_set_time':0.5})
-    time.sleep (10)
+    time.sleep (6.6)    # should be during Message1.1
 
     m1 = [[0, 0, 20, "Message2.1"]]
     m2 = [[0, 0, 20, "Message2.2"], [5, 30, 12, "No final wait leaves"], [5, 45, 12, "last page displayed."]]
     msg_set = [m1, m2]
     pioled_q.put ({'cnt':2, 'pages':msg_set, 'inter_page_time':0.2})
-    time.sleep (10)
+    time.sleep (6.5)    # should be during Message2.1
 
     pioled_q.put ({'cmd':PIOLED_TH_EXIT, 'pages':[[[20, 20, 18, 'Exited']]]})
     pioled_th.join()
@@ -690,13 +690,13 @@ if check_tnum('12'):
     m3 = [[0, 0, 20, "Message1.3"], [5, 30, 12, datetime.datetime(2021, 2, 3, 4, 5, 6)]]
 
     pioled_q.put ({'pages':[m1]})
-    time.sleep (3)
+    time.sleep (2)
 
     pioled_q.put ({'pages':[m2]})
-    time.sleep (3)
+    time.sleep (2)
 
     pioled_q.put ({'pages':[m3]})
-    time.sleep (3)
+    time.sleep (2)
 
     pioled_q.put ({'cmd':PIOLED_TH_EXIT, 'pages':[[[20, 20, 18, 'Exited']]]})
     pioled_th.join()
@@ -822,6 +822,31 @@ if check_tnum('13h'):
     pioled_file_lock.unget_lock(where_called='Test 13h end', force=True)
     pioled_q.put ({'cmd':PIOLED_TH_EXIT, 'pages':[[[20, 20, 18, 'Exited']]]})
     pioled_th.join()
+
+
+#===============================================================================================
+if check_tnum('13i'):
+    print_test_header ("pioled_file_lock-ed on pioled_display_driver instantiation")
+
+    pioled_file_lock.get_lock(lock_info='Test 13i setup')
+
+    pioled_q, pioled, pioled_th = do_setup()
+
+    pioled_file_lock.unget_lock(where_called='Test 13i end', force=True)
+    pioled_q.put ({'cmd':PIOLED_TH_EXIT, 'pages':[[[20, 20, 18, 'Exited']]]})
+    pioled_th.join()
+
+
+#===============================================================================================
+if check_tnum('13j'):
+    print_test_header ("No access to display_file on pioled_display_driver instantiation")
+
+    pioled_q, pioled, pioled_th = do_setup(display_file='/no-access')
+
+    pioled_q.put ({'cmd':PIOLED_TH_EXIT, 'pages':[[[20, 20, 18, 'Exited']]]})
+    pioled_th.join()
+
+    print (f"PiOLED_file_lock is_locked <{pioled_file_lock.is_locked()}>,  info: <{pioled_file_lock.get_lock_info()}>")
 
 
 #===============================================================================================

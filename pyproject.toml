@@ -1,6 +1,7 @@
 [project]
 name = 'cjn_PiTools'
-version = "1.0"
+version = "1.0.1"
+    # 1.0.1 - PiOLED startup display file access check debug
     # 1.0 - New.  Bundled PiBlinky, PiOLED, initW1buses, and DS18B20 modules
 description = "cjn's library of Raspberry Pi functions, drivers, tools, ..."
 readme = "README.md"
@@ -14,7 +15,11 @@ dependencies = [
     'spidev',
     'RPi.GPIO',
     ]
-keywords = ['cjnaz', 'library', 'cjnfuncs']
+keywords = ['cjnaz', 'cjnfuncs', 'Raspberry', 'Raspberry Pi', 'RPi', 
+    'DS18B20', 
+    'luma.oled', 'OLED',
+    'LED', 'blinky',
+    ]
 classifiers = [                 # https://pypi.org/classifiers/
     "Topic :: Software Development :: Libraries :: Python Modules",
     ]
