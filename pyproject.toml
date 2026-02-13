@@ -1,6 +1,7 @@
 [project]
 name = 'cjn_PiTools'
-version = "1.0.1"
+version = "1.1b1"
+    # 1.1b1 - SHT3x, pca9548, shared working for pigpio & smbus
     # 1.0.1 - PiOLED startup display file access check debug
     # 1.0 - New.  Bundled PiBlinky, PiOLED, initW1buses, and DS18B20 modules
 description = "cjn's library of Raspberry Pi functions, drivers, tools, ..."
