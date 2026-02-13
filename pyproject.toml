@@ -13,6 +13,7 @@ dependencies = [
     'luma.oled',
     'pillow',
     'spidev',
+    'smbus2',
     'RPi.GPIO',
     ]
 keywords = ['cjnaz', 'cjnfuncs', 'Raspberry', 'Raspberry Pi', 'RPi', 
@@ -40,6 +41,7 @@ build-backend = "setuptools.build_meta"
 PiOLED =        'cjn_PiTools.PiOLED:cli'
 DS18B20 =       'cjn_PiTools.DS18B20:cli'
 initW1buses =   'cjn_PiTools.initW1buses:cli'
+pca9548 =       'cjn_PiTools.pca9548:cli'
 
 
 [project.urls]

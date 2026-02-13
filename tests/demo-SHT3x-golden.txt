@@ -1,0 +1,942 @@
+                         demo-SHT3x.dotest               -  WARNING:  
+
+==============================================================================================
+Test 1a - Single Shot, default F, High, 16ms
+  GIVEN:      (), {}
+  EXPECT:     Pass
+                             shared.get_pigpio_i2c_handle -  WARNING:  61
+                              SHT3x.soft_reset           -    DEBUG:  <sht3x> Success - Status reg:  0x0000
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xae 0xb4,  calc CRC: <0xb4>
+  RH   data returned bytes: 0x7c 0xb5 0x44,  calc CRC: <0x44>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.dotest               -  WARNING:    RETURNED:
+(74.88509956511788, 48.714427405203324)
+                         demo-SHT3x.dotest               -  WARNING:  
+
+==============================================================================================
+Test 1b - Single Shot - C, Low, 1sec
+  GIVEN:      (), {}
+  EXPECT:     Pass
+                              SHT3x.soft_reset           -    DEBUG:  <sht3x> Success - Status reg:  0x0000
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0xfc 0xf1,  calc CRC: <0xf1>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (C):      23.8
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.8
+                         demo-SHT3x.dotest               -  WARNING:    RETURNED:
+(23.811703669794767, 48.82276646066987)
+                         demo-SHT3x.dotest               -  WARNING:  
+
+==============================================================================================
+Test 2 - Heater control & status register
+  GIVEN:      (), {}
+  EXPECT:     None
+                              SHT3x.soft_reset           -    DEBUG:  <sht3x> Success - Status reg:  0x0000
+                         demo-SHT3x.func                 -     INFO:  soft_reset()        returned 0
+                              SHT3x.heater_enable        -    DEBUG:  <sht3x> Success - Status reg:  0x2000
+                         demo-SHT3x.func                 -     INFO:  heater_enable()     returned 0
+                              SHT3x.heater_disable       -    DEBUG:  <sht3x> Success - Status reg:  0x0000
+                         demo-SHT3x.func                 -     INFO:  heater_disable()    returned 0
+                              SHT3x.heater_enable        -    DEBUG:  <sht3x> Success - Status reg:  0x2000
+                         demo-SHT3x.func                 -     INFO:  heater_enable()     returned 0
+                              SHT3x.read_status_reg      -    DEBUG:  <sht3x> status reg raw data: 0x20 0x00 0x5d,  calc CRC: <0x5d>
+                         demo-SHT3x.func                 -     INFO:  read_status_reg()   returned 0x2000
+                              SHT3x.clear_status_reg     -    DEBUG:  <sht3x> Success - Status reg:  0x2000
+                         demo-SHT3x.func                 -     INFO:  clear_status_reg()  returned 0
+                              SHT3x.soft_reset           -    DEBUG:  <sht3x> Success - Status reg:  0x0000
+                         demo-SHT3x.func                 -     INFO:  soft_reset()        returned 0
+                              SHT3x.read_status_reg      -    DEBUG:  <sht3x> status reg raw data: 0x00 0x00 0x81,  calc CRC: <0x81>
+                         demo-SHT3x.func                 -     INFO:  read_status_reg()   returned 0x0000
+                         demo-SHT3x.dotest               -  WARNING:    RETURNED:
+None
+                         demo-SHT3x.dotest               -  WARNING:  
+
+==============================================================================================
+Test 3a - Periodic DA mps=4;    fetch_data default 'F'
+  GIVEN:      (4,), {}
+  EXPECT:     ~4/5 measurements pass
+                              SHT3x.soft_reset           -    DEBUG:  <sht3x> Success - Status reg:  0x0000
+                              SHT3x.start_periodic_DA    -    DEBUG:  <sht3x> Success - Status reg:  0x0020
+                         demo-SHT3x.meas4sec             -     INFO:  start_periodic_DA(mps=4) returned 0
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xc8 0xa9,  calc CRC: <0xa9>
+  RH   data returned bytes: 0x7c 0xf3 0xdf,  calc CRC: <0xdf>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      75.0
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.8
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (75.0100709544518, 48.80903334096284)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0xac 0x8f,  calc CRC: <0x8f>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.86106660563058, 48.7006942854963)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa4 0x6f,  calc CRC: <0x6f>
+  RH   data returned bytes: 0x7c 0xbb 0x5b,  calc CRC: <0x5b>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.8
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.83703364614328, 48.72358281834134)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa4 0x6f,  calc CRC: <0x6f>
+  RH   data returned bytes: 0x7c 0xab 0x18,  calc CRC: <0x18>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.8
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.83703364614328, 48.69916838330663)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0xa5 0x07,  calc CRC: <0x07>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.86106660563058, 48.69001297016861)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0x9e 0x71,  calc CRC: <0x71>
+  RH   data returned bytes: 0x7c 0xb1 0x80,  calc CRC: <0x80>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.8
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.80819409475853, 48.708323796444645)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa4 0x6f,  calc CRC: <0x6f>
+  RH   data returned bytes: 0x7c 0xc1 0x78,  calc CRC: <0x78>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.8
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.83703364614328, 48.73273823147936)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa4 0x6f,  calc CRC: <0x6f>
+  RH   data returned bytes: 0x7c 0xbb 0x5b,  calc CRC: <0x5b>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.8
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.83703364614328, 48.72358281834134)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0xb4 0x75,  calc CRC: <0x75>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.86106660563058, 48.712901503013654)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0x94 0xf3,  calc CRC: <0xf3>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.86106660563058, 48.664072632944226)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa4 0x6f,  calc CRC: <0x6f>
+  RH   data returned bytes: 0x7c 0xb2 0xd3,  calc CRC: <0xd3>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.8
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.83703364614328, 48.709849698634315)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xae 0xb4,  calc CRC: <0xb4>
+  RH   data returned bytes: 0x7c 0xa5 0x07,  calc CRC: <0x07>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.88509956511788, 48.69001297016861)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0xbd 0xfd,  calc CRC: <0xfd>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.86106660563058, 48.72663462272068)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa4 0x6f,  calc CRC: <0x6f>
+  RH   data returned bytes: 0x7c 0xb2 0xd3,  calc CRC: <0xd3>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.8
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.83703364614328, 48.709849698634315)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0xa5 0x07,  calc CRC: <0x07>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.86106660563058, 48.69001297016861)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xae 0xb4,  calc CRC: <0xb4>
+  RH   data returned bytes: 0x7c 0xa5 0x07,  calc CRC: <0x07>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.88509956511788, 48.69001297016861)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  End of loop
+                              SHT3x.stop_periodic_DA     -    DEBUG:  <sht3x> Success - Status reg:  0x0040
+                         demo-SHT3x.meas4sec             -     INFO:  stop_periodic_DA() returned 0
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0040
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0x9c 0x4a,  calc CRC: <0x4a>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  Final1 fetch_data() returned: (74.86106660563058, 48.67627985046158)
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0000
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  Final2 fetch_data() returned: (-256, -256)
+                         demo-SHT3x.dotest               -  WARNING:    RETURNED:
+None
+                         demo-SHT3x.dotest               -  WARNING:  
+
+==============================================================================================
+Test 3b - Periodic DA mps=0.5;  fetch_data default 'F'
+  GIVEN:      (0.5,), {}
+  EXPECT:     ~1/10 measurements pass
+                              SHT3x.soft_reset           -    DEBUG:  <sht3x> Success - Status reg:  0x0000
+                              SHT3x.start_periodic_DA    -    DEBUG:  <sht3x> Success - Status reg:  0x0020
+                         demo-SHT3x.meas4sec             -     INFO:  start_periodic_DA(mps=4) returned 0
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xbe 0xf7,  calc CRC: <0xf7>
+  RH   data returned bytes: 0x7c 0xb2 0xd3,  calc CRC: <0xd3>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      75.0
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.96200503547723, 48.709849698634315)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa4 0x6f,  calc CRC: <0x6f>
+  RH   data returned bytes: 0x7c 0xab 0x18,  calc CRC: <0x18>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.8
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.83703364614328, 48.69916838330663)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  End of loop
+                              SHT3x.stop_periodic_DA     -    DEBUG:  <sht3x> Success - Status reg:  0x0040
+                         demo-SHT3x.meas4sec             -     INFO:  stop_periodic_DA() returned 0
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0040
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa4 0x6f,  calc CRC: <0x6f>
+  RH   data returned bytes: 0x7c 0x94 0xf3,  calc CRC: <0xf3>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.8
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  Final1 fetch_data() returned: (74.83703364614328, 48.664072632944226)
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0000
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  Final2 fetch_data() returned: (-256, -256)
+                         demo-SHT3x.dotest               -  WARNING:    RETURNED:
+None
+                         demo-SHT3x.dotest               -  WARNING:  
+
+==============================================================================================
+Test 3c - Periodic DA mps=1;    fetch_data default 'F'
+  GIVEN:      (1,), {}
+  EXPECT:     ~1/5 measurements pass
+                              SHT3x.soft_reset           -    DEBUG:  <sht3x> Success - Status reg:  0x0000
+                              SHT3x.start_periodic_DA    -    DEBUG:  <sht3x> Success - Status reg:  0x0020
+                         demo-SHT3x.meas4sec             -     INFO:  start_periodic_DA(mps=4) returned 0
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xc3 0x43,  calc CRC: <0x43>
+  RH   data returned bytes: 0x7c 0xc3 0x1a,  calc CRC: <0x1a>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      75.0
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.9860379949645, 48.7357900358587)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xae 0xb4,  calc CRC: <0xb4>
+  RH   data returned bytes: 0x7c 0xae 0xed,  calc CRC: <0xed>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.88509956511788, 48.70374608987564)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0xac 0x8f,  calc CRC: <0x8f>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.86106660563058, 48.7006942854963)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0x9c 0x4a,  calc CRC: <0x4a>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.86106660563058, 48.67627985046158)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  End of loop
+                              SHT3x.stop_periodic_DA     -    DEBUG:  <sht3x> Success - Status reg:  0x0040
+                         demo-SHT3x.meas4sec             -     INFO:  stop_periodic_DA() returned 0
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0040
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa4 0x6f,  calc CRC: <0x6f>
+  RH   data returned bytes: 0x7c 0x94 0xf3,  calc CRC: <0xf3>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.8
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  Final1 fetch_data() returned: (74.83703364614328, 48.664072632944226)
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0000
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  Final2 fetch_data() returned: (-256, -256)
+                         demo-SHT3x.dotest               -  WARNING:    RETURNED:
+None
+                         demo-SHT3x.dotest               -  WARNING:  
+
+==============================================================================================
+Test 3d - Periodic DA mps=2;    fetch_data default 'F'
+  GIVEN:      (2,), {}
+  EXPECT:     ~1/3 measurements pass
+                              SHT3x.soft_reset           -    DEBUG:  <sht3x> Success - Status reg:  0x0000
+                              SHT3x.start_periodic_DA    -    DEBUG:  <sht3x> Success - Status reg:  0x0020
+                         demo-SHT3x.meas4sec             -     INFO:  start_periodic_DA(mps=4) returned 0
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xbe 0xf7,  calc CRC: <0xf7>
+  RH   data returned bytes: 0x7c 0x9a 0xec,  calc CRC: <0xec>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      75.0
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.96200503547723, 48.673228046082244)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0xa5 0x07,  calc CRC: <0x07>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.86106660563058, 48.69001297016861)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0xa5 0x07,  calc CRC: <0x07>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.86106660563058, 48.69001297016861)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xae 0xb4,  calc CRC: <0xb4>
+  RH   data returned bytes: 0x7c 0x9d 0x7b,  calc CRC: <0x7b>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.88509956511788, 48.67780575265125)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa4 0x6f,  calc CRC: <0x6f>
+  RH   data returned bytes: 0x7c 0x94 0xf3,  calc CRC: <0xf3>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.8
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.83703364614328, 48.664072632944226)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xae 0xb4,  calc CRC: <0xb4>
+  RH   data returned bytes: 0x7c 0xa5 0x07,  calc CRC: <0x07>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.88509956511788, 48.69001297016861)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa4 0x6f,  calc CRC: <0x6f>
+  RH   data returned bytes: 0x7c 0x8b 0x9e,  calc CRC: <0x9e>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.8
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.83703364614328, 48.6503395132372)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0x9c 0x4a,  calc CRC: <0x4a>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.86106660563058, 48.67627985046158)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  End of loop
+                              SHT3x.stop_periodic_DA     -    DEBUG:  <sht3x> Success - Status reg:  0x0040
+                         demo-SHT3x.meas4sec             -     INFO:  stop_periodic_DA() returned 0
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0040
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0x9c 0x4a,  calc CRC: <0x4a>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  Final1 fetch_data() returned: (74.86106660563058, 48.67627985046158)
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0000
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  Final2 fetch_data() returned: (-256, -256)
+                         demo-SHT3x.dotest               -  WARNING:    RETURNED:
+None
+                         demo-SHT3x.dotest               -  WARNING:  
+
+==============================================================================================
+Test 3e - Periodic DA mps=10;   fetch_data default 'F'
+  GIVEN:      (10,), {}
+  EXPECT:     All measurements pass
+                              SHT3x.soft_reset           -    DEBUG:  <sht3x> Success - Status reg:  0x0000
+                              SHT3x.start_periodic_DA    -    DEBUG:  <sht3x> Success - Status reg:  0x0020
+                         demo-SHT3x.meas4sec             -     INFO:  start_periodic_DA(mps=4) returned 0
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xb9 0x60,  calc CRC: <0x60>
+  RH   data returned bytes: 0x7c 0x81 0x45,  calc CRC: <0x45>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.6
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.93797207598993, 48.6350804913405)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x00a0
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xae 0xb4,  calc CRC: <0xb4>
+  RH   data returned bytes: 0x7c 0x96 0x91,  calc CRC: <0x91>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.88509956511788, 48.667124437323565)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x00a0
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xb3 0xbb,  calc CRC: <0xbb>
+  RH   data returned bytes: 0x7c 0x97 0xa0,  calc CRC: <0xa0>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.90913252460516, 48.668650339513235)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x00a0
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0x94 0xf3,  calc CRC: <0xf3>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.86106660563058, 48.664072632944226)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x00a0
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0x85 0x81,  calc CRC: <0x81>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.6
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.86106660563058, 48.64118410009918)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x00a0
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa4 0x6f,  calc CRC: <0x6f>
+  RH   data returned bytes: 0x7c 0xab 0x18,  calc CRC: <0x18>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.8
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.83703364614328, 48.69916838330663)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x00a0
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0x94 0xf3,  calc CRC: <0xf3>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.86106660563058, 48.664072632944226)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x00a0
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0xa5 0x07,  calc CRC: <0x07>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.86106660563058, 48.69001297016861)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x00a0
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xb3 0xbb,  calc CRC: <0xbb>
+  RH   data returned bytes: 0x7c 0x88 0xcd,  calc CRC: <0xcd>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.6
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.90913252460516, 48.64576180666819)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x00a0
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xae 0xb4,  calc CRC: <0xb4>
+  RH   data returned bytes: 0x7c 0xa5 0x07,  calc CRC: <0x07>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.88509956511788, 48.69001297016861)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x00a0
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xae 0xb4,  calc CRC: <0xb4>
+  RH   data returned bytes: 0x7c 0x9d 0x7b,  calc CRC: <0x7b>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.88509956511788, 48.67780575265125)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x00e0
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xae 0xb4,  calc CRC: <0xb4>
+  RH   data returned bytes: 0x7c 0x9d 0x7b,  calc CRC: <0x7b>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.88509956511788, 48.67780575265125)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x00a0
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xae 0xb4,  calc CRC: <0xb4>
+  RH   data returned bytes: 0x7c 0xa5 0x07,  calc CRC: <0x07>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.88509956511788, 48.69001297016861)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x00a0
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0x9c 0x4a,  calc CRC: <0x4a>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.86106660563058, 48.67627985046158)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x00a0
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xb3 0xbb,  calc CRC: <0xbb>
+  RH   data returned bytes: 0x7c 0x97 0xa0,  calc CRC: <0xa0>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.90913252460516, 48.668650339513235)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x00a0
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xb3 0xbb,  calc CRC: <0xbb>
+  RH   data returned bytes: 0x7c 0x8e 0x6b,  calc CRC: <0x6b>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.90913252460516, 48.65491721980621)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x00a0
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xae 0xb4,  calc CRC: <0xb4>
+  RH   data returned bytes: 0x7c 0x96 0x91,  calc CRC: <0x91>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.88509956511788, 48.667124437323565)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x00a0
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xae 0xb4,  calc CRC: <0xb4>
+  RH   data returned bytes: 0x7c 0x87 0xe3,  calc CRC: <0xe3>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.6
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.88509956511788, 48.64423590447852)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x00a0
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xb3 0xbb,  calc CRC: <0xbb>
+  RH   data returned bytes: 0x7c 0x97 0xa0,  calc CRC: <0xa0>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.90913252460516, 48.668650339513235)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x00a0
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xb3 0xbb,  calc CRC: <0xbb>
+  RH   data returned bytes: 0x7c 0x8e 0x6b,  calc CRC: <0x6b>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.90913252460516, 48.65491721980621)
+                         demo-SHT3x.meas4sec             -     INFO:  End of loop
+                              SHT3x.stop_periodic_DA     -    DEBUG:  <sht3x> Success - Status reg:  0x0080
+                         demo-SHT3x.meas4sec             -     INFO:  stop_periodic_DA() returned 0
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0080
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xae 0xb4,  calc CRC: <0xb4>
+  RH   data returned bytes: 0x7c 0x96 0x91,  calc CRC: <0x91>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  Final1 fetch_data() returned: (74.88509956511788, 48.667124437323565)
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0000
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  Final2 fetch_data() returned: (-256, -256)
+                         demo-SHT3x.dotest               -  WARNING:    RETURNED:
+None
+                         demo-SHT3x.dotest               -  WARNING:  
+
+==============================================================================================
+Test 3f - ART mode (mps=4);     fetch_data default 'F'
+  GIVEN:      ('ART',), {}
+  EXPECT:     ~4/5 measurements pass
+                              SHT3x.soft_reset           -    DEBUG:  <sht3x> Success - Status reg:  0x0000
+                              SHT3x.ART                  -    DEBUG:  <sht3x> Success - Status reg:  0x0020
+                         demo-SHT3x.meas4sec             -     INFO:  ART() returned 0
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xd4 0x97,  calc CRC: <0x97>
+  RH   data returned bytes: 0x7c 0x96 0x91,  calc CRC: <0x91>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      75.1
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.7
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (75.06775005722133, 48.667124437323565)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0x8a 0xaf,  calc CRC: <0xaf>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.6
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.86106660563058, 48.64881361104753)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xae 0xb4,  calc CRC: <0xb4>
+  RH   data returned bytes: 0x7c 0x7e 0xe9,  calc CRC: <0xe9>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.6
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.88509956511788, 48.630502784771494)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0x7c 0x8b,  calc CRC: <0x8b>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.6
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.86106660563058, 48.627450980392155)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0x7e 0xe9,  calc CRC: <0xe9>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.6
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.86106660563058, 48.630502784771494)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xae 0xb4,  calc CRC: <0xb4>
+  RH   data returned bytes: 0x7c 0x79 0x7e,  calc CRC: <0x7e>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.6
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.88509956511788, 48.622873273823146)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0x70 0xf6,  calc CRC: <0xf6>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.6
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.86106660563058, 48.60914015411612)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xae 0xb4,  calc CRC: <0xb4>
+  RH   data returned bytes: 0x7c 0x70 0xf6,  calc CRC: <0xf6>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.6
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.88509956511788, 48.60914015411612)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0x70 0xf6,  calc CRC: <0xf6>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.6
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.86106660563058, 48.60914015411612)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0x73 0xa5,  calc CRC: <0xa5>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.6
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.86106660563058, 48.61371786068513)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xae 0xb4,  calc CRC: <0xb4>
+  RH   data returned bytes: 0x7c 0x70 0xf6,  calc CRC: <0xf6>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.6
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.88509956511788, 48.60914015411612)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0x66 0x13,  calc CRC: <0x13>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.6
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.86106660563058, 48.59388113221942)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xae 0xb4,  calc CRC: <0xb4>
+  RH   data returned bytes: 0x7c 0x66 0x13,  calc CRC: <0x13>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.6
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.88509956511788, 48.59388113221942)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xb3 0xbb,  calc CRC: <0xbb>
+  RH   data returned bytes: 0x7c 0x70 0xf6,  calc CRC: <0xf6>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.6
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.90913252460516, 48.60914015411612)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xae 0xb4,  calc CRC: <0xb4>
+  RH   data returned bytes: 0x7c 0x78 0x4f,  calc CRC: <0x4f>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.6
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.88509956511788, 48.621347371633476)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0060
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xa9 0x23,  calc CRC: <0x23>
+  RH   data returned bytes: 0x7c 0x76 0x50,  calc CRC: <0x50>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.6
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (74.86106660563058, 48.61829556725414)
+                         demo-SHT3x.meas4sec             -     INFO:  
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0020
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  fetch_data() returned: (-256, -256)
+                         demo-SHT3x.meas4sec             -     INFO:  End of loop
+                              SHT3x.stop_periodic_DA     -    DEBUG:  <sht3x> Success - Status reg:  0x0040
+                         demo-SHT3x.meas4sec             -     INFO:  stop_periodic_DA() returned 0
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0040
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Temp/RH raw data:
+  temp data returned bytes: 0x64 0xae 0xb4,  calc CRC: <0xb4>
+  RH   data returned bytes: 0x7c 0x75 0x03,  calc CRC: <0x03>
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated temp (F):      74.9
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> Calculated RH:            48.6
+                         demo-SHT3x.meas4sec             -     INFO:  Final1 fetch_data() returned: (74.88509956511788, 48.61676966506447)
+                         demo-SHT3x.meas4sec             -     INFO:  read_status_reg() returned: 0x0000
+                              SHT3x.fetch_data           -    DEBUG:  <sht3x> I2C_ERROR - error code <-83>
+                         demo-SHT3x.meas4sec             -     INFO:  Final2 fetch_data() returned: (-256, -256)
+                         demo-SHT3x.dotest               -  WARNING:    RETURNED:
+None
+                             shared.close_i2c_handles    -  WARNING:  61

@@ -1,0 +1,276 @@
+#!/usr/bin/env python3
+"""Demo/test for SHT3x
+
+Produce / compare to golden results:
+    ./fsactivity_plugin_test.py | diff fsactivity_plugin_test.golden -
+        Expected differences:
+            File timestamps and ages for newfile, george, mahesh
+            Ages for too old tests 2e, 2f, 4e, 4f, 6b1, 6b2, 6c
+"""
+
+#==========================================================
+#
+#  Chris Nelson, Copyright 2026
+#
+# 1.0 260212 - New
+#
+#==========================================================
+
+__version__ =   '1.0'
+TOOLNAME =      'demo_SHT3x'
+
+import argparse
+import re
+import time
+# import subprocess
+# from pathlib import Path
+# import shutil
+import pigpio
+
+from cjnfuncs.core              import set_toolname, setuplogging, logging, set_logging_level
+
+from cjn_PiTools.shared import pi_i2c
+from cjn_PiTools.SHT3x import SHT3x
+
+
+set_toolname(TOOLNAME)
+
+
+setuplogging(ConsoleLogFormat="{module:>35}.{funcName:25} - {levelname:>8}:  {message}")
+set_logging_level(logging.DEBUG)
+
+
+parser = argparse.ArgumentParser(description=__doc__ + __version__, formatter_class=argparse.RawTextHelpFormatter)
+parser.add_argument('-t', '--test', default='0',
+                    help="Test number to run (default 0) - 0 runs all tests")
+args = parser.parse_args()
+
+
+# --------------------------------------------------------------------
+logging.getLogger('cjn_PiTools.SHT3x').setLevel(logging.DEBUG)
+logging.getLogger('cjn_PiTools.shared').setLevel(logging.DEBUG)
+
+# Get pigpio handle
+pio =               pigpio.pi()
+pio_i2c_handle =     pi_i2c(pio)
+sht3x_44_inst_pio =     SHT3x('sht3x44', 0x44, pio_i2c_handle)
+sht3x_45_inst_pio =     SHT3x('sht3x45', 0x45, pio_i2c_handle)
+
+smbus_i2c_handle =     pi_i2c('smbus')
+sht3x_44_inst_smbus =     SHT3x('sht3x44', 0x44, smbus_i2c_handle)
+sht3x_45_inst_smbus =     SHT3x('sht3x45', 0x45, smbus_i2c_handle)
+
+
+def dotest (desc, expect, func, *args, **kwargs):
+    logging.warning (f"\n\n==============================================================================================\n" +
+                     f"Test {tnum} - {desc}\n" +
+                     f"  GIVEN:      {args}, {kwargs}\n" +
+                     f"  EXPECT:     {expect}")
+    try:
+        result = func(*args, **kwargs)
+        logging.warning (f"  RETURNED:\n{result}")
+        return result
+    except Exception as e:
+        logging.error (f"\n  RAISED:     {type(e).__name__}: {e}")
+        # logging.exception (f"\n  RAISED:     {type(e).__name__}: {e}")
+        return e
+
+
+tnum_parse = re.compile(r"([\d]+)([\w]*)")
+def check_tnum(tnum_in, include0='0'):
+    global tnum
+    tnum = tnum_in
+    if args.test == include0  or  args.test == tnum_in:  return True
+    try:
+        if int(args.test) == int(tnum_parse.match(tnum_in).group(1)):  return True
+    except:  pass
+    return False
+
+#===============================================================================================
+
+if __name__ == '__main__':
+
+    #-------------------------------------------------------------------------
+    # Basic demo read temp/RH pass cases
+    if check_tnum('1a'):
+        def func():
+            sht3x_44_inst_pio.soft_reset()
+            return sht3x_44_inst_pio.single_shot()
+
+        dotest ("Single Shot pigpio mode, default F, High, 16ms", "Pass", func)
+
+    if check_tnum('1b'):
+        def func():
+            sht3x_44_inst_pio.soft_reset()
+            return sht3x_44_inst_pio.single_shot(tempunits='C', repeatability='Low', reading_wait=1)
+
+        dotest ("Single Shot pigpio mode - C, Low, 1sec", "Pass", func)
+
+    if check_tnum('1c'):
+        def func():
+            sht3x_44_inst_smbus.soft_reset()
+            return sht3x_44_inst_smbus.single_shot()
+
+        dotest ("Single Shot smbus mode, default F, High, 16ms", "Pass", func)
+
+
+    #-------------------------------------------------------------------------
+    # Basic demo mode settings pass cases
+    if check_tnum('2a'):
+        def func():
+            logging.info (f"soft_reset()        returned {sht3x_44_inst_pio.soft_reset()}")
+            logging.info (f"heater_enable()     returned {sht3x_44_inst_pio.heater_enable()}")
+            logging.info (f"heater_disable()    returned {sht3x_44_inst_pio.heater_disable()}")
+            logging.info (f"heater_enable()     returned {sht3x_44_inst_pio.heater_enable()}")
+            logging.info (f"read_status_reg()   returned 0x{sht3x_44_inst_pio.read_status_reg():0>4x}")
+            logging.info (f"clear_status_reg()  returned {sht3x_44_inst_pio.clear_status_reg()}")
+            logging.info (f"soft_reset()        returned {sht3x_44_inst_pio.soft_reset()}")
+            logging.info (f"read_status_reg()   returned 0x{sht3x_44_inst_pio.read_status_reg():0>4x}")
+
+        dotest ("Heater control & status register - pigpio mode", "None", func)
+
+
+    if check_tnum('2b'):
+        def func():
+            logging.info (f"soft_reset()        returned {sht3x_44_inst_smbus.soft_reset()}")
+            logging.info (f"heater_enable()     returned {sht3x_44_inst_smbus.heater_enable()}")
+            logging.info (f"heater_disable()    returned {sht3x_44_inst_smbus.heater_disable()}")
+            logging.info (f"heater_enable()     returned {sht3x_44_inst_smbus.heater_enable()}")
+            logging.info (f"read_status_reg()   returned 0x{sht3x_44_inst_smbus.read_status_reg():0>4x}")
+            logging.info (f"clear_status_reg()  returned {sht3x_44_inst_smbus.clear_status_reg()}")
+            logging.info (f"soft_reset()        returned {sht3x_44_inst_smbus.soft_reset()}")
+            logging.info (f"read_status_reg()   returned 0x{sht3x_44_inst_smbus.read_status_reg():0>4x}")
+
+        dotest ("Heater control & status register - smbus mode", "None", func)
+
+
+    #-------------------------------------------------------------------------
+    # Periodic DA - fetch_data() called more frequently (0.20) than periodic_DA new data rate (various)
+
+    def meas4sec(mps, sht3x_handle):
+        sht3x_44_inst_pio.soft_reset()
+        if mps == 'ART':
+            logging.info (f"ART() returned {sht3x_handle.ART()}")
+        else:
+            logging.info (f"start_periodic_DA(mps=4) returned {sht3x_handle.start_periodic_DA(mps=mps)}")
+        for _ in range (20):
+            logging.info ("")
+            logging.info (f"read_status_reg() returned: 0x{sht3x_handle.read_status_reg(internal=True):0>4x}")
+            # sht3x_instance.read_status_reg()
+            logging.info (f"fetch_data() returned: {sht3x_handle.fetch_data()}")
+            time.sleep(0.2)
+
+        logging.info ("End of loop")
+        logging.info (f"stop_periodic_DA() returned {sht3x_handle.stop_periodic_DA()}")
+        logging.info (f"read_status_reg() returned: 0x{sht3x_handle.read_status_reg(internal=True):0>4x}")
+        logging.info (f"Final1 fetch_data() returned: {sht3x_handle.fetch_data()}")
+        logging.info (f"read_status_reg() returned: 0x{sht3x_handle.read_status_reg(internal=True):0>4x}")
+        logging.info (f"Final2 fetch_data() returned: {sht3x_handle.fetch_data()}")
+
+
+    if check_tnum('3ap'):
+        dotest ("Periodic DA mps=4;    fetch_data default 'F'", "~4/5 measurements pass", meas4sec, 4, sht3x_44_inst_pio)
+
+    if check_tnum('3as'):
+        dotest ("Periodic DA mps=4;    fetch_data default 'F'", "~4/5 measurements pass", meas4sec, 4, sht3x_44_inst_smbus)
+
+    if check_tnum('3bp'):
+        dotest ("Periodic DA mps=0.5;  fetch_data default 'F'", "~1/10 measurements pass", meas4sec, 0.5, sht3x_44_inst_pio)
+
+    if check_tnum('3bs'):
+        dotest ("Periodic DA mps=0.5;  fetch_data default 'F'", "~1/10 measurements pass", meas4sec, 0.5, sht3x_44_inst_smbus)
+
+    if check_tnum('3c'):
+        dotest ("Periodic DA mps=1;    fetch_data default 'F'", "~1/5 measurements pass", meas4sec, 1, sht3x_44_inst_pio)
+
+    if check_tnum('3d'):
+        dotest ("Periodic DA mps=2;    fetch_data default 'F'", "~1/3 measurements pass", meas4sec, 2, sht3x_44_inst_pio)
+
+    if check_tnum('3e'):
+        dotest ("Periodic DA mps=10;   fetch_data default 'F'", "All measurements pass", meas4sec, 10, sht3x_44_inst_pio)
+
+    if check_tnum('3f'):
+        dotest ("ART mode (mps=4);     fetch_data default 'F'", "~4/5 measurements pass", meas4sec, 'ART', sht3x_44_inst_pio)
+
+
+
+    #-------------------------------------------------------------------------
+    # Read two sensors at diff addresses
+    if check_tnum('4a'):
+        def func():
+            logging.info (f"sht3x_44 soft_reset()       returned {sht3x_44_inst_pio.soft_reset()}")
+            logging.info (f"sht3x_44 clear_status_reg() returned {sht3x_44_inst_pio.clear_status_reg()}")
+            logging.info (f"sht3x_44 single_shot()      returned {sht3x_44_inst_pio.single_shot()}")
+            logging.info (f"sht3x_44 read_status_reg()  returned 0x{sht3x_44_inst_pio.read_status_reg():0>4x}")
+            # logging.info (f"sht3x_44 soft_reset()       returned {sht3x_44_inst.soft_reset()}")
+
+            logging.info (f"sht3x_45 soft_reset()       returned {sht3x_45_inst_pio.soft_reset()}")
+            logging.info (f"sht3x_45 clear_status_reg() returned {sht3x_45_inst_pio.clear_status_reg()}")
+            logging.info (f"sht3x_45 single_shot()      returned {sht3x_45_inst_pio.single_shot()}")
+            logging.info (f"sht3x_45 read_status_reg()  returned 0x{sht3x_45_inst_pio.read_status_reg():0>4x}")
+            logging.info (f"sht3x_45 soft_reset()       returned {sht3x_45_inst_pio.soft_reset()}")
+
+        dotest ("Read two sensors at diff addresses - pigpio mode", "None", func)
+
+    if check_tnum('4b'):
+        def func():
+            logging.info (f"sht3x_44 soft_reset()       returned {sht3x_44_inst_smbus.soft_reset()}")
+            logging.info (f"sht3x_44 clear_status_reg() returned {sht3x_44_inst_smbus.clear_status_reg()}")
+            logging.info (f"sht3x_44 single_shot()      returned {sht3x_44_inst_smbus.single_shot()}")
+            logging.info (f"sht3x_44 read_status_reg()  returned 0x{sht3x_44_inst_smbus.read_status_reg():0>4x}")
+            # logging.info (f"sht3x_44 soft_reset()       returned {sht3x_44_inst.soft_reset()}")
+
+            logging.info (f"sht3x_45 soft_reset()       returned {sht3x_44_inst_smbus.soft_reset()}")
+            logging.info (f"sht3x_45 clear_status_reg() returned {sht3x_44_inst_smbus.clear_status_reg()}")
+            logging.info (f"sht3x_45 single_shot()      returned {sht3x_44_inst_smbus.single_shot()}")
+            logging.info (f"sht3x_45 read_status_reg()  returned 0x{sht3x_44_inst_smbus.read_status_reg():0>4x}")
+            logging.info (f"sht3x_45 soft_reset()       returned {sht3x_44_inst_smbus.soft_reset()}")
+
+        dotest ("Read two sensors at diff addresses - smbus mode", "None", func)
+
+    if check_tnum('4c'):
+        def func():
+            logging.info (f"sht3x_44 soft_reset()       returned {sht3x_44_inst_smbus.soft_reset()}")
+            logging.info (f"sht3x_44 clear_status_reg() returned {sht3x_44_inst_pio.clear_status_reg()}")
+            logging.info (f"sht3x_44 single_shot()      returned {sht3x_44_inst_smbus.single_shot()}")
+            logging.info (f"sht3x_44 read_status_reg()  returned 0x{sht3x_44_inst_pio.read_status_reg():0>4x}")
+            # logging.info (f"sht3x_44 soft_reset()       returned {sht3x_44_inst.soft_reset()}")
+
+            logging.info (f"sht3x_45 soft_reset()       returned {sht3x_44_inst_pio.soft_reset()}")
+            logging.info (f"sht3x_45 clear_status_reg() returned {sht3x_44_inst_smbus.clear_status_reg()}")
+            logging.info (f"sht3x_45 single_shot()      returned {sht3x_44_inst_pio.single_shot()}")
+            logging.info (f"sht3x_45 read_status_reg()  returned 0x{sht3x_44_inst_smbus.read_status_reg():0>4x}")
+            logging.info (f"sht3x_45 soft_reset()       returned {sht3x_44_inst_pio.soft_reset()}")
+
+        dotest ("Read two sensors at diff addresses - mixed up pigpio & smbus modes", "None", func)
+
+
+
+
+    if check_tnum('50', include0=False):
+
+        remote_pio = pigpio.pi('testhost.cjn.lan')
+        pio_i2c_handle =     pi_i2c(remote_pio)
+        sht3x_44_inst_pio =     SHT3x('sht3x44', 0x44, pio_i2c_handle)
+        sht3x_45_inst_pio =     SHT3x('sht3x45', 0x45, pio_i2c_handle)
+
+
+        def func():
+            sht3x_44_inst_pio.soft_reset()
+            return sht3x_44_inst_pio.single_shot()
+
+        dotest ("Single Shot pigpio mode, default F, High, 16ms", "Pass", func)
+
+        pio_i2c_handle.close()
+        remote_pio.stop()
+
+        exit()
+
+
+
+    logging.warning (f"---- Cleanup --------------------------------------------------------")
+
+    pio_i2c_handle.close()
+    pio.stop()
+
+    smbus_i2c_handle.close()
