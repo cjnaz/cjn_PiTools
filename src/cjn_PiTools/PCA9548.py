@@ -18,21 +18,24 @@ PCA9548_ADDRS = [0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77]
 
 __version__ = "V1.1 241112"
 
-pca9548_logger = logging.getLogger('cjn_PiTools.PCA9548')
-pca9548_logger.setLevel(logging.WARNING)             # Set default logging level for this module
+PCA9548_logger = logging.getLogger('cjn_PiTools.PCA9548')
+PCA9548_logger.setLevel(logging.WARNING)             # Set default logging level for this module
 
 
-class pca9548:
-    def __init__ (self, device_name, device_addr, pi_i2c_handle):
+class PCA9548:
+    def __init__ (self, device_name, device_addr, pi_i2c_bus_handle):
         self.device_name = device_name
         self.device_addr = device_addr
         if self.device_addr not in PCA9548_ADDRS:
             raise ValueError (f"PCA9548 device address must be 0x70 - 0x77, received <0x{device_addr:0>x}>")
-        self.pi_i2c_handle  = pi_i2c_handle
+        self.pi_i2c_bus_handle  = pi_i2c_bus_handle
+        api = 'smbus'  if self.pi_i2c_bus_handle.api == 'smbus'  else 'pigpio'
+        PCA9548_logger.debug (f"<{self.device_name}> New PCA9548 device defined at addr <0x{self.device_addr:0>2x}> using api <{api}> on i2c bus <{self.pi_i2c_bus_handle.i2c_bus_num}>")
 
 
 
     def write_control_reg (self, newvalue):
+        PCA9548_logger.debug (f"<{self.device_name}> ***** write_control_reg()")
 
         # Handle newvalue variations
         try:
@@ -61,18 +64,18 @@ class pca9548:
         if  bit_mask < 0x00  or  bit_mask > 0xff:
             raise ValueError (f"bit_mask must be valid int between 0x00 and 0xff, received <{newvalue}>")
 
-        if pca9548_logger.isEnabledFor(logging.DEBUG):
-            pca9548_logger.debug (f"PCA9548 <{self.device_name}> new mask:     <0b{bit_mask:0>8b}>, channels <{mask_to_numstr(bit_mask)}>")
+        if PCA9548_logger.isEnabledFor(logging.DEBUG):
+            PCA9548_logger.debug (f"<{self.device_name}> New mask:     <0b{bit_mask:0>8b}>, channels <{mask_to_numstr(bit_mask)}>")
 
 
-        # self.pi_i2c_handle.i2c_write_device(self.device_addr, [bit_mask])
-        self.pi_i2c_handle.i2c_write_byte(self.device_addr, bit_mask)
+        self.pi_i2c_bus_handle.i2c_write_byte(self.device_addr, bit_mask)
 
 
     def read_control_reg (self):
-        bit_mask = self.pi_i2c_handle.i2c_read_byte(self.device_addr)
-        if pca9548_logger.isEnabledFor(logging.DEBUG):
-            pca9548_logger.debug (f"PCA9548 <{self.device_name}> current mask: <0b{bit_mask:0>8b}>, channels <{mask_to_numstr(bit_mask)}>")
+        PCA9548_logger.debug (f"<{self.device_name}> ***** read_control_reg()")
+        bit_mask = self.pi_i2c_bus_handle.i2c_read_byte(self.device_addr)
+        if PCA9548_logger.isEnabledFor(logging.DEBUG):
+            PCA9548_logger.debug (f"<{self.device_name}> Current mask: <0b{bit_mask:0>8b}>, channels <{mask_to_numstr(bit_mask)}>")
         return bit_mask
 
 
@@ -147,7 +150,7 @@ Mask values for set command
     setuplogging(ConsoleLogFormat="{module:>35}.{funcName:25} - {levelname:>8}:  {message}")
     set_logging_level(logging.DEBUG)
 
-    pca9548_logger.setLevel(logging.DEBUG)
+    PCA9548_logger.setLevel(logging.DEBUG)
     logging.getLogger('cjn_PiTools.shared').setLevel([logging.WARNING, logging.INFO, logging.DEBUG][args.verbose])
 
 
@@ -160,12 +163,12 @@ Mask values for set command
 
     if args.api == 'pigpio':
         import pigpio
-        api =           pigpio.pi()
+        api =           pigpio.pi(args.host, args.port)
     else:
         api =           'smbus'
 
-    pi_i2c_handle =     pi_i2c(api)
-    pca9548_instance =  pca9548(args.name, address, pi_i2c_handle)
+    pi_i2c_bus_handle =     pi_i2c(api)
+    PCA9548_instance =  PCA9548(args.name, address, pi_i2c_bus_handle)
 
 
     # Commands
@@ -173,14 +176,14 @@ Mask values for set command
         if args.Mask is None:
             logging.error (f"Mask value required for set command - Aborting")
             sys.exit(1)
-        pca9548_instance.write_control_reg(args.Mask)
+        PCA9548_instance.write_control_reg(args.Mask)
 
     if args.Command == 'get':
-        reg_value = pca9548_instance.read_control_reg()
+        reg_value = PCA9548_instance.read_control_reg()
 
 
     # Cleanup
-    pi_i2c_handle.close()
+    pi_i2c_bus_handle.close()
     if args.api == 'pigpio':
         api.stop()
 

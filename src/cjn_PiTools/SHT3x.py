@@ -73,20 +73,21 @@ crc_calc = Calculator(crc_calc_config)
 
 sht3x_logger = logging.getLogger('cjn_PiTools.SHT3x')
 sht3x_logger.setLevel(logging.WARNING)             # Set default logging level for this module
+# pca9548_logger = logging.getLogger('cjn_PiTools.PCA9548')
 
 
 class SHT3x:
-    # def __init__(self, device_name, pio_handle, i2c_handle):
-    def __init__(self, device_name, device_addr, pi_i2c_handle):
+    def __init__(self, device_name, device_addr, pi_i2c_bus_handle):
         """
-        pio_handle is from pigpio.pi()
-        i2c_handle is from pio.i2c_open()
+        pi_i2c_bus_handle is from pi.i2c()
         """
         self.device_name = device_name
         self.device_addr = device_addr
         if self.device_addr not in SHT3x_ADDRS:
-            raise ValueError (f"SHT3x device address must be 0x44 or 0x45.  Receeived <0x{device_addr:0>x}>")
-        self.pi_i2c_handle  = pi_i2c_handle
+            raise ValueError (f"SHT3x device address must be 0x44 or 0x45.  Received <0x{device_addr:0>2x}>")
+        self.pi_i2c_bus_handle  = pi_i2c_bus_handle
+        api = 'smbus'  if self.pi_i2c_bus_handle.api == 'smbus'  else 'pigpio'
+        sht3x_logger.debug (f"<{self.device_name}> New SHT3x device defined at addr <0x{self.device_addr:0>2x}> using api <{api}> on i2c bus <{self.pi_i2c_bus_handle.i2c_bus_num}>")
 
 
     def soft_reset(self, reset_wait=RESET_WAIT):
@@ -97,16 +98,16 @@ class SHT3x:
             0 for successful operation
             I2C_ERROR (-256) on I2C IO error
         """
-        try:        # TODO add retry loop logic
-            self.pi_i2c_handle.i2c_write_device(self.device_addr, SOFT_RESET)
+        sht3x_logger.debug (f"<{self.device_name}> ***** soft_reset()")
+        try:
+            self.pi_i2c_bus_handle.i2c_write_device(self.device_addr, SOFT_RESET)
             time.sleep (reset_wait)
         except Exception as e:
             sht3x_logger.debug (f"<{self.device_name}> I2C_ERROR\n  {type(e).__name__}: {e}")
             return I2C_ERROR
 
         if sht3x_logger.isEnabledFor(logging.DEBUG):
-        # if sht3x_logger.level == logging.DEBUG:      # Avoid unnecessary read_status_reg, unless debug logging
-            sht3x_logger.debug (f"<{self.device_name}> Success - Status reg:  0x{self.read_status_reg(internal=True):0>4x}")
+            sht3x_logger.debug (f"<{self.device_name}> Status reg:  0x{self.read_status_reg(internal=True):0>4x}")
         return 0
 
 
@@ -116,15 +117,15 @@ class SHT3x:
             0 for successful operation
             I2C_ERROR (-256) on I2C IO error
         """
-        try:        # TODO add retry loop logic
-            self.pi_i2c_handle.i2c_write_device(self.device_addr, HEATER_ENABLE)
+        sht3x_logger.debug (f"<{self.device_name}> ***** heater_enable()")
+        try:
+            self.pi_i2c_bus_handle.i2c_write_device(self.device_addr, HEATER_ENABLE)
         except Exception as e:
             sht3x_logger.debug (f"<{self.device_name}> I2C_ERROR\n  {type(e).__name__}: {e}")
             return I2C_ERROR
 
         if sht3x_logger.isEnabledFor(logging.DEBUG):
-        # if sht3x_logger.level == logging.DEBUG:      # Avoid unnecessary read_status_reg, unless debug logging
-            sht3x_logger.debug (f"<{self.device_name}> Success - Status reg:  0x{self.read_status_reg(internal=True):0>4x}")
+            sht3x_logger.debug (f"<{self.device_name}> Status reg:  0x{self.read_status_reg(internal=True):0>4x}")
         return 0
 
 
@@ -134,19 +135,19 @@ class SHT3x:
             0 for successful operation
             I2C_ERROR (-256) on I2C IO error
         """
-        try:        # TODO add retry loop logic
-            self.pi_i2c_handle.i2c_write_device(self.device_addr, HEATER_DISABLE)
+        sht3x_logger.debug (f"<{self.device_name}> ***** heater_disable()")
+        try:
+            self.pi_i2c_bus_handle.i2c_write_device(self.device_addr, HEATER_DISABLE)
         except Exception as e:
             sht3x_logger.debug (f"<{self.device_name}> I2C_ERROR\n  {type(e).__name__}: {e}")
             return I2C_ERROR
 
         if sht3x_logger.isEnabledFor(logging.DEBUG):
-        # if sht3x_logger.level == logging.DEBUG:      # Avoid unnecessary read_status_reg, unless debug logging
-            sht3x_logger.debug (f"<{self.device_name}> Success - Status reg:  0x{self.read_status_reg(internal=True):0>4x}")
+            sht3x_logger.debug (f"<{self.device_name}> Status reg:  0x{self.read_status_reg(internal=True):0>4x}")
         return 0
 
 
-    def read_temprh_data(self, tempunits='F', repeatability='High'):      # legacy
+    def read_temprh_data(self, tempunits='F', repeatability='High'):      # legacy  TODO
          return self.single_shot(tempunits, repeatability)
     
 
@@ -160,17 +161,17 @@ class SHT3x:
         
         If tempunits != 'F' then temp value is returned in 'C' (no error checking).
         """
+        sht3x_logger.debug (f"<{self.device_name}> ***** single_shot()")
         try:
             bytes_code = SINGLE_SHOT_MODES[repeatability + '_noCS']
         except:
             raise ValueError (f"Invalid Single Shot mode selection - received repeatability <{repeatability}>")
 
         try:
-            self.pi_i2c_handle.i2c_write_device(self.device_addr, bytes_code)
+            self.pi_i2c_bus_handle.i2c_write_device(self.device_addr, bytes_code)
             time.sleep(reading_wait)
             return self.fetch_data(tempunits, send_fetch=False)
         except Exception as e:
-            # raise ??
             sht3x_logger.debug (f"<{self.device_name}> I2C_ERROR\n  {type(e).__name__}: {e}")
             return I2C_ERROR, I2C_ERROR
 
@@ -189,37 +190,37 @@ class SHT3x:
         Status bit 0x0020 indicates in Periodic / free running measurment mode
 
         """
+        sht3x_logger.debug (f"<{self.device_name}> ***** start_periodic_DA()")
         try:
             bytes_code = PERIODIC_DA_MODES[repeatability + '_' + str(mps)]
         except:
             raise ValueError (f"Invalid Periodic Data Acquisition mode selection - received repeatability <{repeatability}>, mps: <{mps}>")
 
         try:
-            self.pi_i2c_handle.i2c_write_device(self.device_addr, bytes_code)
+            self.pi_i2c_bus_handle.i2c_write_device(self.device_addr, bytes_code)
         except Exception as e:
             sht3x_logger.debug (f"<{self.device_name}> I2C_ERROR\n  {type(e).__name__}: {e}")
             return I2C_ERROR
 
         if sht3x_logger.isEnabledFor(logging.DEBUG):
-        # if sht3x_logger.level == logging.DEBUG:      # Avoid unnecessary read_status_reg, unless debug logging
-            sht3x_logger.debug (f"<{self.device_name}> Success - Status reg:  0x{self.read_status_reg(internal=True):0>4x}")
+            sht3x_logger.debug (f"<{self.device_name}> Status reg:  0x{self.read_status_reg(internal=True):0>4x}")
         return 0
 
 
     def stop_periodic_DA (self):
+        sht3x_logger.debug (f"<{self.device_name}> ***** stop_periodic_DA()")
         try:
-            self.pi_i2c_handle.i2c_write_device(self.device_addr, BREAK)
+            self.pi_i2c_bus_handle.i2c_write_device(self.device_addr, BREAK)
         except Exception as e:
             sht3x_logger.debug (f"<{self.device_name}> I2C_ERROR\n  {type(e).__name__}: {e}")
             return I2C_ERROR
 
         if sht3x_logger.isEnabledFor(logging.DEBUG):
-        # if sht3x_logger.level == logging.DEBUG:      # Avoid unnecessary read_status_reg, unless debug logging
-            sht3x_logger.debug (f"<{self.device_name}> Success - Status reg:  0x{self.read_status_reg(internal=True):0>4x}")
+            sht3x_logger.debug (f"<{self.device_name}> Status reg:  0x{self.read_status_reg(internal=True):0>4x}")
         return 0
 
 
-    def fetch_data(self, tempunits='F', send_fetch=True):
+    def fetch_data(self, tempunits='F', send_fetch=True, force_CRC_fail=False):
         """
         Docstring for fetch_data
         
@@ -230,10 +231,11 @@ class SHT3x:
         Status bit 0x0040 indicates data is available
 
         """
+        sht3x_logger.debug (f"<{self.device_name}> ***** fetch_data()")
         try:
             if send_fetch:
-                self.pi_i2c_handle.i2c_write_device(self.device_addr, FETCH_DATA)
-            (count, data) = self.pi_i2c_handle.i2c_read_device(self.device_addr, 6)
+                self.pi_i2c_bus_handle.i2c_write_device(self.device_addr, FETCH_DATA)
+            (count, data) = self.pi_i2c_bus_handle.i2c_read_device(self.device_addr, 6)
         except Exception as e:
             sht3x_logger.debug (f"<{self.device_name}> I2C_ERROR\n  {type(e).__name__}: {e}")
             return I2C_ERROR, I2C_ERROR
@@ -242,8 +244,10 @@ class SHT3x:
             sht3x_logger.debug (f"<{self.device_name}> I2C_ERROR - error code <{count}>")
             return I2C_ERROR, I2C_ERROR
 
+        if force_CRC_fail:
+            data[2] = data[5] = 0x00
+
         if sht3x_logger.isEnabledFor(logging.DEBUG):
-        # if sht3x_logger.level == logging.DEBUG:
             xx =  f"<{self.device_name}> Temp/RH raw data:\n"
             xx += f"  temp data returned bytes: 0x{data[0]:0>2x} 0x{data[1]:0>2x} 0x{data[2]:0>2x},  calc CRC: <0x{crc_calc.checksum(bytes([data[0], data[1]])):0>2x}>\n"
             xx += f"  RH   data returned bytes: 0x{data[3]:0>2x} 0x{data[4]:0>2x} 0x{data[5]:0>2x},  calc CRC: <0x{crc_calc.checksum(bytes([data[3], data[4]])):0>2x}>"
@@ -275,24 +279,23 @@ class SHT3x:
 
 
     def ART (self):
+        sht3x_logger.debug (f"<{self.device_name}> ***** ART()")
         try:
-            self.pi_i2c_handle.i2c_write_device(self.device_addr, ART)
+            self.pi_i2c_bus_handle.i2c_write_device(self.device_addr, ART)
         except Exception as e:
             sht3x_logger.debug (f"<{self.device_name}> I2C_ERROR\n  {type(e).__name__}: {e}")
             return I2C_ERROR
 
         if sht3x_logger.isEnabledFor(logging.DEBUG):
-        # if sht3x_logger.level == logging.DEBUG:      # Avoid unnecessary read_status_reg, unless debug logging
-            sht3x_logger.debug (f"<{self.device_name}> Success - Status reg:  0x{self.read_status_reg(internal=True):0>4x}")
+            sht3x_logger.debug (f"<{self.device_name}> Status reg:  0x{self.read_status_reg(internal=True):0>4x}")
         return 0
 
 
-
-
-    def read_status_reg(self, internal=False):
+    def read_status_reg(self, internal=False, force_CRC_fail=False):
+        sht3x_logger.debug (f"<{self.device_name}> ***** read_status_reg()")
         try:
-            self.pi_i2c_handle.i2c_write_device(self.device_addr, READ_STATUS_REGISTER)
-            (count, data) = self.pi_i2c_handle.i2c_read_device(self.device_addr, 3)
+            self.pi_i2c_bus_handle.i2c_write_device(self.device_addr, READ_STATUS_REGISTER)
+            (count, data) = self.pi_i2c_bus_handle.i2c_read_device(self.device_addr, 3)
         except Exception as e:
             sht3x_logger.debug (f"<{self.device_name}> I2C_ERROR\n  {type(e).__name__}: {e}")
             return I2C_ERROR
@@ -301,64 +304,32 @@ class SHT3x:
             sht3x_logger.debug (f"<{self.device_name}> I2C_ERROR - error code <{count}>")
             return I2C_ERROR
 
+        if force_CRC_fail:
+            data[2] = 0x00
 
         if not internal:
             sht3x_logger.debug (f"<{self.device_name}> status reg raw data: 0x{data[0]:0>2x} 0x{data[1]:0>2x} 0x{data[2]:0>2x},  calc CRC: <0x{crc_calc.checksum(bytes([data[0], data[1]])):0>2x}>")
-        
+
+        if crc_calc.checksum(bytes([data[0], data[1]])) != data[2]:
+            sht3x_logger.debug (f"<{self.device_name}> status register data CRC error")
+            return CRC_ERROR
+
         return ((data[0] <<8) | data[1]) & 0xFFFF
 
 
     def clear_status_reg(self, debug=False):
+        sht3x_logger.debug (f"<{self.device_name}> ***** clear_status_reg()")
         try:
-            self.pi_i2c_handle.i2c_write_device(self.device_addr, CLEAR_STATUS_REGISTER)
+            self.pi_i2c_bus_handle.i2c_write_device(self.device_addr, CLEAR_STATUS_REGISTER)
         except Exception as e:
             sht3x_logger.debug (f"<{self.device_name}> I2C_ERROR\n  {type(e).__name__}: {e}")
             return I2C_ERROR
 
         if sht3x_logger.isEnabledFor(logging.DEBUG):
-        # if sht3x_logger.level == logging.DEBUG:      # Avoid unnecessary read_status_reg, unless debug logging
-            sht3x_logger.debug (f"<{self.device_name}> Success - Status reg:  0x{self.read_status_reg(internal=True):0>4x}")
+            sht3x_logger.debug (f"<{self.device_name}> Status reg:  0x{self.read_status_reg(internal=True):0>4x}")
         return 0
 
-# Single shot meas start (eq 2C06) pulls the measurement data back in teh same I2C transaction per section 4.3, 4.4.
-# Periodic Data Acquisition Mode - free running eg, 30 32
-#   Repeatability High/Medium/Low, mps
-# Readout of periodic mode data E0 00
-# ART (accelerated response time) 2B 32
-# Break - Stop periodic acq 30 93
-# init needs support for addr 44 or 45
 
 # After sending a command to the sensor a minimal
 # waiting time of 1ms is needed before another command
 # can be received by the sensor.
-
-
-# if __name__ == '__main__': 
-
-#     import pigpio
-#     import time
-
-#     I2C_BUS      = 1
-#     I2C_SCL_GPIO = 3
-#     I2C_SDA_GPIO = 2
-#     SHT3X_ADDR   = 0x44
-
-#     logging.getLogger().setLevel(logging.DEBUG)
-
-#     pio = pigpio.pi()
-#     pio.set_mode(I2C_SCL_GPIO, pigpio.ALT0)    # set pins to I2C mode
-#     pio.set_mode(I2C_SDA_GPIO, pigpio.ALT0)
-
-#     sht3x_i2c  = pio.i2c_open(I2C_BUS, SHT3X_ADDR)
-#     sht3x_instance = SHT3x("xyz", pio, sht3x_i2c)
-
-#     sht3x_instance.soft_reset()
-#     time.sleep(0.1)                             # Spec 1.5ms soft reset time
-#     print (f"status reg: {sht3x_instance.read_status_reg():0>4x}")
-#     sht3x_instance.clear_status_reg()
-#     sht3x_instance.read_status_reg(diag=True)
-#     sht3x_instance.read_temprh_data()
-#     sht3x_instance.read_temprh_data(tempunits='C', diag=True)
-
-#     pio.i2c_close(sht3x_i2c)
-#     pio.stop()
