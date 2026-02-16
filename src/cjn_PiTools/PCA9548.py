@@ -133,7 +133,7 @@ Mask values for set command
 
     parser.add_argument('-n', '--name', default=DEFAULT_NAME,
                         help=f"PCA9548 device/function name (default {DEFAULT_NAME})")
-    parser.add_argument('-a', '--api', choices=['smbus', 'pigpio'], default='pigpio',
+    parser.add_argument('-A', '--api', choices=['smbus', 'pigpio'], default='pigpio',
                         help=f"Either 'smbus' or 'pigpio' (default 'pigpio')")
     parser.add_argument('-H', '--host', default='localhost',
                         help=f"pigpio api target host (default 'localhost')")
@@ -155,11 +155,12 @@ Mask values for set command
 
 
     # Set up interface/api
-    try:
-        address = int (args.Address, 16)
-    except:
-        logging.error (f"PCA9548 device address must be 0x70 - 0x77, received <{args.Address}> - Aborting")
-        sys.exit(1)
+    address = int (args.Address, 16)
+    # try:
+    #     address = int (args.Address, 16)
+    # except:
+    #     logging.error (f"PCA9548 device address must be 0x70 - 0x77, received <{args.Address}> - Aborting")
+    #     sys.exit(1)
 
     if args.api == 'pigpio':
         import pigpio

@@ -1,6 +1,7 @@
 [project]
 name = 'cjn_PiTools'
-version = "1.1b2"
+version = "1.1b3"
+    # 1.1b3 - SHT3x feature complete
     # 1.1b2 - SHT3x tests, shared/SHT3x failure handling
     # 1.1b1 - SHT3x, pca9548, shared working for pigpio & smbus
     # 1.0.1 - PiOLED startup display file access check debug
@@ -44,6 +45,7 @@ PiOLED =        'cjn_PiTools.PiOLED:cli'
 DS18B20 =       'cjn_PiTools.DS18B20:cli'
 initW1buses =   'cjn_PiTools.initW1buses:cli'
 pca9548 =       'cjn_PiTools.pca9548:cli'
+SHT3x =         'cjn_PiTools.SHT3x:cli'
 
 
 [project.urls]

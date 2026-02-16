@@ -2,30 +2,25 @@
 """SHT3x library for Raspberry Pi
 
 No Clock Stretch.
-Setting and reading of Temp/RH alert levels
 """
 #==========================================================
 #
-#  Chris Nelson, Copyright 2023-2024
-#
-# V1.1 241112  Read error bug fix (crashed when read_temprh_data didn't get 6 bytes back)
-# V1.0 230510  New
-#
-# Changes pending TODO
-#   write_reg, read_reg methods with retrys, used by all other methods
+#  Chris Nelson, Copyright 2023-2026
 #   
 #==========================================================
 
 __version__ = "V1.1 241112"
 
-from crc import Calculator, Configuration   # Dependency - pip install crc
 import time
-# from time import sleep
-import logging
+import sys
+
+from crc import Calculator, Configuration   # Dependency - pip install crc
+from cjnfuncs.core import set_toolname, logging, setuplogging, set_logging_level
+
+TOOLNAME = 'SHT3x'
 
 SHT3x_ADDRS =               [0x44, 0x45]
 SOFT_RESET =                [0x30, 0xa2]
-DO_MEASUREMENTS =           [0x24, 0x00]    # Single shot, High repeatability, No clock stretching
 FETCH_DATA =                [0xe0, 0x00]
 ART =                       [0x2b, 0x32]
 READ_STATUS_REGISTER =      [0xf3, 0x2d]
@@ -53,6 +48,16 @@ PERIODIC_DA_MODES = {
             'High_10':      [0x27, 0x37],
             'Medium_10':    [0x27, 0x21],
             'Low_10':       [0x27, 0x2a]  }
+READ_ALERT_MODES = {
+            'High_Set':     [0xe1, 0x1f],
+            'High_Clear':   [0xe1, 0x14],
+            'Low_Clear':    [0xe1, 0x09],
+            'Low_Set':      [0xe1, 0x02]  }
+WRITE_ALERT_MODES = {
+            'High_Set':     [0x61, 0x1d],
+            'High_Clear':   [0x61, 0x16],
+            'Low_Clear':    [0x61, 0x0b],
+            'Low_Set':      [0x61, 0x00]  }
 
 READING_WAIT = 0.016                        # Temp and RH readings take up to 15.5ms (high repeatability)
 RESET_WAIT   = 0.003                        # Soft reset spec wait is 1.5ms
@@ -107,43 +112,7 @@ class SHT3x:
             return I2C_ERROR
 
         if sht3x_logger.isEnabledFor(logging.DEBUG):
-            sht3x_logger.debug (f"<{self.device_name}> Status reg:  0x{self.read_status_reg(internal=True):0>4x}")
-        return 0
-
-
-    def heater_enable(self):
-        """Issue header_enable
-        Returns
-            0 for successful operation
-            I2C_ERROR (-256) on I2C IO error
-        """
-        sht3x_logger.debug (f"<{self.device_name}> ***** heater_enable()")
-        try:
-            self.pi_i2c_bus_handle.i2c_write_device(self.device_addr, HEATER_ENABLE)
-        except Exception as e:
-            sht3x_logger.debug (f"<{self.device_name}> I2C_ERROR\n  {type(e).__name__}: {e}")
-            return I2C_ERROR
-
-        if sht3x_logger.isEnabledFor(logging.DEBUG):
-            sht3x_logger.debug (f"<{self.device_name}> Status reg:  0x{self.read_status_reg(internal=True):0>4x}")
-        return 0
-
-
-    def heater_disable(self):
-        """Issue header_disable
-        Returns
-            0 for successful operation
-            I2C_ERROR (-256) on I2C IO error
-        """
-        sht3x_logger.debug (f"<{self.device_name}> ***** heater_disable()")
-        try:
-            self.pi_i2c_bus_handle.i2c_write_device(self.device_addr, HEATER_DISABLE)
-        except Exception as e:
-            sht3x_logger.debug (f"<{self.device_name}> I2C_ERROR\n  {type(e).__name__}: {e}")
-            return I2C_ERROR
-
-        if sht3x_logger.isEnabledFor(logging.DEBUG):
-            sht3x_logger.debug (f"<{self.device_name}> Status reg:  0x{self.read_status_reg(internal=True):0>4x}")
+            sht3x_logger.debug (f"<{self.device_name}> Status reg:  0x{self.read_status_reg(quiet=True):0>4x}")
         return 0
 
 
@@ -203,7 +172,7 @@ class SHT3x:
             return I2C_ERROR
 
         if sht3x_logger.isEnabledFor(logging.DEBUG):
-            sht3x_logger.debug (f"<{self.device_name}> Status reg:  0x{self.read_status_reg(internal=True):0>4x}")
+            sht3x_logger.debug (f"<{self.device_name}> Status reg:  0x{self.read_status_reg(quiet=True):0>4x}")
         return 0
 
 
@@ -216,7 +185,7 @@ class SHT3x:
             return I2C_ERROR
 
         if sht3x_logger.isEnabledFor(logging.DEBUG):
-            sht3x_logger.debug (f"<{self.device_name}> Status reg:  0x{self.read_status_reg(internal=True):0>4x}")
+            sht3x_logger.debug (f"<{self.device_name}> Status reg:  0x{self.read_status_reg(quiet=True):0>4x}")
         return 0
 
 
@@ -259,7 +228,8 @@ class SHT3x:
             temp_rslt = CRC_ERROR
         else:
             rawtemp = ((data[0] <<8) | data[1]) & 0xFFFF
-            temp_rslt = -45 + (175 * rawtemp / (2**16 -1))
+            temp_rslt = decode_temp (rawtemp)
+            # temp_rslt = -45 + (175 * rawtemp / (2**16 -1))
             if tempunits == 'F':
                 temp_rslt = temp_rslt *1.8 +32
 
@@ -271,7 +241,8 @@ class SHT3x:
             RH_rslt = CRC_ERROR
         else:
             rawRH = ((data[3] <<8) | data[4]) & 0xFFFF
-            RH_rslt = 100 * rawRH / (2**16 -1)
+            RH_rslt = decode_rh(rawRH)
+            # RH_rslt = 100 * rawRH / (2**16 -1)
 
         sht3x_logger.debug (f"<{self.device_name}> Calculated RH:           {RH_rslt:>5.1f}")
 
@@ -287,12 +258,13 @@ class SHT3x:
             return I2C_ERROR
 
         if sht3x_logger.isEnabledFor(logging.DEBUG):
-            sht3x_logger.debug (f"<{self.device_name}> Status reg:  0x{self.read_status_reg(internal=True):0>4x}")
+            sht3x_logger.debug (f"<{self.device_name}> Status reg:  0x{self.read_status_reg(quiet=True):0>4x}")
         return 0
 
 
-    def read_status_reg(self, internal=False, force_CRC_fail=False):
-        sht3x_logger.debug (f"<{self.device_name}> ***** read_status_reg()")
+    def read_status_reg(self, quiet=True, decode=False, force_CRC_fail=False):
+        if not quiet:
+            sht3x_logger.debug (f"<{self.device_name}> ***** read_status_reg()")
         try:
             self.pi_i2c_bus_handle.i2c_write_device(self.device_addr, READ_STATUS_REGISTER)
             (count, data) = self.pi_i2c_bus_handle.i2c_read_device(self.device_addr, 3)
@@ -307,17 +279,52 @@ class SHT3x:
         if force_CRC_fail:
             data[2] = 0x00
 
-        if not internal:
+        if not quiet:
             sht3x_logger.debug (f"<{self.device_name}> status reg raw data: 0x{data[0]:0>2x} 0x{data[1]:0>2x} 0x{data[2]:0>2x},  calc CRC: <0x{crc_calc.checksum(bytes([data[0], data[1]])):0>2x}>")
 
         if crc_calc.checksum(bytes([data[0], data[1]])) != data[2]:
             sht3x_logger.debug (f"<{self.device_name}> status register data CRC error")
             return CRC_ERROR
+        
+        reg_value = ((data[0] <<8) | data[1]) & 0xFFFF
+        if decode:
+            if reg_value & 0x8000:
+                sht3x_logger.info ("  At least one pending alert")
+            if reg_value & 0x4000:
+                sht3x_logger.info ("  Reserved (undocumented)")
+            if reg_value & 0x2000:
+                sht3x_logger.info ("  Heater ON")
+            if reg_value & 0x1000:
+                sht3x_logger.info ("  Reserved (undocumented)")
+            if reg_value & 0x0800:
+                sht3x_logger.info ("  RH tracking alert")
+            if reg_value & 0x0400:
+                sht3x_logger.info ("  T  tracking alert")
+            if reg_value & 0x0200:
+                sht3x_logger.info ("  Reserved (undocumented)")
+            if reg_value & 0x0100:
+                sht3x_logger.info ("  Reserved (undocumented)")
+            if reg_value & 0x0080:
+                sht3x_logger.info ("  New data available - stale data overwritten? (undocumented)")
+            if reg_value & 0x0040:
+                sht3x_logger.info ("  New data available? (undocumented)")
+            if reg_value & 0x0020:
+                sht3x_logger.info ("  PeriodicDA running? (undocumented)")
+            if reg_value & 0x0010:
+                sht3x_logger.info ("  System reset detected")
+            if reg_value & 0x0008:
+                sht3x_logger.info ("  Reserved (undocumented)")
+            if reg_value & 0x0004:
+                sht3x_logger.info ("  Reserved (undocumented)")
+            if reg_value & 0x0002:
+                sht3x_logger.info ("  Last command not processed")
+            if reg_value & 0x0001:
+                sht3x_logger.info ("  Checksum of last write transfer failed")
 
-        return ((data[0] <<8) | data[1]) & 0xFFFF
+        return reg_value
 
 
-    def clear_status_reg(self, debug=False):
+    def clear_status_reg(self):
         sht3x_logger.debug (f"<{self.device_name}> ***** clear_status_reg()")
         try:
             self.pi_i2c_bus_handle.i2c_write_device(self.device_addr, CLEAR_STATUS_REGISTER)
@@ -326,10 +333,308 @@ class SHT3x:
             return I2C_ERROR
 
         if sht3x_logger.isEnabledFor(logging.DEBUG):
-            sht3x_logger.debug (f"<{self.device_name}> Status reg:  0x{self.read_status_reg(internal=True):0>4x}")
+            sht3x_logger.debug (f"<{self.device_name}> Status reg:  0x{self.read_status_reg(quiet=True):0>4x}")
         return 0
 
 
 # After sending a command to the sensor a minimal
 # waiting time of 1ms is needed before another command
 # can be received by the sensor.
+
+    def heater_enable(self):
+        """Issue header_enable
+        Returns
+            0 for successful operation
+            I2C_ERROR (-256) on I2C IO error
+        """
+        sht3x_logger.debug (f"<{self.device_name}> ***** heater_enable()")
+        try:
+            self.pi_i2c_bus_handle.i2c_write_device(self.device_addr, HEATER_ENABLE)
+        except Exception as e:
+            sht3x_logger.debug (f"<{self.device_name}> I2C_ERROR\n  {type(e).__name__}: {e}")
+            return I2C_ERROR
+
+        if sht3x_logger.isEnabledFor(logging.DEBUG):
+            sht3x_logger.debug (f"<{self.device_name}> Status reg:  0x{self.read_status_reg(quiet=True):0>4x}")
+        return 0
+
+
+    def heater_disable(self):
+        """Issue header_disable
+        Returns
+            0 for successful operation
+            I2C_ERROR (-256) on I2C IO error
+        """
+        sht3x_logger.debug (f"<{self.device_name}> ***** heater_disable()")
+        try:
+            self.pi_i2c_bus_handle.i2c_write_device(self.device_addr, HEATER_DISABLE)
+        except Exception as e:
+            sht3x_logger.debug (f"<{self.device_name}> I2C_ERROR\n  {type(e).__name__}: {e}")
+            return I2C_ERROR
+
+        if sht3x_logger.isEnabledFor(logging.DEBUG):
+            sht3x_logger.debug (f"<{self.device_name}> Status reg:  0x{self.read_status_reg(quiet=True):0>4x}")
+        return 0
+
+
+    def read_alert_reg(self, reg_select, tempunits='F', force_CRC_fail=False):
+        try:
+            reg_code = READ_ALERT_MODES[reg_select]
+        except:
+            raise ValueError (f"Invalid Alert Register selection - received <{reg_select}>")
+        sht3x_logger.debug (f"<{self.device_name}> ***** read_alert_reg() <{reg_select}>")
+
+        try:
+            self.pi_i2c_bus_handle.i2c_write_device(self.device_addr, reg_code)
+            (count, data) = self.pi_i2c_bus_handle.i2c_read_device(self.device_addr, 3)
+        except Exception as e:
+            sht3x_logger.debug (f"<{self.device_name}> I2C_ERROR\n  {type(e).__name__}: {e}")
+            return I2C_ERROR
+
+        if count != 3:
+            sht3x_logger.debug (f"<{self.device_name}> I2C_ERROR - error code <{count}>")
+            return I2C_ERROR
+
+        if force_CRC_fail:
+            data[2] = 0x00
+        if crc_calc.checksum(bytes([data[0], data[1]])) != data[2]:
+            sht3x_logger.debug (f"<{self.device_name}> Alert register data CRC error")
+            return CRC_ERROR
+        
+        temp, rh = decode_alert_word (data[0] <<8 | data[1], tempunits)
+        sht3x_logger.debug (f"<{self.device_name}> <{reg_select}> temp: <{temp:5.1f}{tempunits}>, rh: <{rh:5.1f}%>")
+
+        return temp, rh
+
+
+    def write_alert_reg(self, reg_select, temp, rh, tempunits='F'):
+
+        try:
+            reg_code = WRITE_ALERT_MODES[reg_select]
+        except:
+            raise ValueError (f"Invalid Alert Register selection - received <{reg_select}>")
+        # sht3x_logger.debug (f"<{self.device_name}> ***** write_alert_reg() <{reg_select}>")
+
+        tempC = temp
+        if tempunits.lower() == 'f':
+            tempC = (temp - 32.0) / 1.8
+
+        if tempC < -40.0  or  tempC > 125.0:
+            raise ValueError (f"Invalid temperature value - Expecting -40C <= temp_value <= 125C - received <{tempC}C>")
+
+        tempbits =  int((tempC + 45.0) / (175/65535)) >> 7
+        rhbits =    int(rh / 100.0 * 65535) & 0xfe00
+        regbits = rhbits | tempbits
+        sht3x_logger.debug (f"<{self.device_name}> ***** write_alert_reg() <{reg_select}>: <{decode_alert_word(regbits, tempunits)}>")
+        # sht3x_logger.debug (f"decode_alert_word: <{decode_alert_word(regbits, tempunits)}>")
+        MSB = regbits >> 8
+        LSB = regbits & 0xff
+        regCRC = crc_calc.checksum(bytes([MSB, LSB]))
+
+        payload = reg_code
+        payload.append(MSB)
+        payload.append(LSB)
+        payload.append(regCRC)
+
+        # xx = ''
+        # for item in payload:
+        #     xx += (f"0x{item:0>2x} ")
+        # sht3x_logger.debug (f"<{self.device_name}> <{reg_select}> payload: [ {xx}]")
+
+        try:
+            self.pi_i2c_bus_handle.i2c_write_device(self.device_addr, payload)
+        except Exception as e:
+            sht3x_logger.debug (f"<{self.device_name}> I2C_ERROR\n  {type(e).__name__}: {e}")
+            return I2C_ERROR
+
+        # if sht3x_logger.isEnabledFor(logging.DEBUG):
+        #     # time.sleep (.005)
+        #     sht3x_logger.debug (f"<{self.device_name}> Status reg:  0x{self.read_status_reg(internal=True):0>4x}")
+        return 0
+
+
+
+def decode_temp (tempbits):     # returns tempC
+    return -45.0 + (175 * tempbits / 65535)   #(2**16 -1))
+
+def decode_rh (rhbits):
+    return 100.0 * rhbits / 65535
+
+
+def decode_alert_word (word, tempunits):
+    # Upper 7 bits are the RH value MSBs
+    # Lower 9 bits are the Temp value MSBs
+    # Returns tuple (temp (in C or F), rh)
+
+    tempbits = (word & 0x01ff) << 7
+    temp = decode_temp(tempbits)
+    if tempunits.lower() == 'f':
+        temp = temp *1.8 +32.0
+
+    rh = decode_rh (word & 0xfe00)
+    return temp, rh
+
+
+# def int_handler(sig, frame):
+#     cleanup()
+#     sys.exit(0)
+
+
+#=====================================================================================
+#=====================================================================================
+#  c l i
+#=====================================================================================
+#=====================================================================================
+
+def cli():
+
+    global api_mode, api, pi_i2c_bus_handle, SHT3x_instance
+
+    import time
+    import argparse
+    import importlib.metadata
+    __version__ = importlib.metadata.version(__package__ or __name__)
+
+    from cjn_PiTools.shared import pi_i2c
+
+    desc = """SHT3x for Raspberry Pi
+    Mode    Function
+    0       single_shot measurement
+    1       PeriodicDA
+    2       read_status_register
+    3       clear_status_register
+    4       soft_reset
+    5       heater_enable
+    6       heater_disable
+    7       read_alert_reg limits (all 4)
+    8       write_alert_reg (one at a time)
+"""
+
+    DEFAULT_NAME_BASE = "SHT3x" # plus _addr_api_bus
+    SHT3X_ADDRS_STR = ['0x44', '0x45']
+    ALERT_REG_CHOICES = ['High_Set', 'High_Clear', 'Low_Clear', 'Low_Set']
+
+
+    parser = argparse.ArgumentParser(description=desc + __version__, formatter_class=argparse.RawTextHelpFormatter)
+    # parser.add_argument('Command', choices=['set', 'get'],
+    #                     help=f"Operation command:  set or get")
+    # parser.add_argument('Address', choices=PCA9548_ADDRS_STR,
+    #                     help=f"I2C address of PCA9548 device 0x70 - 0x77 (default 0x70)")
+    # parser.add_argument('Mask', nargs='?',
+    #                     help=f"Set control register to this value (required for set operation)")
+
+    parser.add_argument('-m', '--mode', type=int, default=0,
+                        help=f"Interactive mode selection (default 0)")
+    parser.add_argument('-t', '--tempunits', default='F',
+                        help=f"Temperature entry/display units (F or C, default F)")
+    parser.add_argument('--alert-reg', choices=ALERT_REG_CHOICES,
+                        help=f"Alert register to write for --mode 8)")
+    parser.add_argument('--Temp-value', type=float,
+                        help=f"Temperature value to write for --mode 8)")
+    parser.add_argument('--RH-value', type=float,
+                        help=f"RH value to write for --mode 8)")
+
+    parser.add_argument('-n', '--name', default=DEFAULT_NAME_BASE,
+                        help=f"SHT3x device name (default {DEFAULT_NAME_BASE} + addr + api)")
+    parser.add_argument('-a', '--addr', choices=SHT3X_ADDRS_STR, default='0x44',
+                        help=f"SHT3x device address (default 0x44")
+    parser.add_argument('-A', '--api', choices=['smbus', 'pigpio'], default='pigpio',
+                        help=f"Either 'smbus' or 'pigpio' (default 'pigpio')")
+    parser.add_argument('-b', '--bus', type=int, default=1,
+                        help=f"I2C bus number (default 1)")
+    parser.add_argument('-H', '--host', default='localhost',
+                        help=f"pigpio api target host (default 'localhost')")
+    parser.add_argument('-p', '--port', type=int, default=8888,
+                        help=f"pigpio api target host port number (default 8888)")
+
+    parser.add_argument('-v', '--verbose', action='count', default=0,
+                        help="Print debug-level status and activity messages")
+    parser.add_argument('-V', '--version', action='version', version='%(prog)s ' + __version__,
+                        help="Print version number and exit")
+    args = parser.parse_args()
+
+    set_toolname(TOOLNAME)
+    setuplogging(ConsoleLogFormat="{module:>12}.{funcName:30} - {levelname:>8}:  {message}")
+
+    sht3x_logger.setLevel([logging.WARNING, logging.INFO, logging.DEBUG][args.verbose])
+    logging.getLogger('cjn_PiTools.shared').setLevel([logging.WARNING, logging.INFO, logging.DEBUG][args.verbose])
+    set_logging_level(logging.DEBUG)
+
+
+    # Set up interface/api
+    address = int (args.addr, 16)
+    api_mode = args.api
+
+    if api_mode == 'pigpio':
+        import pigpio
+        api =   pigpio.pi(args.host, args.port)
+    else:
+        api =   'smbus'
+
+    pi_i2c_bus_handle = pi_i2c(api, i2c_bus_num=args.bus)
+    name =              args.name + '_' + args.addr + '_' + api_mode
+    SHT3x_instance =    SHT3x(name, address, pi_i2c_bus_handle)
+
+    if args.mode == 0:
+        temp, rh = SHT3x_instance.single_shot(tempunits=args.tempunits)
+        logging.info (f"{name} - Temperature: {temp:5.1f}{args.tempunits}, RH: {rh:4.1f}%,  Status reg: 0x{SHT3x_instance.read_status_reg(quiet=True, decode=True):0>4x}")
+
+    if args.mode == 1:
+        logging.info ("Running Periodic Data Acquisition mode at 2 mps.  Ctrl-C to terminate.")
+        import signal
+        signal.signal(signal.SIGINT,  cleanup)      # Ctrl-C  ( 2)
+        SHT3x_instance.start_periodic_DA()
+        while 1:
+            temp, rh = SHT3x_instance.fetch_data(tempunits=args.tempunits)
+            time.sleep(0.51)
+            logging.info (f"{name} - Temperature: {temp:5.1f}{args.tempunits}, RH: {rh:4.1f}%,  Status reg: 0x{SHT3x_instance.read_status_reg(quiet=True, decode=True):0>4x}")
+
+    if args.mode == 2:
+        status_reg = SHT3x_instance.read_status_reg(quiet=False)
+        logging.info (f"read_status_reg()       Status reg:  0x{SHT3x_instance.read_status_reg(quiet=True):0>4x}")
+        
+
+    if args.mode == 3:
+        SHT3x_instance.clear_status_reg()
+        logging.info (f"clear_status_reg()      Status reg:  0x{SHT3x_instance.read_status_reg(quiet=True):0>4x}")
+
+    if args.mode == 4:
+        SHT3x_instance.soft_reset()
+        logging.info (f"soft_reset()            Status reg:  0x{SHT3x_instance.read_status_reg(quiet=True):0>4x}")
+
+    if args.mode == 5:
+        SHT3x_instance.heater_enable()
+        logging.info (f"heater_enable()         Status reg:  0x{SHT3x_instance.read_status_reg(quiet=True):0>4x}")
+
+    if args.mode == 6:
+        SHT3x_instance.heater_disable()
+        logging.info (f"heater_disable()        Status reg:  0x{SHT3x_instance.read_status_reg(quiet=True):0>4x}")
+
+    if args.mode == 7:
+        logging.info (f"read_alert_reg()  High_Set    {SHT3x_instance.read_alert_reg('High_Set',   tempunits=args.tempunits)}")
+        logging.info (f"read_alert_reg()  High_Clear  {SHT3x_instance.read_alert_reg('High_Clear', tempunits=args.tempunits)}")
+        logging.info (f"read_alert_reg()  Low_Clear   {SHT3x_instance.read_alert_reg('Low_Clear',  tempunits=args.tempunits)}")
+        logging.info (f"read_alert_reg()  Low_Set     {SHT3x_instance.read_alert_reg('Low_Set',    tempunits=args.tempunits)}")
+
+    if args.mode == 8:
+        if  args.Temp_value is None  or  args.RH_value is None:
+            logging.error ("Both --Temp-value and --RH-value are required - Aborting")
+            cleanup()
+        SHT3x_instance.write_alert_reg(args.alert_reg, args.Temp_value, args.RH_value, args.tempunits)
+        logging.info (f"read_alert_reg()  {args.alert_reg}    {SHT3x_instance.read_alert_reg(args.alert_reg,   tempunits=args.tempunits)}")
+
+
+def cleanup(sig, frame):
+    SHT3x_instance.stop_periodic_DA()
+    pi_i2c_bus_handle.close()
+    if api_mode == 'pigpio':
+        api.stop()
+    sys.exit()
+
+    cleanup(1, 2)
+
+    # Cleanup
+
+
+if __name__ == '__main__':
+    sys.exit(cli())

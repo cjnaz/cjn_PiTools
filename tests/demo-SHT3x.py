@@ -2,6 +2,8 @@
 """Demo/test for SHT3x
 
 Produce / compare to golden results:
+    ./demo-SHT3x.py > testrun.log
+
     ./fsactivity_plugin_test.py | diff fsactivity_plugin_test.golden -
         Expected differences:
             File timestamps and ages for newfile, george, mahesh
@@ -74,8 +76,9 @@ pca9548_class_handle.write_control_reg ('0b110')      # Enable Channels 1 and 2 
 
 smbus_i2c_bus_handle =  pi_i2c('smbus')
 sht3x_44_inst_smbus =   SHT3x('sht3x44', 0x44, smbus_i2c_bus_handle)
+sht3x_44_inst_smbus.clear_status_reg()
 sht3x_45_inst_smbus =   SHT3x('sht3x45', 0x45, smbus_i2c_bus_handle)
-
+sht3x_45_inst_smbus.clear_status_reg()
 
 def dotest (desc, expect, func, *args, **kwargs):
     logging.warning (f"\n\n==============================================================================================\n" +
@@ -138,10 +141,10 @@ if __name__ == '__main__':
             logging.info (f"heater_enable()     returned {sht3x_44_inst_pio.heater_enable()}")
             logging.info (f"heater_disable()    returned {sht3x_44_inst_pio.heater_disable()}")
             logging.info (f"heater_enable()     returned {sht3x_44_inst_pio.heater_enable()}")
-            logging.info (f"read_status_reg()   returned 0x{sht3x_44_inst_pio.read_status_reg():0>4x}")
+            logging.info (f"read_status_reg()   returned 0x{sht3x_44_inst_pio.read_status_reg(decode=True):0>4x}")
             logging.info (f"clear_status_reg()  returned {sht3x_44_inst_pio.clear_status_reg()}")
             logging.info (f"soft_reset()        returned {sht3x_44_inst_pio.soft_reset()}")
-            logging.info (f"read_status_reg()   returned 0x{sht3x_44_inst_pio.read_status_reg():0>4x}")
+            logging.info (f"read_status_reg()   returned 0x{sht3x_44_inst_pio.read_status_reg(decode=True):0>4x}")
 
         dotest ("Heater control & status register - pigpio api", "None", func)
 
@@ -152,10 +155,10 @@ if __name__ == '__main__':
             logging.info (f"heater_enable()     returned {sht3x_44_inst_smbus.heater_enable()}")
             logging.info (f"heater_disable()    returned {sht3x_44_inst_smbus.heater_disable()}")
             logging.info (f"heater_enable()     returned {sht3x_44_inst_smbus.heater_enable()}")
-            logging.info (f"read_status_reg()   returned 0x{sht3x_44_inst_smbus.read_status_reg():0>4x}")
+            logging.info (f"read_status_reg()   returned 0x{sht3x_44_inst_smbus.read_status_reg(decode=True):0>4x}")
             logging.info (f"clear_status_reg()  returned {sht3x_44_inst_smbus.clear_status_reg()}")
             logging.info (f"soft_reset()        returned {sht3x_44_inst_smbus.soft_reset()}")
-            logging.info (f"read_status_reg()   returned 0x{sht3x_44_inst_smbus.read_status_reg():0>4x}")
+            logging.info (f"read_status_reg()   returned 0x{sht3x_44_inst_smbus.read_status_reg(decode=True):0>4x}")
 
         dotest ("Heater control & status register - smbus api", "None", func)
 
@@ -171,16 +174,16 @@ if __name__ == '__main__':
             logging.info (f"start_periodic_DA(mps=4) returned {sht3x_handle.start_periodic_DA(mps=mps)}")
         for _ in range (20):
             logging.info ("")
-            logging.info (f"read_status_reg() returned: 0x{sht3x_handle.read_status_reg(internal=True):0>4x}")
+            logging.info (f"read_status_reg() returned: 0x{sht3x_handle.read_status_reg(decode=True):0>4x}")
             # sht3x_instance.read_status_reg()
             logging.info (f"fetch_data() returned: {sht3x_handle.fetch_data()}")
             time.sleep(0.2)
 
         logging.info ("End of loop")
         logging.info (f"stop_periodic_DA() returned {sht3x_handle.stop_periodic_DA()}")
-        logging.info (f"read_status_reg() returned: 0x{sht3x_handle.read_status_reg(internal=True):0>4x}")
+        logging.info (f"read_status_reg() returned: 0x{sht3x_handle.read_status_reg(decode=True):0>4x}")
         logging.info (f"Final1 fetch_data() returned: {sht3x_handle.fetch_data()}")
-        logging.info (f"read_status_reg() returned: 0x{sht3x_handle.read_status_reg(internal=True):0>4x}")
+        logging.info (f"read_status_reg() returned: 0x{sht3x_handle.read_status_reg(decode=True):0>4x}")
         logging.info (f"Final2 fetch_data() returned: {sht3x_handle.fetch_data()}")
 
 
@@ -217,12 +220,12 @@ if __name__ == '__main__':
             logging.info (f"sht3x_44_inst_pio soft_reset()       returned {sht3x_44_inst_pio.soft_reset()}")
             logging.info (f"sht3x_44_inst_pio clear_status_reg() returned {sht3x_44_inst_pio.clear_status_reg()}")
             logging.info (f"sht3x_44_inst_pio single_shot()      returned {sht3x_44_inst_pio.single_shot()}")
-            logging.info (f"sht3x_44_inst_pio read_status_reg()  returned 0x{sht3x_44_inst_pio.read_status_reg():0>4x}")
+            logging.info (f"sht3x_44_inst_pio read_status_reg()  returned 0x{sht3x_44_inst_pio.read_status_reg(decode=True):0>4x}")
 
             logging.info (f"sht3x_45_inst_pio soft_reset()       returned {sht3x_45_inst_pio.soft_reset()}")
             logging.info (f"sht3x_45_inst_pio clear_status_reg() returned {sht3x_45_inst_pio.clear_status_reg()}")
             logging.info (f"sht3x_45_inst_pio single_shot()      returned {sht3x_45_inst_pio.single_shot()}")
-            logging.info (f"sht3x_45_inst_pio read_status_reg()  returned 0x{sht3x_45_inst_pio.read_status_reg():0>4x}")
+            logging.info (f"sht3x_45_inst_pio read_status_reg(decode=True)  returned 0x{sht3x_45_inst_pio.read_status_reg(decode=True):0>4x}")
             logging.info (f"sht3x_45_inst_pio soft_reset()       returned {sht3x_45_inst_pio.soft_reset()}")
 
         dotest ("Read two sensors at diff addresses - pigpio api", "None", func)
@@ -232,12 +235,12 @@ if __name__ == '__main__':
             logging.info (f"sht3x_44_inst_smbus soft_reset()       returned {sht3x_44_inst_smbus.soft_reset()}")
             logging.info (f"sht3x_44_inst_smbus clear_status_reg() returned {sht3x_44_inst_smbus.clear_status_reg()}")
             logging.info (f"sht3x_44_inst_smbus single_shot()      returned {sht3x_44_inst_smbus.single_shot()}")
-            logging.info (f"sht3x_44_inst_smbus read_status_reg()  returned 0x{sht3x_44_inst_smbus.read_status_reg():0>4x}")
+            logging.info (f"sht3x_44_inst_smbus read_status_reg()  returned 0x{sht3x_44_inst_smbus.read_status_reg(decode=True):0>4x}")
 
             logging.info (f"sht3x_45_inst_smbus soft_reset()       returned {sht3x_45_inst_smbus.soft_reset()}")
             logging.info (f"sht3x_45_inst_smbus clear_status_reg() returned {sht3x_45_inst_smbus.clear_status_reg()}")
             logging.info (f"sht3x_45_inst_smbus single_shot()      returned {sht3x_45_inst_smbus.single_shot()}")
-            logging.info (f"sht3x_45_inst_smbus read_status_reg()  returned 0x{sht3x_45_inst_smbus.read_status_reg():0>4x}")
+            logging.info (f"sht3x_45_inst_smbus read_status_reg()  returned 0x{sht3x_45_inst_smbus.read_status_reg(decode=True):0>4x}")
             logging.info (f"sht3x_45_inst_smbus soft_reset()       returned {sht3x_45_inst_smbus.soft_reset()}")
 
         dotest ("Read two sensors at diff addresses - smbus api", "None", func)
@@ -250,8 +253,8 @@ if __name__ == '__main__':
             logging.info (f"sht3x_45_inst_smbus clear_status_reg() returned {sht3x_45_inst_smbus.clear_status_reg()}")
             logging.info (f"sht3x_44_inst_smbus single_shot()      returned {sht3x_44_inst_smbus.single_shot()}")
             logging.info (f"sht3x_45_inst_pio   single_shot()      returned {sht3x_45_inst_pio.single_shot()}")
-            logging.info (f"sht3x_44_inst_pio   read_status_reg()  returned 0x{sht3x_44_inst_pio.read_status_reg():0>4x}")
-            logging.info (f"sht3x_45_inst_smbus read_status_reg()  returned 0x{sht3x_45_inst_smbus.read_status_reg():0>4x}")
+            logging.info (f"sht3x_44_inst_pio   read_status_reg()  returned 0x{sht3x_44_inst_pio.read_status_reg(decode=True):0>4x}")
+            logging.info (f"sht3x_45_inst_smbus read_status_reg()  returned 0x{sht3x_45_inst_smbus.read_status_reg(decode=True):0>4x}")
 
         dotest ("Read two sensors at diff addresses - mixed up pigpio & smbus apis", "None", func)
 
@@ -344,6 +347,7 @@ if __name__ == '__main__':
     # Development/testing/debug
     if check_tnum('50', include0=False):
 
+        logging.info ("Test 50 setup")
         remote_pio = pigpio.pi('testhost.cjn.lan')
         pio_i2c_bus_handle =     pi_i2c(remote_pio)
         sht3x_44_inst_pio =     SHT3x('sht3x44', 0x44, pio_i2c_bus_handle)
@@ -354,13 +358,54 @@ if __name__ == '__main__':
             sht3x_44_inst_pio.soft_reset()
             return sht3x_44_inst_pio.single_shot()
 
-        dotest ("Single Shot pigpio api, default F, High, 16ms", "Pass", func)
+        dotest ("Single Shot pigpio api remote (run from testhost2), default F, High, 16ms", "Pass", func)
 
         pio_i2c_bus_handle.close()
         remote_pio.stop()
 
         exit()
 
+
+    if check_tnum('51', include0=False):
+
+        def func():
+            sht3x_44_inst_pio.clear_status_reg()
+            sht3x_44_inst_pio.soft_reset()
+            sht3x_44_inst_pio.read_status_reg()
+            # sht3x_44_inst_pio.write_alert_reg('High_Set', 60, 80, tempunits='C')
+            sht3x_44_inst_pio.read_alert_reg('High_Set',   tempunits='C')
+            # sht3x_44_inst_pio.read_alert_reg('High_Set')
+            sht3x_44_inst_pio.read_alert_reg('High_Clear', tempunits='C')
+            sht3x_44_inst_pio.read_alert_reg('Low_Clear',  tempunits='C')
+            sht3x_44_inst_pio.read_alert_reg('Low_Set',    tempunits='C')
+
+            sht3x_44_inst_pio.write_alert_reg('High_Set',  40, 50, tempunits='C')
+            sht3x_44_inst_pio.read_alert_reg('High_Set',   tempunits='C')
+            sht3x_44_inst_pio.soft_reset()
+            sht3x_44_inst_pio.read_alert_reg('High_Set',   tempunits='C')
+            # sht3x_44_inst_pio.read_status_reg()
+
+
+        dotest ("read_alert_reg", "Pass", func)
+
+
+    if check_tnum('52', include0=False):
+
+        def func():
+            sht3x_44_inst_pio.soft_reset()
+            # sht3x_44_inst_pio.write_alert_reg('High_Set', 60, 80, tempunits='C')
+            sht3x_44_inst_pio.read_alert_reg('High_Set',   tempunits='C')
+            sht3x_44_inst_pio.read_alert_reg('High_Set')
+            sht3x_44_inst_pio.read_alert_reg('High_Clear', tempunits='C')
+            sht3x_44_inst_pio.read_alert_reg('Low_Clear',  tempunits='C')
+            sht3x_44_inst_pio.read_alert_reg('Low_Set',    tempunits='C')
+
+            sht3x_44_inst_pio.write_alert_reg('High_Set',  40, 50, tempunits='C')
+            sht3x_44_inst_pio.read_alert_reg('High_Set',   tempunits='C')
+            sht3x_44_inst_pio.read_status_reg()
+
+
+        dotest ("read_alert_reg", "Pass", func)
 
 
     logging.warning (f"\n\n---- Cleanup --------------------------------------------------------")
