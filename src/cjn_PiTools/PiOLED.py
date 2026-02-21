@@ -77,7 +77,6 @@ PIOLED_INTER_PAGE_TIME =        0.3
 PIOLED_INTER_MESSAGE_SET_TIME = 1
 
 pioled_logger = logging.getLogger('cjn_PiTools.PiOLED')
-pioled_logger.setLevel(logging.WARNING)
 
 
 set_toolname (TOOLNAME)

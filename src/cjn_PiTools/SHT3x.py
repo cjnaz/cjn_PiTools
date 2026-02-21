@@ -9,12 +9,12 @@ No Clock Stretch.
 #   
 #==========================================================
 
-__version__ = "V1.1 241112"
+# __version__ = "V1.1 241112"
 
 import time
 import sys
 
-from crc import Calculator, Configuration   # Dependency - pip install crc
+from crc import Calculator, Configuration
 from cjnfuncs.core import set_toolname, logging, setuplogging, set_logging_level
 
 TOOLNAME = 'SHT3x'
@@ -77,8 +77,6 @@ crc_calc = Calculator(crc_calc_config)
 
 
 sht3x_logger = logging.getLogger('cjn_PiTools.SHT3x')
-sht3x_logger.setLevel(logging.WARNING)             # Set default logging level for this module
-# pca9548_logger = logging.getLogger('cjn_PiTools.PCA9548')
 
 
 class SHT3x:
@@ -86,11 +84,13 @@ class SHT3x:
         """
         pi_i2c_bus_handle is from pi.i2c()
         """
-        self.device_name = device_name
-        self.device_addr = device_addr
+        self.device_name =          device_name
+        self.device_addr =          device_addr
+        self.pi_i2c_bus_handle =    pi_i2c_bus_handle
+
         if self.device_addr not in SHT3x_ADDRS:
             raise ValueError (f"SHT3x device address must be 0x44 or 0x45.  Received <0x{device_addr:0>2x}>")
-        self.pi_i2c_bus_handle  = pi_i2c_bus_handle
+
         api = 'smbus'  if self.pi_i2c_bus_handle.api == 'smbus'  else 'pigpio'
         sht3x_logger.debug (f"<{self.device_name}> New SHT3x device defined at addr <0x{self.device_addr:0>2x}> using api <{api}> on i2c bus <{self.pi_i2c_bus_handle.i2c_bus_num}>")
 
@@ -115,10 +115,6 @@ class SHT3x:
             sht3x_logger.debug (f"<{self.device_name}> Status reg:  0x{self.read_status_reg(quiet=True):0>4x}")
         return 0
 
-
-    def read_temprh_data(self, tempunits='F', repeatability='High'):      # legacy  TODO
-         return self.single_shot(tempunits, repeatability)
-    
 
     def single_shot(self, tempunits='F', repeatability='High', reading_wait=READING_WAIT):
         """
@@ -408,7 +404,6 @@ class SHT3x:
 
 
     def write_alert_reg(self, reg_select, temp, rh, tempunits='F'):
-
         try:
             reg_code = WRITE_ALERT_MODES[reg_select]
         except:

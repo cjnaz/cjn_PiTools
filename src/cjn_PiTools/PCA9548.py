@@ -19,7 +19,6 @@ PCA9548_ADDRS = [0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77]
 __version__ = "V1.1 241112"
 
 PCA9548_logger = logging.getLogger('cjn_PiTools.PCA9548')
-PCA9548_logger.setLevel(logging.WARNING)             # Set default logging level for this module
 
 
 class PCA9548:
@@ -31,67 +30,73 @@ class PCA9548:
         self.pi_i2c_bus_handle  = pi_i2c_bus_handle
         api = 'smbus'  if self.pi_i2c_bus_handle.api == 'smbus'  else 'pigpio'
         PCA9548_logger.debug (f"<{self.device_name}> New PCA9548 device defined at addr <0x{self.device_addr:0>2x}> using api <{api}> on i2c bus <{self.pi_i2c_bus_handle.i2c_bus_num}>")
+        self.channel_mask = '0b00000000'
 
 
-
-    def write_control_reg (self, newvalue):
+    def write_control_reg (self, write_value):
+        """
+        write_value is processed thru build_mask_str(), which returns a channel_enable_mask int between 0x00 and 0xFF
+        The channel_enable_mask is written to the control register and saved in self.channel_enable_mask
+        """
         PCA9548_logger.debug (f"<{self.device_name}> ***** write_control_reg()")
 
-        # Handle newvalue variations
-        try:
-            newvalue = int(newvalue)
-        except:
-            pass
-
-        if isinstance (newvalue, int):
-            if newvalue == -1:
-                bit_mask = 0x00
-            elif newvalue in [0, 1, 2, 3, 4, 5, 6, 7]:
-                bit_mask = num_to_mask(newvalue)
-            else:
-                raise ValueError (f"newvalue int must be between -1 to 7, received <{newvalue}>")
-
-        else:   # str
-            bit_mask = -5
-            try:
-                if newvalue.startswith('0x'):
-                    bit_mask = int(newvalue, 16)
-                elif newvalue.startswith('0b'):
-                    bit_mask = int(newvalue, 2)
-            except:
-                raise ValueError (f"newvalue bit_mask must be valid int starting with '0x' or '0b', received <{newvalue}>")
-
-        if  bit_mask < 0x00  or  bit_mask > 0xff:
-            raise ValueError (f"bit_mask must be valid int between 0x00 and 0xff, received <{newvalue}>")
+        channel_enable_mask = build_mask_bit_map(write_value)
 
         if PCA9548_logger.isEnabledFor(logging.DEBUG):
-            PCA9548_logger.debug (f"<{self.device_name}> New mask:     <0b{bit_mask:0>8b}>, channels <{mask_to_numstr(bit_mask)}>")
+            PCA9548_logger.debug (f"<{self.device_name}> New mask:     <{channel_enable_mask:0>8b}>, channels <{mask_to_channel_str(channel_enable_mask)}>")
+            # PCA9548_logger.debug (f"<{self.device_name}> New mask:     <{bit_mask_str}>, channels <{mask_to_numstr(bit_mask)}>")
 
 
-        self.pi_i2c_bus_handle.i2c_write_byte(self.device_addr, bit_mask)
+        # self.pi_i2c_bus_handle.i2c_write_byte(self.device_addr, bit_mask)
+        # self.channel_mask = f"0x{bit_mask:0>8b}"
+        self.pi_i2c_bus_handle.i2c_write_byte(self.device_addr, channel_enable_mask)
+        self.channel_enable_mask = channel_enable_mask
 
 
     def read_control_reg (self):
         PCA9548_logger.debug (f"<{self.device_name}> ***** read_control_reg()")
-        bit_mask = self.pi_i2c_bus_handle.i2c_read_byte(self.device_addr)
+
+        channel_enable_mask = self.pi_i2c_bus_handle.i2c_read_byte(self.device_addr)
+
         if PCA9548_logger.isEnabledFor(logging.DEBUG):
-            PCA9548_logger.debug (f"<{self.device_name}> Current mask: <0b{bit_mask:0>8b}>, channels <{mask_to_numstr(bit_mask)}>")
-        return bit_mask
+            PCA9548_logger.debug (f"<{self.device_name}> Current mask: <0b{channel_enable_mask:0>8b}>, channels <{mask_to_channel_str(channel_enable_mask)}>")
+        return channel_enable_mask
 
 
-def num_to_mask(ch_num):
-    if ch_num >= 0:
-        return 0x01 << int(ch_num)
-    else:
-        return 0
+def build_mask_bit_map (channel_value):
+    """
+    Accepts channel_value
+        int 0x00 to 0xFF:  Set channels per bit mask
+        str -1:  Unset all channels (same as int 0x00)
+        str 0-7:  Set individual channel
 
-def mask_to_numstr(bit_mask):
+    Returns int value in range 0x00 to 0xFF
+    Raises ValueError if channel_value cannot be converted to int between -1 to 7
+    """
+    # Handle newvalue variations
+
+    if isinstance(channel_value, int):
+        return channel_value
+    
+    if isinstance(channel_value, str):
+        xx = int(channel_value)
+
+        if xx < -1  or  xx > 7:
+            raise ValueError (f"channel_value must be int range -1 to 7 - received <{channel_value}>")
+        
+        if xx == -1:
+            return 0x00
+        else:
+            return 0x01 << int(xx)
+        
+
+def mask_to_channel_str(bit_mask):
     ch_str = ''
-    ch_mask_str = f"{bit_mask:0>8b}"
+    bit_mask_str = f"{bit_mask:0>8b}"
     for x in range(0, 8):
-        if ch_mask_str[7-x] == '1':
-            ch_str += ' ' + str(x)
-    return ch_str[1:]     # trim leading space
+        if bit_mask_str[7-x] == '1':
+            ch_str += str(x) + ' '
+    return ch_str[:-1]     # trim trailing space
 
 
 

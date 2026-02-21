@@ -30,7 +30,6 @@ set_toolname (TOOLNAME)
 # print (core.tool)
 
 ds18b20_logger = logging.getLogger('cjn_PiTools.DS18B20')
-ds18b20_logger.setLevel(logging.WARNING)
 
 
 #=====================================================================================

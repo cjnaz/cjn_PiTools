@@ -7,7 +7,6 @@
 #  Chris Nelson, Copyright 2026
 # TODO
 #   SHT3x doc, check alignment to datasheet names
-#   SHT3x add alert limits get/get
 #   HDU21D driver, tests
 #   Retry loop
 #   
@@ -16,15 +15,12 @@
 import importlib.metadata
 __version__ = importlib.metadata.version(__package__ or __name__)
 
-import os
-import sys
+import math
 import logging
-from pathlib import Path
+# from pathlib import Path
 
-# from cjnfuncs.core          import set_toolname
 
 # Configs / Constants
-
 BUS0_I2C_SDA_GPIO = 0
 BUS0_I2C_SCL_GPIO = 1
 BUS1_I2C_SDA_GPIO = 2
@@ -32,8 +28,8 @@ BUS1_I2C_SCL_GPIO = 3
 
 I2C_ERROR =         -256
 
+logging.getLogger('cjn_PiTools').setLevel(logging.WARNING)  # Set default log level for all cjn_PiTools modules
 pitools_logger = logging.getLogger('cjn_PiTools.shared')
-pitools_logger.setLevel(logging.WARNING)
 
 
 #=====================================================================================
@@ -59,6 +55,8 @@ i2c_read_device(self.i2c_device, num bytes to read)
     returns count, data
 i2c_read_byte(self.resource_i2c_handle)
     return byte
+i2c_read_i2c_block_data (handle, reg, count)
+    returns count, data
 
 -------------------------
 ### Parameters
@@ -128,19 +126,6 @@ Returns
                 raise OSError (f"i2c_write_device failed - error code <{xx}>")
             return xx
 
-    # def i2c_write_device (self, addr, bytes_list):
-    #     try:
-    #         if self.api == 'smbus':
-    #             b0 = bytes_list[0]
-    #             b1plus = bytes_list[1:]
-    #             self.smbus_handle.write_i2c_block_data(addr, b0, b1plus)
-    #         else:   # pigpio API
-    #             i2c_device_handle = self.get_pigpio_i2c_device_handle(addr)
-    #             self.api.i2c_write_device(i2c_device_handle, bytes_list)
-    #     except Exception as e:
-    #         pitools_logger.warning (f"i2c_write_device failed\n  {type(e).__name__}: {e}")
-    #         return I2C_ERROR
-    #     return 0
 
     def i2c_read_device (self, addr, read_byte_count):
         if self.api == 'smbus':
@@ -161,20 +146,23 @@ Returns
             return count, data
 
 
-    # def i2c_read_device (self, addr, read_byte_count):
-    #     try:
-    #         if self.api == 'smbus':
-    #             msg = i2c_msg.read(addr, read_byte_count)
-    #             self.smbus_handle.i2c_rdwr(msg)
-    #             return read_byte_count, list(msg)
-    #         else:   # pigpio API
-    #             i2c_device_handle = self.get_pigpio_i2c_device_handle(addr)
-    #             count, data = self.api.i2c_read_device(i2c_device_handle, read_byte_count)
-    #             return count, data
-    #     except Exception as e:
-    #         pitools_logger.warning (f"i2c_read_device failed\n  {type(e).__name__}: {e}")
-    #         return 0, I2C_ERROR
-
+    def i2c_read_i2c_block_data (self, addr, reg, read_byte_count):
+        if self.api == 'smbus':
+            msg = i2c_msg.read(addr, read_byte_count)
+            self.smbus_handle.i2c_rdwr(msg)
+            return read_byte_count, list(msg)
+        else:   # pigpio API
+            i2c_device_handle = self.get_pigpio_i2c_device_handle(addr)
+            try:
+                count, data = self.api.i2c_read_i2c_block_data(i2c_device_handle, reg, read_byte_count)
+                # if count < 0:
+                #     raise OSError (f"i2c_read_device failed - error code <{count}>")
+                # return count, data
+            except Exception as e:
+                raise OSError (f"i2c_read_i2c_block_data failed (pigpio exception: {type(e).__name__}: {e})")
+            if count < 0:
+                raise OSError (f"i2c_read_i2c_block_data failed - error code <{count}>")
+            return count, data
 
 
     def i2c_write_byte (self, addr, byte_value):
@@ -190,6 +178,7 @@ Returns
         return 0
 
         pitools_logger.debug (f"i2c_write_byte to addr <0x{addr:0>2x}>:  <0x{byte_value:0>2x}>")
+
 
     def i2c_read_byte (self, addr):
         try:
@@ -212,13 +201,12 @@ Returns
             pitools_logger.debug (f"New i2c_device_handle: <{i2c_device_handle}> for addr <0x{addr:0>2x}>")
         else:
             i2c_device_handle = self.i2c_device_handles[addr]
-            # pitools_logger.debug (f"Got i2c_device_handle: <{i2c_device_handle}> for addr <0x{addr:0>2x}>")
+            pitools_logger.debug (f"Got i2c_device_handle: <{i2c_device_handle}> for addr <0x{addr:0>2x}>")
         return i2c_device_handle
 
 
     def close(self):
         # pigpio handle owned/closed outside of this module
-    # def close_i2c_handles(self):
         if self.api == 'smbus':
             pitools_logger.debug (f"smbus_handle closed")
             self.smbus_handle.close()
@@ -230,3 +218,24 @@ Returns
 
     # def close_smbus(self):
     #     self.smbus_handle.close()
+
+
+def CtoF(tempC):
+    return tempC*1.8 +32.0
+
+
+def FtoC(tempF):
+    return (tempF -32.0) / 1.8
+
+
+def calculate_dew_point(T_c, RH):
+    # Magnus formula constants
+    a = 17.62
+    b = 243.12
+
+    # Calculate gamma
+    gamma = (a * T_c) / (b + T_c) + math.log(RH / 100.0)
+
+    # Calculate dew point in Celsius
+    dew_point_c = (b * gamma) / (a - gamma)
+    return dew_point_c
