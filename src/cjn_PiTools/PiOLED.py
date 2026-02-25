@@ -116,7 +116,7 @@ class pioled_display_driver:
                                                                      {'x':10, 'y':32, 'size':12, 'text':"before Saved"}]]}
 
         # Check access to pioled_file_lock and display_file
-        if not pioled_file_lock.get_lock(lock_info='pioled_display_driver startup file access check'):
+        if not pioled_file_lock.get_lock(lock_info='pioled_display_driver startup file access check', timeout=2):
             pioled_logger.warning (f"Failed to get pioled_file_lock during pioled_display_driver startup - Continuing. Current lock owner: <{pioled_file_lock.get_lock_info()}>")
         else:
             try:

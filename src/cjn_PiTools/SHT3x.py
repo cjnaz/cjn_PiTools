@@ -200,7 +200,9 @@ class SHT3x:
         try:
             if send_fetch:
                 self.pi_i2c_bus_handle.i2c_write_device(self.device_addr, FETCH_DATA)
+
             (count, data) = self.pi_i2c_bus_handle.i2c_read_device(self.device_addr, 6)
+
         except Exception as e:
             sht3x_logger.debug (f"<{self.device_name}> I2C_ERROR\n  {type(e).__name__}: {e}")
             return I2C_ERROR, I2C_ERROR
@@ -258,7 +260,7 @@ class SHT3x:
         return 0
 
 
-    def read_status_reg(self, quiet=True, decode=False, force_CRC_fail=False):
+    def read_status_reg(self, quiet=False, force_CRC_fail=False):
         if not quiet:
             sht3x_logger.debug (f"<{self.device_name}> ***** read_status_reg()")
         try:
@@ -283,7 +285,7 @@ class SHT3x:
             return CRC_ERROR
         
         reg_value = ((data[0] <<8) | data[1]) & 0xFFFF
-        if decode:
+        if not quiet:
             if reg_value & 0x8000:
                 sht3x_logger.info ("  At least one pending alert")
             if reg_value & 0x4000:
@@ -572,7 +574,7 @@ def cli():
 
     if args.mode == 0:
         temp, rh = SHT3x_instance.single_shot(tempunits=args.tempunits)
-        logging.info (f"{name} - Temperature: {temp:5.1f}{args.tempunits}, RH: {rh:4.1f}%,  Status reg: 0x{SHT3x_instance.read_status_reg(quiet=True, decode=True):0>4x}")
+        logging.info (f"{name} - Temperature: {temp:5.1f}{args.tempunits}, RH: {rh:4.1f}%,  Status reg: 0x{SHT3x_instance.read_status_reg(quiet=True):0>4x}")
 
     if args.mode == 1:
         logging.info ("Running Periodic Data Acquisition mode at 2 mps.  Ctrl-C to terminate.")
@@ -582,11 +584,11 @@ def cli():
         while 1:
             temp, rh = SHT3x_instance.fetch_data(tempunits=args.tempunits)
             time.sleep(0.51)
-            logging.info (f"{name} - Temperature: {temp:5.1f}{args.tempunits}, RH: {rh:4.1f}%,  Status reg: 0x{SHT3x_instance.read_status_reg(quiet=True, decode=True):0>4x}")
+            logging.info (f"{name} - Temperature: {temp:5.1f}{args.tempunits}, RH: {rh:4.1f}%,  Status reg: 0x{SHT3x_instance.read_status_reg(quiet=True):0>4x}")
 
     if args.mode == 2:
-        status_reg = SHT3x_instance.read_status_reg(quiet=False)
-        logging.info (f"read_status_reg()       Status reg:  0x{SHT3x_instance.read_status_reg(quiet=True):0>4x}")
+        # status_reg = SHT3x_instance.read_status_reg()
+        logging.info (f"read_status_reg()       Status reg:  0x{SHT3x_instance.read_status_reg():0>4x}")
         
 
     if args.mode == 3:

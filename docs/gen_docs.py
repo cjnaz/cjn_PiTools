@@ -1,22 +1,45 @@
 #!/usr/bin/env python3
 """Extract doc strings from source module(s) and build the module specific READMEs
+
+Run this with cdw = docs directory
 """
 
 #==========================================================
 #
-#  Chris Nelson, 2024
+#  Chris Nelson, 2024 - 2026
 #
 #==========================================================
 
 import pathlib
 import re
+import ast
 
-
-modules = [
+MODULES_FILE = pathlib.Path('modules_list.txt')
+# modules_list.txt file example
+'''
+[
     {'outfile':'../DS18B20.md',     'head':'./DS18B20_head.md',         'source':'../src/cjn_PiTools/DS18B20.py'},
+    {'outfile':'../PCA9548.md',     'head':'./PCA9548_head.md',         'source':'../src/cjn_PiTools/PCA9548.py'},
 ]
+'''
 
+COMMENT_BLOCK = re.compile(r'"""\s+##\s([\s\S]+?)(?:""")')
+# Doc string format example:
+'''
+def snd_notif(subj="Notification message", msg="", to="NotifList", log=False):
+    """
+## snd_notif (subj="Notification message, msg="", to="NotifList", log=False) - Send a text message using info from the config file
+(...documentation...)
+    """
+'''
+
+
+#----------------------------------------------------------------------------------------
 def main():
+
+    modules_list = MODULES_FILE.read_text()
+    modules = ast.literal_eval(modules_list)
+
     for module in modules:
         print (f"Processing {module['outfile']}")
         links       = build_links_list(module['source'])
@@ -43,23 +66,13 @@ def main():
 """)
             ofile.write(docstrings)
 
-# Doc string format example:
-'''
-def snd_notif(subj="Notification message", msg="", to="NotifList", log=False):
-    """
-## snd_notif (subj="Notification message, msg="", to="NotifList", log=False) - Send a text message using info from the config file
-(...documentation...)
-    """
-'''
-
-comment_block = re.compile(r'"""\s+##\s([\s\S]+?)(?:""")')
 
 def build_links_list(source):
 
     all = pathlib.Path(source).read_text()
     # Build the links list
     links = ''
-    for block in comment_block.finditer(all):
+    for block in COMMENT_BLOCK.finditer(all):
         link_name = get_linkname(block)
         links += f"- [{link_name}](#{link_name})\n"
     return links
@@ -71,11 +84,12 @@ def build_links_list(source):
         # links += f"- [{link_name}](#{link})\n"
 
 
+#----------------------------------------------------------------------------------------
 def extract_docstrings(source):
     xx = ''
     all = pathlib.Path(source).read_text()
 
-    for block in comment_block.finditer(all):
+    for block in COMMENT_BLOCK.finditer(all):
         link_name = get_linkname(block)
         print (f"    Processing {link_name}")
         xx += "\n<br/>\n\n"
@@ -86,9 +100,12 @@ def extract_docstrings(source):
     return xx
 
 
+#----------------------------------------------------------------------------------------
 def get_linkname(block):
     funcline = block.group(1).split('\n')[0]
-    return funcline.replace("Class ", "").split(maxsplit=1)[0].lower()
+    return funcline.replace("Class ", "").split(maxsplit=1)[0] #.lower()
+
+
 
 if __name__ == '__main__':
     main()
