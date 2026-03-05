@@ -1,4 +1,6 @@
 [
+    {'outfile':'../ADC121C.md',     'head':'./ADC121C_head.md',         'source':'../src/cjn_PiTools/ADC121C.py'},
     {'outfile':'../DS18B20.md',     'head':'./DS18B20_head.md',         'source':'../src/cjn_PiTools/DS18B20.py'},
     {'outfile':'../PCA9548.md',     'head':'./PCA9548_head.md',         'source':'../src/cjn_PiTools/PCA9548.py'},
+    {'outfile':'../shared.md',      'head':'./shared_head.md',          'source':'../src/cjn_PiTools/shared.py'},
 ]

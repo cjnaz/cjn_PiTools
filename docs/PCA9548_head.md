@@ -68,6 +68,14 @@ DEBUG:cjn_PiTools.PCA9548:<My_PCA9548> ***** write_control_reg()
 DEBUG:cjn_PiTools.PCA9548:<My_PCA9548> New mask:     <0b00001000>, channels <3>
 ```
 
+<br>
+
+## Enabling debug logging
+
+To enabled debug logging from this module's classes/functions, add this to your tool script code:
+
+     logging.getLogger('cjn_PiTools.PCA9548').setLevel(logging.DEBUG)
+
 
 <br>
 
@@ -85,7 +93,7 @@ Mask values for set command
     0-7 selects that specific channel
     -1 sets the control regiser to 0b00000000 (no channels selected)
     0xNN or 0bNNNNNNN sets the control register to that specific bit_mask
-    1.1
+1.1
 
 positional arguments:
   {set,get}             Operation command:  set or get

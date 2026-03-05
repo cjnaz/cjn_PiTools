@@ -28,16 +28,23 @@ Produce / compare to golden results:
 #       Channel 0:  Jack I2C1 with SHT3x at address 0x44
 #       Channel 1:  Jack I2C2
 #       Channel 2:  Jack I2C3
-#       Channel 3:  ADC121C ADC1 at address 0x50
+#       Channel 3:  ADC121C ADC1 at address 0x50, Jack SOIL 1
 #           ADC121C chips use 4.2V reference
-#       Channel 3:  ADC121C ADC2 at address 0x51
+#       Channel 3:  ADC121C ADC2 at address 0x51, Jack SOIL 2
 #       Channel 4:  MCP23008_IO_ADDR at address 0x70 
-#           Lower 4 bits as outputs, 4 upper bits as inputs with weak pullups
+#           Bit 0: OUT 1
+#           Bit 1: OUT 2
+#           Bit 2: OUT 3
+#           Bit 3: OUT 4
+#           Bit 4: S1 input with weak pullup
+#           Bit 5: S2 input with weak pullup
+#           Bit 6: S3 input with weak pullup
+#           Bit 7: NC
 #       Channel 4:  MCP23008_7SEG_ADDR at address 0x71
 #           All bits as outputs serving as pulldowns on common anode 7-segment display
 #           Segment selects in DIG_2_SEG are inverted when written to MCP23008_7SEG_ADDR
-#       Channel 5:  ADC121C ADC3 at address 0x52
-#       Channel 5:  ADC121C ADC4 at address 0x50
+#       Channel 5:  ADC121C ADC3 at address 0x52, Jack SOIL 3
+#       Channel 5:  ADC121C ADC4 at address 0x50, Jack SOIL 4
 #       Channels 6 and 7: No connect
 #
 # 1.0 260212 - New
@@ -47,22 +54,20 @@ Produce / compare to golden results:
 __version__ =   '1.0'
 TOOLNAME =      'demo_PCA9548'
 
-PCA9548_RESBD = {'addr': 0x71, 'name': 'PCA9548_Res'}
-PCA9548_IRRBD = {'addr': 0x75, 'name': 'PCA9548_Irr'}
-
 
 import argparse
 import re
-# import time
-# import subprocess
-# from pathlib import Path
-# import shutil
 import pigpio
 
 from cjnfuncs.core              import set_toolname, setuplogging, logging, set_logging_level
 
 from cjn_PiTools.shared         import pi_i2c
 from cjn_PiTools.PCA9548        import PCA9548, build_bit_map, bit_map_to_channel_str
+
+
+PCA9548_RESBD = {'addr': 0x71, 'name': 'PCA9548_Res'}
+PCA9548_IRRBD = {'addr': 0x75, 'name': 'PCA9548_Irr'}
+
 
 
 set_toolname(TOOLNAME)
@@ -81,7 +86,6 @@ cli_args = parser.parse_args()
 
 
 logging.warning (f"\n\n---- Test Init ------------------------------------------------------")
-
 
 # Get i2c bus and device handles
 pio =                   pigpio.pi()

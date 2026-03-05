@@ -212,7 +212,7 @@ Mask values for set command
     0-7 selects that specific channel
     -1 sets the control regiser to 0b00000000 (no channels selected)
     0xNN or 0bNNNNNNN sets the control register to that specific bit_mask
-    """
+"""
 
     # import time
     import argparse

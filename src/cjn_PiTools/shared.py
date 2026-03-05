@@ -98,19 +98,25 @@ class pi_i2c:
 ### Args
 `addr` (int)
 - i2c address of target - range 0x00 to 0x7F
-- No validity checks - caller should confirm adder validity
+- No validity checks - caller should confirm address validity
 
 `bytes_list` (list of bytes)
 - Data to be written to the device
 - Minimal data validity checking - some invalid data results in write failure
-- Commonly, the first byte in the list is taken as a register address to which the following bytes are written;
-however, this behavior is device type specific
 
 
 ### Returns
+- On success, returns length of `bytes_list` (number of bytes written)
 - Raises ValueError if bytes_list is not a list or is an empty list.
-- On success, returns length of `bytes_list`
-- On fail, raises exception
+- On fail, raises exception (actually raised by `api` call, e.g., I2C IO error, or invalid data in `bytes_list`)
+
+
+### Behaviors and rules
+- Commonly, the first byte in the `bytes_list` is taken as a register address to which the following bytes are written. 
+  Note that this behavior is device-type specific.  The contents of `bytes_list` will simply be sent out after 
+  the device at `addr` has been addressed for writing.
+- Uses pigpio i2c_write_device() and smbus write_i2c_block_data()
+- transaction sequence...
         """
 
         # ADC121C, MCP23008, SHT3x
@@ -157,7 +163,7 @@ however, this behavior is device type specific
 ### Args
 `addr` (int)
 - i2c address of target - range 0x00 to 0x7F
-- No validity checks - caller should confirm adder validity
+- No validity checks - caller should confirm address validity
 
 `read_byte_count` (int)
 - Number of bytes to read from the target
@@ -165,9 +171,14 @@ however, this behavior is device type specific
 
 
 ### Returns
-- On success, returns tuple (actual read count, [data])
-- On failure, any exception raised by the smbus or pigpio api must be caught by the calling code
-- If using pigpio.i2c_read_device(), if the returned byte count is negative this error code is passed within a raised OSError exception
+- On success, returns tuple (actual read count, [data]).  Note that data is returned as a list of bytes.
+- On fail, raises exception (actually raised by `api` call, e.g., I2C IO error, OSError, etc.).
+- If using the pigpio api, if the returned byte count is negative this error code is passed within a raised OSError exception.
+
+
+### Behaviors and rules
+- Uses pigpio i2c_read_device() and smbus i2c_msg() / i2c_rdwr
+- transaction sequence...
         """
         if pitools_logger.isEnabledFor(logging.DEBUG):
             pitools_logger.debug (f"Using api <{self.api}> read bus <{self.i2c_bus_num}> addr <0x{addr:0>2x}> read_byte_count <{read_byte_count}>")
@@ -244,7 +255,7 @@ however, this behavior is device type specific
 ### Args
 `addr` (int)
 - i2c address of target - range 0x00 to 0x7F
-- No validity checks - caller should confirm adder validity
+- No validity checks - caller should confirm address validity
 
 `byte_value` (int)
 - Data to be written to the device
@@ -252,9 +263,14 @@ however, this behavior is device type specific
 
 
 ### Returns
-- Raises ValueError if byte_value is not an int in the range of 0x00 to 0xFF
-- On write success, returns 1 (one byte written)
-- On write fail, raises exception
+- On success, returns 1 (meaning one byte written)
+- Raises ValueError if `byte_value` is not an int in the range of 0x00 to 0xFF
+- On fail, raises exception (actually raised by `api` call, e.g., I2C IO error, OSError, etc.).
+
+
+### Behaviors and rules
+- Uses pigpio i2c_write_byte() and smbus write_byte()
+- transaction sequence...
         """
         # HTU21D, PCA9548
 
@@ -302,12 +318,17 @@ however, this behavior is device type specific
 ### Args
 `addr` (int)
 - i2c address of target - range 0x00 to 0x7F
-- No validity checks - caller should confirm addr validity
+- No validity checks - caller should confirm address validity
 
 
 ### Returns
-- On read success, returns one byte read from the target
-- On read fail, raises exception
+- On success, returns one byte read from the target
+- On fail, raises exception (actually raised by `api` call, e.g., I2C IO error, OSError, etc.).
+
+
+### Behaviors and rules
+- Uses pigpio i2c_read_byte() and smbus read_byte()
+- transaction sequence...
         """
 
         # PcA9548
@@ -374,12 +395,16 @@ however, this behavior is device type specific
     #     self.smbus_handle.close()
 
 
+def FtoC(tempF):
+    return (tempF -32.0) / 1.8
+
+
 def CtoF(tempC):
     return tempC*1.8 +32.0
 
 
-def FtoC(tempF):
-    return (tempF -32.0) / 1.8
+def CtoK(tempC):
+    return tempC + 273.15
 
 
 def calculate_dew_point(T_c, RH):

@@ -10,6 +10,7 @@ Module | Description/Purpose
 [PiOLED](https://github.com/cjnaz/cjn_PiTools/blob/main/PiOLED.md)           | Display multi-line messages on a shared Raspberry Pi connected OLED display
 [DS18B20](https://github.com/cjnaz/cjn_PiTools/blob/main/DS18B20.md)         | A high-featured library/driver using the w1_therm kernel driver
 [initW1buses](https://github.com/cjnaz/cjn_PiTools/blob/main/initW1buses.md) | Initialize the W1 buses and set write permission on found therm_bulk_read file(s)
+[shared](https://github.com/cjnaz/cjn_PiTools/blob/main/shared.md)           | Classes and functions used across cjn_PiTools
 
 More to come!
 - Drivers for SHT3x and HTU21D temp/RH sensors
