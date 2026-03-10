@@ -27,6 +27,7 @@ BUS1_I2C_SDA_GPIO = 2
 BUS1_I2C_SCL_GPIO = 3
 
 I2C_ERROR =         -256
+CRC_ERROR =         -255
 
 logging.getLogger('cjn_PiTools').setLevel(logging.WARNING)  # Set default log level for all cjn_PiTools modules
 pitools_logger = logging.getLogger('cjn_PiTools.shared')

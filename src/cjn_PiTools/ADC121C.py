@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 """ADC121C* library for Raspberry Pi
 """
+
 #==========================================================
 #
 #  Chris Nelson, Copyright 2026
 #
 #==========================================================
 
-import time
 import logging
+from .shared import I2C_ERROR
 
+# Configs / Constants
 CONVERSION_RSLT_REG_PTR =       0x00
 ALERT_STATUS_REG_PTR =          0X01
 CONFIG_REG_PTR =                0x02
@@ -19,22 +21,21 @@ HYSTERESIS_REG_PTR =            0x05
 LOWEST_CONVERSION_REG_PTR =     0x06
 HIGHEST_CONVERSION_REG_PTR =    0x07
 
-I2C_ERROR =                     -256
 ADC121_ADDRS =                  [0x50, 0x51, 0x52, 0x54, 0x55, 0x56, 0x58, 0x59, 0x5a]
 
 
 adc121c_logger =                logging.getLogger('cjn_PiTools.ADC121C')
 
-# I2C operation ADC121C:
+# ADC121C I2C operation:
 #     The first data byte of every write operation is stored in the address pointer register.
-#     This value selects the register that the following data bytes will be written to or read from.
+#     This value selects the register that the following data byte(s) will be written to or read from.
 #     Write a register send sequence:
 #       1) ADC address, write Address Pointer Register byte, write 1 or 2 bytes of target register data (same sequence)
 #     Read a register send sequence:
 #       1) ADC address, write Address Pointer Register byte
 #       2) ADC address, read 1 or 2 byte register data
-#       If the (address) pointer is preset correctly, a read operation can occur without first writing 
-#       the address pointer register (skip step 1)
+#       If the Address Pointer is preset to the desired register, a read operation can occur without first writing 
+#       the Address Pointer Register (skip step 1)
 
 
 #=====================================================================================
@@ -51,57 +52,60 @@ Create an ADC121C family device instance
 
 ### Args
 `device_name` (str)
-- User defined name for this instance, e.g., 'PCA9548'
+- User defined name for this instance, e.g., 'My_ADC121C'
 - Not validated as valid string
 
 `device_addr` (int)
-- I2C bus address for this instance, e.g., 0x70
+- I2C bus address for this instance, e.g., 0x50
 
 `pi_i2c_bus_handle` (cjn_PiTools.shared.pi_i2c instance)
-- Get an instance handle in the tools script code and pass it to this device instantiation
+- Get a `pi_i2c` instance handle in the tools script code and pass it to this device instantiation
 
 `Vref` (float)
 - ADC reference voltage
-- `read_conversion_result()` returned 12-bit code is multiplied by this value to return measured voltage
+- `read_conversion_result()` returned 12-bit code is scaled by this value to return the measured voltage
 
-`config_byte` (int, optional, default None)
-- Used for direct setting of the configuration register to a byte value during instantiation
+`config_byte` (int, default None)
+- Used for explicit setting of the configuration register to a byte value during instantiation
 - Must be in range 0x00 to 0xFF
+- Bit 1 (Reserved) is always forced to `0`, per the specification
+- If `config_byte` is an int, the field values within the `config_byte` are used as the default values in later `write_config()` calls
+- `config_byte` takes precedent over the below individual field settings, if both are given at instantiation
 
 `cycle_time` (int, default 0b000)
 - Value for the 3-bit Cycle Time field in the configuration register
 - Must be in range 0b000 to 0b111
-- Default 0b000 is Automatic Mode Disabled
-- This value will be used as the default value in later `write_config()` calls
+- Default 0b000 is Normal Mode (automatic conversion mode disabled)
+- This value (or the field bits within `config_byte` if specified) are used as the default value in later `write_config()` calls
 
 `alert_hold` (int, default 0)
 - Value for the Alert Hold field in the configuration register
 - Must be 0 or 1
 - Default 0 is Alert Hold disabled - alerts will self-clear
-- This value will be used as the default value in later `write_config()` calls
+- This value (or the field bit within `config_byte` if specified) are used as the default value in later `write_config()` calls
 
 `alert_flag_en` (int, default 0)
 - Value for the Alert Flag Enable field in the configuration register
 - Must be 0 or 1
 - Default 0 is Alert Flag disabled - disable alert status bit [D15] in the Conversion Result register
-- This value will be used as the default value in later `write_config()` calls
+- This value (or the field bit within `config_byte` if specified) are used as the default value in later `write_config()` calls
 
 `alert_pin_en` (int, default 0)
 - Value for the Alert Pin Enable field in the configuration register
 - Must be 0 or 1
 - Default 0 is Alert Pin disabled - disable the ALERT output pin
-- This value will be used as the default value in later `write_config()` calls
+- This value (or the field bit within `config_byte` if specified) are used as the default value in later `write_config()` calls
 - NOTE:  The Alert Pin function is not tested. (I'm using the ADC121C027 (no alert pin))
 
 `polarity` (int, default 0)
 - Value for the alert pin Polarity field in the configuration register
 - Must be 0 or 1
-- Default 0 - the ALERT pin to active low
-- This value will be used as the default value in later `write_config()` calls
+- Default 0 - the ALERT pin is active low
+- This value (or the field bit within `config_byte` if specified) are used as the default value in later `write_config()` calls
 - NOTE:  The Alert Pin function is not tested. (I'm using the ADC121C027 (no alert pin))
 
 
-### Class instance variables
+### Class instance variables - as passed in at instantiation
 - `device_name` (str)
 - `device_addr` (int)
 - `Vref` (float)
@@ -113,6 +117,15 @@ Create an ADC121C family device instance
 
 
 ### Behaviors and rules
+- All configuration register fields default to `0`:
+  - `cycle_time` defaults to 0b000 - Normal mode (automatic conversion mode disabled)
+  - `alert_hold`, `alert_flag_en`, and `alert_pin_en` each default to 0 - Disabled
+  - `polarity` defaults to 0 - the alert pin is active low if `alert_pin_en` = 1
+- If `config_byte` is an int the bit fields are parsed out and saved as their default values in the respective 
+class instance variables, above.
+- if `config_byte` is None then the individual field settings are used and saved as the default values in later 
+calls to `write_config()`
+- Settings via config_byte take precedent over settings via individual fields.
 - Debug logging may be enabled in the tool script code by setting this module's logging level:
 
         logging.getLogger('cjn_PiTools.ADC121C').setLevel(logging.DEBUG)
@@ -126,15 +139,16 @@ Create an ADC121C family device instance
         self.device_addr =          device_addr
         self.pi_i2c_bus_handle =    pi_i2c_bus_handle
         self.Vref =                 Vref
-        self.cycle_time =           cycle_time
+        self.cycle_time =           cycle_time       # TODO - save as defaults the field values when using config_byte
         self.alert_hold =           alert_hold
         self.alert_flag_en =        alert_flag_en
         self.alert_pin_en =         alert_pin_en
         self.polarity =             polarity
+        if config_byte:
+            self.cycle_time, self.alert_hold, self.alert_flag_en, self.alert_pin_en, self.polarity = decode_config_byte(config_byte)
+
 
         self.conv_rslt_reg_addressed = False
-        # self.ntrys =                ntrys
-        # self.retry_wait =           retry_wait
 
         if self.device_addr not in ADC121_ADDRS:
             xx = ", ".join(f"0x{v:02x}" for v in ADC121_ADDRS)
@@ -159,23 +173,15 @@ Create an ADC121C family device instance
 ***ADC121C class member function***
 
 
-### Args TODO
-`tempunits` (str, default 'C')
-- Must be 'C', 'F' or 'K', else ValueError is raised.
-
-
 ### Returns
-- Tuple (Alert Flag bit, Measured Voltage)
-- Tuple (I2C_ERROR, I2C_ERROR) on any communication errors
-- Raises `ValueError` if tempunits is not valid  TODO
-
+- Tuple (Alert Flag bit, Measured Voltage (float))
+- Tuple (I2C_ERROR, I2C_ERROR) on I2C IO error
 
 ### Behaviors and rules
 - The 12-bit code read from the device is scaled by Vref and returned as the measured voltage
 - Setting the register Address Pointer to the Conversion Result register is skipped on consecutive calls
 to `read_conversion_result()`
 """
-        # returns tuple (alert_flag, conv_result)
         adc121c_logger.debug (f"<{self.device_name}> ***** read_conversion_result()")
 
         try:
@@ -209,7 +215,7 @@ to `read_conversion_result()`
 ### Returns
 - Tuple (over_range_alert, under_range_alert) as integers (0 or 1)
 - 1 indicates respective over-range or under-range altert
-- Tuple (I2C_ERROR, I2C_ERROR) on any communication errors
+- Tuple (I2C_ERROR, I2C_ERROR) on I2C IO error
 """
         # returns tuple (over_range_alert, under_range_alert)
         adc121c_logger.debug (f"<{self.device_name}> ***** read_alert_status()")
@@ -241,6 +247,7 @@ to `read_conversion_result()`
 
 ***ADC121C class member function***
 
+
 ### Args
 `clear_over` (int, default 0)
 - Must be 0 or 1
@@ -253,7 +260,7 @@ to `read_conversion_result()`
 
 ### Returns
 - 0 on success
-- I2C_ERROR on any communication errors
+- I2C_ERROR on I2C IO error
 """
         if clear_over not in [0, 1]  or  clear_under not in [0, 1]:
             raise ValueError (f"clear_over and clear_under must be ints 0 or 1 - received <{clear_over}, {clear_under}>")
@@ -277,11 +284,74 @@ to `read_conversion_result()`
     #=====================================================================================
 
     def write_config(self, config_byte=None, cycle_time=None, alert_hold=None, alert_flag_en=None, alert_pin_en=None, polarity=None):
+        """
+## write_config (config_byte=None, cycle_time=None, alert_hold=None, alert_flag_en=None, alert_pin_en=None, polarity=None) - Set operating modes
+
+***ADC121C class member function***
+
+The config register may be written entirely using `config_byte` or by individual field settings,
+with their default values set at instantiation.
+
+
+### Args
+`config_byte` (int, default None)
+- Used for explicit setting of the configuration register to a byte value
+- Must be in range 0x00 to 0xFF
+- Bit 1 (Reserved) is always forced to `0`, per the specification
+- If an int then the entire configuration register byte is written using this value, and the following args are ignored
+- If None then the configuration register is built from the following args, with their default values set at instantiation
+
+`cycle_time` (int, default None)
+- Value for the 3-bit Cycle Time field in the configuration register
+- Must be in range 0b000 to 0b111
+- If an int (and `config_byte` is None) then the 3-bit Cycle Time field is set to this value
+- If None (and `config_byte` is None), then the default value set at instantiation is used
+
+`alert_hold` (int, default None)
+- Value for the Alert Hold field in the configuration register
+- Must be 0 or 1
+- If an int (and `config_byte` is None) then the field is set to this value
+- If None (and `config_byte` is None), then the default value set at instantiation is used
+
+`alert_flag_en` (int, default None)
+- Value for the Alert Flag Enable field in the configuration register
+- Must be 0 or 1
+- If an int (and `config_byte` is None) then the field is set to this value
+- If None (and `config_byte` is None), then the default value set at instantiation is used
+
+`alert_pin_en` (int, default None)
+- Value for the Alert Pin Enable field in the configuration register
+- Must be 0 or 1
+- If an int (and `config_byte` is None) then the field is set to this value
+- If None (and `config_byte` is None), then the default value set at instantiation is used
+
+`polarity` (int, default None)
+- Value for the Polarity field in the configuration register
+- Must be 0 or 1
+- If an int (and `config_byte` is None) then the field is set to this value
+- If None (and `config_byte` is None), then the default value set at instantiation is used
+
+
+### Returns
+- 0 on success
+- I2C_ERROR on I2C IO error
+- Raises `ValueError` if any args have illegal values
+
+
+### Behaviors and rules
+- If `config_byte` is an int (not None), then the configuration register will be written with this value.  This 
+feature gives the tool script explicit control over the configuration register.
+- If `config_byte` is None then the individual field args passed in on this call are overlaid on the field value defaults established at instantiation
+to construct the configuration byte.  For example:
+  - At instantiation, `cycle_time=0b100`, `alert_flag_en=1`, `alert_pin_en=1` and other fields default to 0
+  - On this call, `cycle_time=0b001`, `alert_hold=1`, `alert_pin_en=0`, and `polarity=1`
+  - The resultant configuration byte is 0b00111001 - `cycle_time=0b001`, `alert_hold=1`, `alert_flag_en=1`, `alert_pin_en=0`, and `polarity=1`
+"""
 
         if config_byte:
             if not isinstance(config_byte, int)  or  config_byte < 0x00  or config_byte > 0xff:
                 raise ValueError (f"config_byte must be int between 0x00 and 0xff - received <{config_byte}>")
-            config_reg_value = config_byte
+            config_reg_value = config_byte & 0b11111101     # Bit 1 must be 0
         else:
             config_reg_value = 0x00
 
@@ -330,6 +400,28 @@ to `read_conversion_result()`
     #=====================================================================================
 
     def read_config(self):
+        """
+## read_config () - Return the content of the configuration register 
+
+***ADC121C class member function***
+
+
+### Returns
+- Configuration register byte on success
+- I2C_ERROR on I2C IO error
+
+
+
+### Behaviors and rules
+- If debug logging is enabled then the configuration register value is decoded, e.g.,
+
+        ADC121C.read_config     -    DEBUG:  <ADC_xx> configuration register <0b00111000> settings:
+        cycle_time:     <0b001>
+        alert_hold:     <1>
+        alert_flag_en:  <1>
+        alert_pin_en:   <0>
+        polarity:       <0>
+"""
         # Returns config reg byte
         adc121c_logger.debug (f"<{self.device_name}> ***** read_config()")
 
@@ -344,18 +436,14 @@ to `read_conversion_result()`
             return I2C_ERROR
 
         if adc121c_logger.isEnabledFor(logging.DEBUG):
-            cycle_time_value =      config_reg_value >> 5
-            alert_hold_value =      (config_reg_value & 0b00010000) >> 4
-            alert_flag_en_value =   (config_reg_value & 0b00001000) >> 3
-            alert_pin_en_value =    (config_reg_value & 0b00000100) >> 2
-            polarity_value =        config_reg_value & 0b00000001
+            ct, ah, af_en, ap_en, pol = decode_config_byte(config_reg_value)
 
             xx = f"<{self.device_name}> configuration register <0b{config_reg_value:0>8b}> settings:\n"
-            xx += f"  cycle_time:     <0b{cycle_time_value:0>3b}>\n"
-            xx += f"  alert_hold:     <{alert_hold_value}>\n"
-            xx += f"  alert_flag_en:  <{alert_flag_en_value}>\n"
-            xx += f"  alert_pin_en:   <{alert_pin_en_value}>\n"
-            xx += f"  polarity:       <{polarity_value}>"
+            xx += f"  cycle_time:     <0b{ct:0>3b}>\n"
+            xx += f"  alert_hold:     <{ah}>\n"
+            xx += f"  alert_flag_en:  <{af_en}>\n"
+            xx += f"  alert_pin_en:   <{ap_en}>\n"
+            xx += f"  polarity:       <{pol}>"
             adc121c_logger.debug (xx)
 
         return config_reg_value
@@ -368,6 +456,22 @@ to `read_conversion_result()`
     #=====================================================================================
 
     def write_vlow_alert_limit(self, vlow):
+        """
+## write_vlow_alert_limit (vlow) - Set the Vlow alert register voltage level
+
+***ADC121C class member function***
+
+
+### Args
+`vlow` (float or int)
+- Allowed range 0 to Vref (no 'V' units)
+
+
+### Returns
+- 0 on success
+- I2C_ERROR on I2C IO error
+- Raises ValueError if `vlow` is invalid
+"""
         # returns 0 on success, or I2C_ERROR
 
         if not isinstance(vlow, (int, float))  or  vlow < 0.0  or  vlow > self.Vref:
@@ -393,7 +497,16 @@ to `read_conversion_result()`
     #=====================================================================================
 
     def read_vlow_alert_limit(self):
-        # returns float vlow limit value voltage
+        """
+## read_vlow_alert_limit () - Return the Vlow alert register voltage level
+
+***ADC121C class member function***
+
+
+### Returns
+- Vlow alert level voltage (float) on success
+- I2C_ERROR on I2C IO error
+"""
         adc121c_logger.debug (f"<{self.device_name}> ***** read_vlow_alert_limit()")
 
         try:
@@ -416,8 +529,22 @@ to `read_conversion_result()`
     #=====================================================================================
 
     def write_vhigh_alert_limit(self, vhigh):
-        # returns 0 on success, or I2C_ERROR
+        """
+## write_vhigh_alert_limit (vhigh) - Set the Vhigh alert register voltage level
 
+***ADC121C class member function***
+
+
+### Args
+`vhigh` (float or int)
+- Allowed range 0 to Vref (no 'V' units)
+
+
+### Returns
+- 0 on success
+- I2C_ERROR on I2C IO error
+- Raises ValueError if `vhigh` is invalid
+"""
         if not isinstance(vhigh, (int, float))  or  vhigh < 0.0  or  vhigh > self.Vref:
             raise ValueError (f"vhigh out of range 0.0V to VRef ({self.Vref:5.3f}) - received <{vhigh}>")
         vhigh_reg_value = int((vhigh - 0.001) / self.Vref * 4096)   # Avoid vhigh=Vref resulting in 0x0000
@@ -441,6 +568,16 @@ to `read_conversion_result()`
     #=====================================================================================
 
     def read_vhigh_alert_limit(self):
+        """
+## read_vhigh_alert_limit () - Return the Vhigh alert register voltage level
+
+***ADC121C class member function***
+
+
+### Returns
+- Vhigh alert level voltage (float) on success
+- I2C_ERROR on I2C IO error
+"""
         # returns float vhigh limit value voltage
         adc121c_logger.debug (f"<{self.device_name}> ***** read_vhigh_alert_limit()")
 
@@ -464,8 +601,22 @@ to `read_conversion_result()`
     #=====================================================================================
 
     def write_alert_hysteresis(self, vhyst):
-        # returns 0 on success, or I2C_ERROR
+        """
+## write_alert_hysteresis (vhyst) - Set the Vhyst alert register voltage level
 
+***ADC121C class member function***
+
+
+### Args
+`vhyst` (float or int)
+- Allowed range 0 to Vref (no 'V' units)
+
+
+### Returns
+- 0 on success
+- I2C_ERROR on I2C IO error
+- Raises ValueError if `vhyst` is invalid
+"""
         if not isinstance(vhyst, (int, float))  or  vhyst < 0.0  or  vhyst > self.Vref:
             raise ValueError (f"vhyst out of range 0.0V to VRef ({self.Vref:5.3f}) - received <{vhyst}>")
         vhyst_reg_value = int(vhyst / self.Vref * 4096)
@@ -489,7 +640,16 @@ to `read_conversion_result()`
     #=====================================================================================
 
     def read_alert_hysteresis(self):
-        # returns float vhyst limit value voltage
+        """
+## read_alert_hysteresis () - Return the Vhyst alert register voltage level
+
+***ADC121C class member function***
+
+
+### Returns
+- Vhyst alert level voltage on success
+- I2C_ERROR on I2C IO error
+"""
         adc121c_logger.debug (f"<{self.device_name}> ***** read_alert_hysteresis()")
 
         try:
@@ -512,10 +672,23 @@ to `read_conversion_result()`
     #=====================================================================================
 
     def write_lowest_conversion(self):
-        # returns 0 on success, or I2C_ERROR
-        # A write to this register sets the reg to 0x0FFF (Vref)
+        """
+## write_lowest_conversion () - Reset the lowest conversion capture register
 
-        msB = 0x0f
+***ADC121C class member function***
+
+The reset state is 0x0FFF (maximum count value, effectively Vref).
+
+
+### Returns
+- 0 on success
+- I2C_ERROR on I2C IO error
+
+
+### Behaviors and rules
+- See notes on `read_lowest_conversion()`
+"""
+        msB = 0x0f          # It doesn't seem to matter what value is written to the register.  A write results in register value 0x0FFF.
         lsB = 0xff
         try:
             adc121c_logger.debug (f"<{self.device_name}> ***** write_lowest_conversion() <{self.Vref:5.3f}V>  <[ 0x{msB:0>2x} 0x{lsB:0>2x} ]>")
@@ -535,11 +708,26 @@ to `read_conversion_result()`
     #=====================================================================================
 
     def read_lowest_conversion(self):
-        # returns float vmin lowest conversion voltage
-        # only valid when Automatic Conversion mode is active.
-        # Reads after Automatic Conversion is stopped may show errant low voltage, e.g., 0V, while highest conversion capture remains correct
-        # Seems incorrect:  The value of this register will update
-        # automatically when the automatic conversion mode is enabled, but is NOT updated in the normal mode.
+        """
+## read_lowest_conversion () - Return the lowest conversion register voltage level
+
+***ADC121C class member function***
+
+The register value is converted to a voltage based on Vref.
+
+
+### Returns
+- The lowest measured/captured voltage (float) on success
+- I2C_ERROR on I2C IO error
+
+
+### Behaviors and rules
+- The datasheet says that the capture lowest/highest conversion results only works with Automatic Conversion modes (Cycle Time codes 0b001 thru 0b111).
+I find that the capture lowest/highest feature also works in Normal mode (Cycle Time code 0b000).
+- If switching from an Automatic Conversion mode to Normal mode note that the lowest conversion register may capture code 0x0000 (0.0V).
+If using the capture lowest/highest conversion feature it is best to read these registers before stopping the Automatic Conversion
+mode (switching to Normal mode).
+"""
         adc121c_logger.debug (f"<{self.device_name}> ***** read_lowest_conversion()")
 
         try:
@@ -561,11 +749,24 @@ to `read_conversion_result()`
     #=====================================================================================
     #=====================================================================================
 
-    def write_highest_conversion(self): #, vset=None):
-        # returns 0 on success, or I2C_ERROR
-        # A write to this register sets the reg to 0x0000 (0V)
+    def write_highest_conversion(self):
+        """
+## write_highest_conversion () - Reset the highest conversion capture register
 
-        msB = 0x00
+***ADC121C class member function***
+
+The reset state is 0x0000 (minimum count value, effectively 0.0V).
+
+
+### Returns
+- 0 on success
+- I2C_ERROR on I2C IO error
+
+
+### Behaviors and rules
+- See notes on `read_lowest_conversion()`
+"""
+        msB = 0x00          # It doesn't seem to matter what value is written to the register.  A write results in register value 0x0000.
         lsB = 0x00
         try:
             adc121c_logger.debug (f"<{self.device_name}> ***** write_highest_conversion() <0.000V>  <[ 0x{msB:0>2x} 0x{lsB:0>2x} ]>")
@@ -585,8 +786,22 @@ to `read_conversion_result()`
     #=====================================================================================
 
     def read_highest_conversion(self):
-        # returns float vmin lowest conversion voltage
-        # only valid when Automatic Conversion mode is active.  Reads 
+        """
+## read_highest_conversion () - Return the highest conversion register voltage level
+
+***ADC121C class member function***
+
+The register value is converted to a voltage based on Vref.
+
+
+### Returns
+- The highest measured/captured voltage (float) on success
+- I2C_ERROR on I2C IO error
+
+
+### Behaviors and rules
+- See notes on `read_lowest_conversion()`
+"""
         adc121c_logger.debug (f"<{self.device_name}> ***** read_highest_conversion()")
 
         try:
@@ -601,21 +816,10 @@ to `read_conversion_result()`
             adc121c_logger.debug (f"<{self.device_name}> exception:  {type(e).__name__}: {e}")
             return I2C_ERROR
 
-
-
-    # def read(self):
-    #     for trynum in range(self.ntrys):
-    #         try:
-    #             (count, data) = self.pi_i2c_bus_handle.i2c_read_device(self.device_addr, 2)
-    #             rslt = (((data[0] & 0x0f) << 8) | (data[1] & 0xff)) / 4096 * self.Vref
-    #             adc121c_logger.debug (f"Conversion result <{self.device_name}>:  (0x{data[0]:0>2x} 0x{data[1]:0>2x}) = {rslt:5.3f} V")
-    #             return rslt
-    #         except:
-    #             adc121c_logger.debug (f"Read  try# {trynum} FAILED <{self.device_name}>")
-    #         if trynum < self.ntrys - 1:
-    #             time.sleep(self.retry_wait)
-    #         else:
-    #             adc121c_logger.warning (f"Read  FAILED <{self.device_name}>")
-    #             return I2C_ERROR
-
-
+def decode_config_byte (config_byte):
+    ct =    config_byte >> 5
+    ah =    (config_byte & 0b00010000) >> 4
+    af_en = (config_byte & 0b00001000) >> 3
+    ap_en = (config_byte & 0b00000100) >> 2
+    pol =   config_byte & 0b00000001
+    return ct, ah, af_en, ap_en, pol

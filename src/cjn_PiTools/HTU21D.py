@@ -9,10 +9,12 @@ HTU21D library for Raspberry Pi
 #==========================================================
 
 import time
-# from time import sleep
-from cjnfuncs.core import set_toolname, logging, setuplogging, set_logging_level
+import logging
+from .shared import I2C_ERROR, CRC_ERROR, CtoF, CtoK
+# from cjnfuncs.core import set_toolname, logging, setuplogging, set_logging_level
 
-HTU21D_ADDRS =                  [0x40]
+# HTU21D_ADDR =                   [0x40]
+HTU21D_ADDR =                   0x40
 
 TRIGGER_TEMP_MEASURE_HOLD =     0xE3
 TRIGGER_RH_MEASURE_HOLD =       0xE5
@@ -21,45 +23,83 @@ TRIGGER_RH_MEASURE_HOLD =       0xE5
 READ_USER_REG =                 0xE7
 WRITE_USER_REG =                0xE6
 SOFT_RESET =                    0xFE
-READING_WAIT =                  0.055                    # Temp and RH readings take up to 50ms
-RESET_WAIT =                    0.05 #0.02                     # Soft reset spec wait is 15ms
+READING_WAIT =                  0.050                    # Temp and RH readings take up to 50ms
+RESET_WAIT =                    0.015                    # Soft reset spec wait is 15ms
 
 htu21d_logger = logging.getLogger('cjn_PiTools.HTU21D')
 
 
-class HTU21D:
-    def __init__(self, device_name, device_addr, pi_i2c_bus_handle):
-        self.device_name =          device_name
-        self.device_addr =          device_addr
-        self.pi_i2c_bus_handle =    pi_i2c_bus_handle
+#=====================================================================================
+#=====================================================================================
+#  C l a s s   H T U 2 1 D
+#=====================================================================================
+#=====================================================================================
 
-        if self.device_addr not in HTU21D_ADDRS:
-            raise ValueError (f"HTU21D device address must be 0x40.  Received <0x{device_addr:0>2x}>")
+class HTU21D:
+    """
+## Class HTU21D (device_name, pi_i2c_bus_handle) - HTU21D library for Raspberry Pi
+
+Create an HTU21D device instance
+
+### Args
+`device_name` (str)
+- User defined name for this instance, e.g., 'My_HTU21D'
+- Not validated as valid string
+
+`pi_i2c_bus_handle` (cjn_PiTools.shared.pi_i2c instance)
+- Get a `pi_i2c` instance handle in the tools script code and pass it to this device instantiation
+
+
+### Class instance variables - as passed in at instantiation
+- `device_name` (str)
+- 'device_addr' (int 0x40 - fixed value for this sensor model)
+
+
+### Behaviors and rules
+- Only hold-based trigger temp/rh measurement methods are implemented.  Readings are blocking operations.
+- Debug logging may be enabled in the tool script code by setting this module's logging level:
+
+        logging.getLogger('cjn_PiTools.HTU21D').setLevel(logging.DEBUG)
+"""
+    def __init__(self, device_name, pi_i2c_bus_handle):
+        self.device_name =          device_name
+        self.device_addr =          HTU21D_ADDR
+        self.pi_i2c_bus_handle =    pi_i2c_bus_handle
 
         api = 'smbus'  if self.pi_i2c_bus_handle.api == 'smbus'  else 'pigpio'
         htu21d_logger.debug (f"<{self.device_name}> New HTU21D device defined at addr <0x{self.device_addr:0>2x}> using api <{api}> on i2c bus <{self.pi_i2c_bus_handle.i2c_bus_num}>")
 
-    # def __init__(self, pio_handle, i2c_handle, debug=False):
-        # self.pio_handle = pio_handle
-        # self.i2c_device = i2c_handle
-        # self.debug = debug
 
+    #=====================================================================================
+    #=====================================================================================
+    #  s o f t _ r e s e t
+    #=====================================================================================
+    #=====================================================================================
 
-    def soft_reset(self): # , debug=False):
-        """Issue soft reset, and wait
-        Returns
-            0 for successful operation
-            -256 for an I2C error
+    def soft_reset(self):
         """
+## soft_reset () - Execute a soft reset
+
+***HTU21D class member function***
+
+Issue a soft reset and wait 15ms (blocking) for completion
+
+### Returns
+- 0 for successful operation
+- I2C_ERROR on I2C IO error
+
+
+### Behaviors and rules
+- This is a blocking operation for the spec 15ms.
+"""
+        htu21d_logger.debug (f"<{self.device_name}> ***** soft_reset()")
         try:
-            # n = self.pio_handle.i2c_write_byte(self.i2c_device, SOFT_RESET)  # returns 0x00 on ack, and 0x05 on no response
-            self.pi_i2c_bus_handle.i2c_write_byte(self.device_addr, SOFT_RESET)  # returns 0x00 on ack, and 0x05 on no response
-            time.sleep (RESET_WAIT)  # spec requires 15ms
-        except:
-            htu21d_logger.debug (f"HTU21D soft_reset failed.")
-            return -256
-        htu21d_logger.debug (f"HTU21D soft_reset success.")#  UserReg read back: 0x{self.read_user_reg():0>2x}")
-        return 0
+            self.pi_i2c_bus_handle.i2c_write_byte(self.device_addr, SOFT_RESET)
+            time.sleep (RESET_WAIT)
+            return 0
+        except Exception as e:
+            htu21d_logger.debug (f"<{self.device_name}> exception:\n  {type(e).__name__}: {e}")
+            return I2C_ERROR
 
 
     def read_user_reg(self):
@@ -95,68 +135,123 @@ class HTU21D:
         htu21d_logger.debug (f"HTU21D write_user_reg: 0x{value:0>2x}")
         return 0
 
-    def read_temp_data(self, scale='F'):
-        """Read 3 temperature bytes from the sensor
-        Returns temperature value in F (default) or C, or
-            -255 CRC error (invalid returned data from sensor)
-            -256 for an I2C error
+
+    #=====================================================================================
+    #=====================================================================================
+    #  r e a d _ t e m p _ d a t a
+    #=====================================================================================
+    #=====================================================================================
+
+    def read_temp_data(self, tempunits='C'):
         """
+## read_temp_data () - Trigger measurement and retrieve temperature
+
+***HTU21D class member function***
+
+Issue a hold-mode temperature measurement.
+
+### Args
+`tempunits` (str, default 'C', case-independent)
+- Must be 'C', 'F' or 'K', else ValueError is raised
+
+
+### Returns
+- Temperature value in specified tempunits on success
+- I2C_ERROR on I2C IO error
+- CRC_ERROR on CRC mismatch
+- Raises ValueError if tempunits is invalid
+
+
+### Behaviors and rules
+- Uses the hold-mode transaction, so the I2C bus is held/blocked until the completion of the temperature measurement.
+See the datasheet for the temperature measurement times based on the configured resolution.  The default 14-bit mode
+specifies a maximum of 50ms. 
+"""
+
+        htu21d_logger.debug (f"<{self.device_name}> ***** read_temp_data()")
         try:
             self.pi_i2c_bus_handle.i2c_write_byte(self.device_addr, TRIGGER_TEMP_MEASURE_HOLD)
-            time.sleep(READING_WAIT)
+            # time.sleep(READING_WAIT)
             (count, bytes3) = self.pi_i2c_bus_handle.i2c_read_device(self.device_addr, 3)
-        except:
-            htu21d_logger.debug ("HTU21D.read_temp_data i2c_read_device failed")
-            return -256  # I2C read error  TODO
-        htu21d_logger.debug (f"HTU21D.read_temp_data returned bytes:          0x{bytes3[0]:0>2x} 0x{bytes3[1]:0>2x} 0x{bytes3[2]:0>2x}")
+        except Exception as e:
+            htu21d_logger.debug (f"<{self.device_name}> exception:\n  {type(e).__name__}: {e}")
+            return I2C_ERROR
+        htu21d_logger.debug (f"<{self.device_name}>  Raw bytes:  0x{bytes3[0]:0>2x} 0x{bytes3[1]:0>2x} 0x{bytes3[2]:0>2x}")
 
         if not self.crc8_check(bytes3):
-            htu21d_logger.debug ("HTU21D.read_temp_data CRC error")
-            return -255  # bad CRC
+            htu21d_logger.debug ("<{self.device_name}> CRC error")
+            return CRC_ERROR
 
-        MSB = bytes3[0]
-        LSB = bytes3[1]
-        rawtemp = ((MSB <<8) | LSB) & 0xFFFC  # Lower two bits of LSB are status bits to be cleared
-        htu21d_logger.debug (f"HTU21D.read_temp_data Raw temp:                {rawtemp:x} hex, {rawtemp:d} decimal")
+        msB = bytes3[0]
+        lsB = bytes3[1]
+        rawtemp = ((msB <<8) | lsB) & 0xFFFC  # Lower two bits of LSB are status bits - ignored
 
-        # Apply datasheet formula:  Temp = -46.85 + (175.72 * <sensor data> / 2^16
+        # Apply datasheet formula:  TempC = -46.85 + (175.72 * <sensor data> / 2^16
         temp = -46.85 + (175.72 * rawtemp / 2**16)
-        if scale == 'F':
-            temp = temp *1.8 +32
-        htu21d_logger.debug (f"HTU21D.read_temp_data Calculated temp ({scale}):     {temp}")
+
+        _tempunits = tempunits.lower()
+        if _tempunits not in ['c', 'f', 'k']:
+            raise ValueError (F"<{self.device_name}> tempunits must be 'C', 'F', or 'K' - received <{tempunits}>")
+
+        if _tempunits == 'f':
+            temp = CtoF(temp)
+        elif _tempunits == 'k':
+            temp = CtoK(temp)
+
+        htu21d_logger.debug (f"<{self.device_name}>  Calculated temp: ({tempunits}):  <{temp}>")
         return temp
 
 
+    #=====================================================================================
+    #=====================================================================================
+    #  r e a d _ R H _ d a t a
+    #=====================================================================================
+    #=====================================================================================
+
     def read_RH_data(self):
-        """Read 3 relative humidity bytes from the sensor"""
-        """Read 3 relative humidity bytes from the sensor
-        Returns relative humidity value in %, or
-            -255 CRC error (invalid returned data from sensor)
-            -256 for an I2C error
         """
+## read_RH_data () - Trigger measurement and retrieve relative humidity
+
+***HTU21D class member function***
+
+Issue a hold-mode RH measurement.
+
+
+### Returns
+- RH value on success
+- I2C_ERROR on I2C IO error
+- CRC_ERROR on CRC mismatch
+
+
+### Behaviors and rules
+- Uses the hold-mode transaction, so the I2C bus is held/blocked until the completion of the RH measurement.
+See the datasheet for the RH measurement times based on the configured resolution.  The default 12-bit mode
+specifies a maximum of 16ms. 
+"""
+
+        htu21d_logger.debug (f"<{self.device_name}> ***** read_RH_data()")
         try:
             self.pi_i2c_bus_handle.i2c_write_byte(self.device_addr, TRIGGER_RH_MEASURE_HOLD)
-            time.sleep(READING_WAIT)
+            # time.sleep(READING_WAIT)
             (count, bytes3) = self.pi_i2c_bus_handle.i2c_read_device(self.device_addr, 3)
-        except:
-            htu21d_logger.debug ("HTU21D.read_RH_data i2c_read_device failed")
-            return -256  # I2C read error
-
-        htu21d_logger.debug (f"HTU21D.read_RH_data returned bytes:      0x{bytes3[0]:0>2x} 0x{bytes3[1]:0>2x} 0x{bytes3[2]:0>2x}")
+        except Exception as e:
+            htu21d_logger.debug (f"<{self.device_name}> exception:\n  {type(e).__name__}: {e}")
+            return I2C_ERROR
+        htu21d_logger.debug (f"<{self.device_name}>  Raw bytes:  0x{bytes3[0]:0>2x} 0x{bytes3[1]:0>2x} 0x{bytes3[2]:0>2x}")
 
         if not self.crc8_check(bytes3):
-            print ("HTU21D.read_RH_data CRC error")
-            return -255  # bad CRC
+            htu21d_logger.debug ("<{self.device_name}> CRC error")
+            return CRC_ERROR
 
-        MSB = bytes3[0]
-        LSB = bytes3[1]
-        rawRH = ((MSB <<8) | LSB) & 0xFFFC  # Lower two bits of LSB are status bits to be cleared
-        htu21d_logger.debug (f"HTU21D.read_RH_data Raw RH:              {rawRH:x} hex, {rawRH:d} decimal")
+        msB = bytes3[0]
+        lsB = bytes3[1]
+        rawRH = ((msB <<8) | lsB) & 0xFFFC  # Lower two bits of LSB are status bits - ignored
 
         # Apply datasheet formula:  RH = -6 + 125 * <sensor data> / 2^16
         RH = -6.0 + (125 * rawRH / 2**16)
-        htu21d_logger.debug (f"HTU21D.read_RH_data Calculated RH:       {RH}")
+        htu21d_logger.debug (f"<{self.device_name}>  Calculated RH:         <{RH}>")
         return RH
+
 
 
     def crc8_check(self, value):
@@ -182,50 +277,3 @@ class HTU21D:
            return True
        else:
            return False
-
-
-# if __name__ == '__main__': 
-
-#     import pigpio
-#     import argparse
-
-#     I2C_SCL_GPIO        = 3
-#     I2C_SDA_GPIO        = 2
-
-#     parser = argparse.ArgumentParser(description=__doc__ + __version__, formatter_class=argparse.RawTextHelpFormatter)
-#     parser.add_argument('-c', '--channel', type=int,
-#                         help="Channel select for pca9548 (0-7)")
-#     parser.add_argument('-V', '--version', action='version', version='%(prog)s ' + __version__,
-#                         help="Return version number and exit.")
-
-#     args = parser.parse_args()
-
-
-#     pio = pigpio.pi()
-
-#     pio.set_mode(I2C_SCL_GPIO, pigpio.ALT0)    # set to I2C mode
-#     pio.set_mode(I2C_SDA_GPIO, pigpio.ALT0)
-
-#     if args.channel is not None:
-#         pca9548_i2c = pio.i2c_open(1, 0x71)
-#         bitmask = 0x01 << args.channel
-#         pio.i2c_write_byte(pca9548_i2c, bitmask)
-
-#     htu21d_i2c  = pio.i2c_open(1, 0x40)
-#     htu21d = HTU21D(pio, htu21d_i2c, debug=True)
-
-
-#     htu21d.read_user_reg()
-#     htu21d.soft_reset()
-#     htu21d.read_user_reg()
-
-#     print (f"{htu21d.read_temp_data(scale='C'):>4.1f} C")
-#     print (f"{htu21d.read_temp_data():>4.1f} F")
-#     print (f"{htu21d.read_RH_data():>4.1f} %")
-
-#     print (f"0x{htu21d.read_user_reg():0>2x} (before following write 0x03)")
-#     htu21d.write_user_reg(3)
-#     htu21d.read_user_reg()
-
-#     htu21d.write_user_reg(4)
-#     htu21d.read_user_reg()

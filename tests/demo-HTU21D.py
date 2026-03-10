@@ -20,14 +20,10 @@ Produce / compare to golden results:
 
 __version__ =   '1.0'
 TOOLNAME =      'demo_HTU21D'
-HTU21D_ADDR =   0x40
 
 import argparse
 import re
-import time
-# import subprocess
-# from pathlib import Path
-# import shutil
+# import time
 import pigpio
 
 from cjnfuncs.core              import set_toolname, setuplogging, logging, set_logging_level
@@ -37,41 +33,39 @@ from cjn_PiTools.HTU21D         import HTU21D
 from cjn_PiTools.PCA9548        import PCA9548
 
 
+PCA9548_RESBD =     {'addr': 0x71, 'name': 'PCA9548_Res'}
+HTU21D_IO_CH =      '6'
+
+
 set_toolname(TOOLNAME)
-
-
 setuplogging(ConsoleLogFormat="{module:>35}.{funcName:30} - {levelname:>8}:  {message}")
 set_logging_level(logging.DEBUG)
+logging.getLogger('cjn_PiTools.shared').setLevel(logging.DEBUG)
+logging.getLogger('cjn_PiTools.HTU21D').setLevel(logging.DEBUG)
+logging.getLogger('cjn_PiTools.PCA9548').setLevel(logging.DEBUG)
 
 
 parser = argparse.ArgumentParser(description=__doc__ + __version__, formatter_class=argparse.RawTextHelpFormatter)
 parser.add_argument('-t', '--test', default='0',
                     help="Test number to run (default 0) - 0 runs all tests")
-args = parser.parse_args()
+parser.add_argument('-x', '--expand-exception', action='store_true',
+                    help="Expand exceptions with trace stack for test debug")
+cli_args = parser.parse_args()
 
 
-# --------------------------------------------------------------------
-logging.getLogger('cjn_PiTools.HTU21D').setLevel(logging.DEBUG)
-logging.getLogger('cjn_PiTools.shared').setLevel(logging.DEBUG)
-logging.getLogger('cjn_PiTools.PCA9548').setLevel(logging.DEBUG)
+logging.warning (f"\n\n---- Test Init ------------------------------------------------------")
+
 
 # Get i2c bus and device handles
 pio =                   pigpio.pi()
-pio_i2c_bus_handle =    pi_i2c(pio)
-htu21d_inst_pio =       HTU21D('HTU21D_pio', HTU21D_ADDR, pio_i2c_bus_handle)
+i2c_bus_handle_pigpio = pi_i2c(pio)
+i2c_bus_handle_smbus =  pi_i2c('smbus')
 
-# ***** i2c bus 1 test boards configuration *****
-#
-# Board 1 (connected directly to RPi I2C bus 1)
-#   PCA9548 address 0x71
-#       Channel 0:  Connected to Board 2 PCA9548
-#       Channel 6:  HTU21D at address 0x40
+pca9548_resBd_handle_pigpio =   PCA9548(PCA9548_RESBD['name'], PCA9548_RESBD['addr'], i2c_bus_handle_pigpio)
+pca9548_resBd_handle_pigpio.write_control_reg (HTU21D_IO_CH)
 
-pca9548_class_handle =  PCA9548('PCA9548_71', 0x71, pio_i2c_bus_handle)
-pca9548_class_handle.write_control_reg ('6')
-
-smbus_i2c_bus_handle =  pi_i2c('smbus')
-htu21d_inst_smbus =     HTU21D('HTU21D_smbus', HTU21D_ADDR, smbus_i2c_bus_handle)
+htu21d_inst_pipgio =    HTU21D('HTU21D_pigpio', i2c_bus_handle_pigpio)
+htu21d_inst_smbus  =    HTU21D('HTU21D_smbus', i2c_bus_handle_smbus)
 
 
 def dotest (desc, expect, func, *args, **kwargs):
@@ -81,11 +75,13 @@ def dotest (desc, expect, func, *args, **kwargs):
                      f"  EXPECT:     {expect}")
     try:
         result = func(*args, **kwargs)
-        logging.warning (f"  RETURNED:\n{result}")
+        logging.warning (f"\n  RETURNED:   {result}")
         return result
     except Exception as e:
-        logging.error (f"\n  RAISED:     {type(e).__name__}: {e}")
-        # logging.exception (f"\n  RAISED:     {type(e).__name__}: {e}")
+        if cli_args.expand_exception:
+            logging.exception (f"\n  RAISED:     {type(e).__name__}: {e}")
+        else:
+            logging.error (f"\n  RAISED:     {type(e).__name__}: {e}")
         return e
 
 
@@ -93,11 +89,12 @@ tnum_parse = re.compile(r"([\d]+)([\w]*)")
 def check_tnum(tnum_in, include0='0'):
     global tnum
     tnum = tnum_in
-    if args.test == include0  or  args.test == tnum_in:  return True
+    if cli_args.test == include0  or  cli_args.test == tnum_in:  return True
     try:
-        if int(args.test) == int(tnum_parse.match(tnum_in).group(1)):  return True
+        if int(cli_args.test) == int(tnum_parse.match(tnum_in).group(1)):  return True
     except:  pass
     return False
+
 
 #===============================================================================================
 
@@ -107,12 +104,21 @@ if __name__ == '__main__':
     # Basic demo read temp/RH pass cases
     if check_tnum('1a'):
         def func():
-            htu21d_inst_pio.soft_reset()    # blocks for reset time
-            # htu21d_inst_pio.read_user_reg()
-            temp = htu21d_inst_pio.read_temp_data()
+            htu21d_inst_pipgio.soft_reset()
+            temp = htu21d_inst_pipgio.read_temp_data()
+            htu21d_inst_pipgio.read_RH_data()
             return temp
 
-        dotest ("read_temp_data pigpio api, default F", "Pass", func)
+        dotest ("read temp & RH data pigpio api, default C", "24.858002929687494", func)
+
+    if check_tnum('1b'):
+        def func():
+            htu21d_inst_smbus.soft_reset()
+            temp = htu21d_inst_smbus.read_temp_data(tempunits='F')
+            htu21d_inst_smbus.read_RH_data()
+            return temp
+
+        dotest ("read temp & RH data smbus api, tempunits F", "76.57065869140624", func)
 
     # if check_tnum('1b'):
     #     def func():
@@ -406,7 +412,7 @@ if __name__ == '__main__':
 
     logging.warning (f"\n\n---- Cleanup --------------------------------------------------------")
 
-    pio_i2c_bus_handle.close()
+    i2c_bus_handle_pigpio.close()
     pio.stop()
 
-    smbus_i2c_bus_handle.close()
+    i2c_bus_handle_smbus.close()

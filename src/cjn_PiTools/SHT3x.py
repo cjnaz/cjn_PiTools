@@ -101,6 +101,8 @@ class SHT3x:
 
         Returns
             0 for successful operation
+            - I2C_ERROR on I2C IO error
+
             I2C_ERROR (-256) on I2C IO error
         """
         sht3x_logger.debug (f"<{self.device_name}> ***** soft_reset()")

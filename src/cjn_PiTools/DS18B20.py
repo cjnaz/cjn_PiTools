@@ -50,7 +50,8 @@ Create an DS18B20 device instance
 `device_name` (str, default 'DS18B20')
 - User friendly name for the sensor
 
-### Class variables
+
+### Class instance variables
 
 `device_id` (str)
 - device_id from sensor instantiation
@@ -64,11 +65,13 @@ Create an DS18B20 device instance
 `bus_master_path` (Path)
 - full pathlib path the w1 bus master for the sensor
 
+
 ### Behaviors and rules
 - Debug logging from this module may be enabled in the tool script code by setting this module's logging level:
 
     logging.getLogger('cjn_PiTools.DS18B20').setLevel(logging.DEBUG)
     """
+
     def __init__(self, device_id, device_name='DS18B20'):
         self.device_id =        device_id
         self.device_name =      device_name
@@ -90,7 +93,8 @@ Create an DS18B20 device instance
 
 ### Args
 `tempunits` (str, default 'C')
-- Must be 'C', 'F' or 'K', else ValueError is raised.
+- Must be 'C', 'F' or 'K', else ValueError is raised
+
 
 ### Returns
 - (float) Read temperature in tempunits
@@ -217,7 +221,7 @@ and return a new measurement.
 
 ### Args
 `tempunits` (str, default 'C')
-- Must be 'C', 'F' or 'K', else ValueError is raised.
+- Must be 'C', 'F' or 'K', else ValueError is raised
 
 ### Returns
 - (float) Read temperature in tempunits

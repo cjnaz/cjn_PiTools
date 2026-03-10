@@ -1,6 +1,7 @@
 [project]
 name = 'cjn_PiTools'
-version = "1.1b6"
+version = "1.1b7"
+    # 1.1b7 - ADC121C complete, HTU21D partial
     # 1.1b6 - ADC121C feature complete & tests added (docs in progress), DS18B20 doc, shared doc
     # 1.1b5 - Refine some of shared methods, PCA9548, SHT3x tuned up, testing added.  HTU21D added.
     # 1.1b4 - Added ADC121C, MCP23008.  Functional, limited testing, no doc work

@@ -188,304 +188,112 @@ $ DS18B20
 
 # Links to classes, methods, and functions
 
-- [DS18B20](#DS18B20)
-- [read_temperature](#read_temperature)
-- [bulk_convert_trigger](#bulk_convert_trigger)
-- [bulk_convert_status](#bulk_convert_status)
-- [read_temperature2](#read_temperature2)
-- [read_scratchpad](#read_scratchpad)
-- [get_resolution](#get_resolution)
-- [set_resolution](#set_resolution)
-- [get_alarm_temps](#get_alarm_temps)
-- [set_alarm_temps](#set_alarm_temps)
-- [get_conv_time](#get_conv_time)
-- [set_conv_time](#set_conv_time)
-- [get_ext_power](#get_ext_power)
-- [copy_scratchpad](#copy_scratchpad)
-- [recall_E2](#recall_E2)
+- [HTU21D](#HTU21D)
+- [soft_reset](#soft_reset)
+- [read_temp_data](#read_temp_data)
+- [read_RH_data](#read_RH_data)
 
 
 
 <br/>
 
-<a id="DS18B20"></a>
+<a id="HTU21D"></a>
 
 ---
 
-# Class DS18B20 (device_id, device_name='DS18B20') - DS18B20 library/driver for Raspberry Pi using the w1_therm kernel driver
+# Class HTU21D (device_name, pi_i2c_bus_handle) - HTU21D library for Raspberry Pi
 
-Create an DS18B20 device instance
+Create an HTU21D device instance
 
-### Parameters
-`device_id` (str)
-- As listed in /sys/bus/w1/devices/, eg '28-0b228004203c'
+### Args
+`device_name` (str)
+- User defined name for this instance, e.g., 'My_HTU21D'
+- Not validated as valid string
 
-`device_name` (str, default 'DS18B20')
-- User friendly name for the sensor
+`pi_i2c_bus_handle` (cjn_PiTools.shared.pi_i2c instance)
+- Get a `pi_i2c` instance handle in the tools script code and pass it to this device instantiation
 
 
-### Class instance variables
-
-`device_id` (str)
-- device_id from sensor instantiation
-
-`device_name` (str, default 'DS18B20')
-- device_name from sensor instantiation
-
-`sensor_path` (Path)
-- full pathlib path to the sensor directory
-
-`bus_master_path` (Path)
-- full pathlib path the w1 bus master for the sensor
+### Class instance variables - as passed in at instantiation
+- `device_name` (str)
+- 'device_addr' (int 0x40 - fixed value for this sensor model)
 
 
 ### Behaviors and rules
-- Debug logging from this module may be enabled in the tool script code by setting this module's logging level:
+- Only hold-based trigger temp/rh measurement methods are implemented.  Readings are blocking operations.
+- Debug logging may be enabled in the tool script code by setting this module's logging level:
 
-    logging.getLogger('cjn_PiTools.DS18B20').setLevel(logging.DEBUG)
-    
+        logging.getLogger('cjn_PiTools.HTU21D').setLevel(logging.DEBUG)
+
 <br/>
 
-<a id="read_temperature"></a>
+<a id="soft_reset"></a>
 
 ---
 
-# read_temperature (tempunits='C') - Return the temperature from w1_slave file, with CRC check
+# soft_reset () - Execute a soft reset
 
-***DS18B20 class member function***
+***HTU21D class member function***
+
+Issue a soft reset and wait 15ms (blocking) for completion
+
+### Returns
+- 0 for successful operation
+- I2C_ERROR on I2C IO error
+
+
+### Behaviors and rules
+- This is a blocking operation for the spec 15ms.
+
+<br/>
+
+<a id="read_temp_data"></a>
+
+---
+
+# read_temp_data () - Trigger measurement and retrieve temperature
+
+***HTU21D class member function***
+
+Issue a hold-mode temperature measurement.
 
 ### Args
-`tempunits` (str, default 'C')
+`tempunits` (str, default 'C', case-independent)
 - Must be 'C', 'F' or 'K', else ValueError is raised
 
 
 ### Returns
-- (float) Read temperature in tempunits
-- (int) -255:  CRC_ERROR
-- (int) -256:  READ_ERROR
-- Raises `ValueError` if tempunits is not valid
-        
+- Temperature value in specified tempunits on success
+- I2C_ERROR on I2C IO error
+- CRC_ERROR on CRC mismatch
+- Raises ValueError if tempunits is invalid
+
+
+### Behaviors and rules
+- Uses the hold-mode transaction, so the I2C bus is held/blocked until the completion of the temperature measurement.
+See the datasheet for the temperature measurement times based on the configured resolution.  The default 14-bit mode
+specifies a maximum of 50ms. 
+
 <br/>
 
-<a id="bulk_convert_trigger"></a>
+<a id="read_RH_data"></a>
 
 ---
 
-# bulk_convert_trigger () - Trigger parallel temp conversions for all sensors on this sensor's bus.
+# read_RH_data () - Trigger measurement and retrieve relative humidity
 
-***DS18B20 class member function***
+***HTU21D class member function***
 
-Requires root privilege (sudo), or `chmod 666 /sys/bus/w1/devices/w1_bus_masterX/therm_bulk_read`.
-Note that the chmod must be redone after each boot.  Install the `initW1buses.service` to run at boot to set 
-write permission on the therm_bulk_read file.
+Issue a hold-mode RH measurement.
 
-Follow with calls to <sensor>.read_temperature2() for each sensor on the bus.
 
 ### Returns
-- (int) 1 on successful trigger.  Returns after the parallel conversion time of all sensors on the bus.
-- (int) 0 if trigger was not successful
-- (int) -1 if at least one sensor is still in conversion
-- Raises PermissionError if unable to write to the therm_bulk_read file
-        
-<br/>
-
-<a id="bulk_convert_status"></a>
-
----
-
-# bulk_convert_status () - Return the status of bulk/parallel sensor conversions and reading on this sensor's bus.
-
-***DS18B20 class member function***
-
-### Returns
-- (int) 1 if any sensor on this sensor's bus has not yet be read with read_temperature2()
-- (int) 0 if all sensors on this sensor's bus have been read
-- (int) -1 if at least one sensor is still in conversion
-        
-<br/>
-
-<a id="read_temperature2"></a>
-
----
-
-# read_temperature2 (tempunits='C') - Return the temperature from temperature file.  Used with bulk_convert_trigger().
-
-***DS18B20 class member function***
-
-If a bulk_convert_trigger() was previously executed, return the previously captured temperature, else take
-and return a new measurement.
-
-### Args
-`tempunits` (str, default 'C')
-- Must be 'C', 'F' or 'K', else ValueError is raised
-
-### Returns
-- (float) Read temperature in tempunits
-- (int) -256:  READ_ERROR
-- Raises `ValueError` if tempunits is not valid
-        
-<br/>
-
-<a id="read_scratchpad"></a>
-
----
-
-# read_scratchpad () - Return the w1_slave file line 1.  Forces a new temperature conversion.
-
-***DS18B20 class member function***
-
-With debug logging, logs full w1_slave file, temperature (bytes 0 & 1), TH and TL (bytes 2 & 3), and resolution in the config register (byte 4).
-
-### Returns
-- (str) Just line 1 (9 bytes and CRC calc/confirmation) from the w1_slave file (not the second line which include 't=xxxxx')
-- (int) -256:  READ_ERROR
-        
-<br/>
-
-<a id="get_resolution"></a>
-
----
-
-# get_resolution () - Return the current resolution setting in the config register
-
-***DS18B20 class member function***
-
-### Returns
-- (int) Current resolution setting in the config register, eg 12
-        
-<br/>
-
-<a id="set_resolution"></a>
-
----
-
-# set_resolution (resolution) - Set the configuration register resolution field.  Requires root privilege (sudo).
-
-***DS18B20 class member function***
-
-### Args
-`resolution` (int or str)
-- 9, 10, 11, or 12
-
-### Returns
-- (int) New resolution setting, eg 12
-- Raises PermissionError if unable to write to the resolution file
-
-        
-<br/>
-
-<a id="get_alarm_temps"></a>
-
----
-
-# get_alarm_temps () - Return the current <TH TL> alarm settings
-
-***DS18B20 class member function***
-
-### Returns
-- (str) Current <TL TH> alarm settings pair, eg '-15 20'
-- Values are degrees C
-        
-<br/>
-
-<a id="set_alarm_temps"></a>
-
----
-
-# set_alarm_temps (TL, TH) - Set the alarm TL and TH registers.  Requires root privilege (sudo).
-
-***DS18B20 class member function***
-
-Values must be between -55C and +125C.  w1_therm sets TL to the lower of the two temps, TH to the higher.
-
-### Parameters
-`TL` (int or str)
-- Low temp alarm threshold in degrees C
-
-`TH` (int or str)
-- High temp alarm threshold in degrees C
-
-### Returns
-- (str) The newly set <TL TH> alarm settings pair, eg '-15 20'
-- Raises `ValueError` if TL or TH value is not valid or out of range
-- Raises PermissionError if unable to write to the alarms file
-
-
-        
-<br/>
-
-<a id="get_conv_time"></a>
-
----
-
-# get_conv_time () - Return the current conversion time setting
-
-***DS18B20 class member function***
-
-### Returns
-- (int) Currently set conversion time in milliseconds, eg 750
-        
-<br/>
-
-<a id="set_conv_time"></a>
-
----
-
-# set_conv_time (conv_setting) - Set the conversion time for temperature measurements.  Requires root privilege (sudo).
-
-***DS18B20 class member function***
-
-### Args
-`conv_setting` (int or str)
-- 0: Set the default conversion time from the datasheet based on the current resolution (eg 750ms for 12-bit resolution)
-- 1: Trigger measurement of the actual required conversion time, and set future conversions
-  to the measured time.  Note that this value is guardbanded 20% higher than the actual measured
-  time, and thus may be higher than the specification time.
-- \>1: Set conversion time to `conv_setting`, resolution milliseconds
-
-### Returns
-- (int) Currently set conversion time in milliseconds as a result of the `conv_setting` operation
-- Raises PermissionError if unable to write to the conf_time file
-        
-<br/>
-
-<a id="get_ext_power"></a>
-
----
-
-# get_ext_power () - Return the external power status
-
-***DS18B20 class member function***
-
-### Returns
-- (int) 0: Parasitic powered
-- (int) 1: Externally powered
-        
-<br/>
-
-<a id="copy_scratchpad"></a>
-
----
-
-# copy_scratchpad () - write scratchpad TH, TL, and resolution to EEPROM.  Requires root privilege (sudo).
-
-***DS18B20 class member function***
-
-### Returns
-- None
-- Raises PermissionError if unable to write to the eeprom_cmd file
-        
-<br/>
-
-<a id="recall_E2"></a>
-
----
-
-# recall_E2 () - Restore EEPROM TH, TL, and resolution to scratchpad.  Requires root privilege (sudo).
-
-***DS18B20 class member function***
-
-### Returns
-- None
-- Raises PermissionError if unable to write to the eeprom_cmd file
-        
+- RH value on success
+- I2C_ERROR on I2C IO error
+- CRC_ERROR on CRC mismatch
+
+
+### Behaviors and rules
+- Uses the hold-mode transaction, so the I2C bus is held/blocked until the completion of the RH measurement.
+See the datasheet for the RH measurement times based on the configured resolution.  The default 12-bit mode
+specifies a maximum of 16ms. 

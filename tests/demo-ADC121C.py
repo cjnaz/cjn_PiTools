@@ -2,50 +2,17 @@
 """Demo/test for ADC121C
 
 Produce / compare to golden results:
-    ./demo-SHT3x.py > testrun.log
+    ./demo-ADC121C.py > testrun.log
 
-    ./fsactivity_plugin_test.py | diff fsactivity_plugin_test.golden -
+    ./demo-ADC121C.py | diff demo-ADC121C-golden.txt -
         Expected differences:
-            File timestamps and ages for newfile, george, mahesh
-            Ages for too old tests 2e, 2f, 4e, 4f, 6b1, 6b2, 6c
+            Measured register values and voltages
+            Addresses of cjn_PiTools.shared.pi_i2c objects in test 13
 """
 
 #==========================================================
 #
 #  Chris Nelson, Copyright 2026
-#
-# ***** i2c bus 1 test boards configuration *****
-#
-# Board 1 (connected directly to RPi I2C bus 1)
-#   PCA9548 address 0x71
-#       Channel 0:  Connected to Board 2 PCA9548
-#       Channel 1:  Connected to SHT3x at address 0x44
-#       Channel 2:  Connected to SHT3x at address 0x45
-#       Channel 6:  Connected to HTU21D at address 0x40
-#
-# Board 2 (connected to Board 1 PCA9548 Channel 0)
-#   PCA9548 address 0x75
-#       Channel 0:  Jack I2C1 with SHT3x at address 0x44
-#       Channel 1:  Jack I2C2
-#       Channel 2:  Jack I2C3
-#       Channel 3:  ADC121C ADC1 at address 0x50, Jack SOIL 1
-#           ADC121C chips use 4.2V reference
-#       Channel 3:  ADC121C ADC2 at address 0x51, Jack SOIL 2
-#       Channel 4:  MCP23008_IO_ADDR at address 0x70 
-#           Bit 0: OUT 1
-#           Bit 1: OUT 2 - ADC test pulldown
-#           Bit 2: OUT 3 - ADC test pullup
-#           Bit 3: OUT 4
-#           Bit 4: S1 input with weak pullup
-#           Bit 5: S2 input with weak pullup
-#           Bit 6: S3 input with weak pullup
-#           Bit 7: NC
-#       Channel 4:  MCP23008_7SEG_ADDR at address 0x71
-#           All bits as outputs serving as pulldowns on common anode 7-segment display
-#           Segment selects in DIG_2_SEG are inverted when written to MCP23008_7SEG_ADDR
-#       Channel 5:  ADC121C ADC3 at address 0x52, Jack SOIL 3
-#       Channel 5:  ADC121C ADC4 at address 0x50, Jack SOIL 4
-#       Channels 6 and 7: No connect
 #
 # 1.0 260212 - New
 #
@@ -69,8 +36,8 @@ from cjn_PiTools.MCP23008       import mcp23008
 PCA9548_RESBD =     {'addr': 0x71, 'name': 'PCA9548_Res'}
 PCA9548_IRRBD =     {'addr': 0x75, 'name': 'PCA9548_Irr'}
 MCP23008_IO_ADDR =  0x20
-MCP23008_ADC_CH =   3
-MCP23008_IO_CH =    4
+MCP23008_ADC_CH =   '3'
+MCP23008_IO_CH =    '4'
 
 
 set_toolname(TOOLNAME)
@@ -78,6 +45,8 @@ setuplogging(ConsoleLogFormat="{module:>35}.{funcName:30} - {levelname:>8}:  {me
 set_logging_level(logging.DEBUG)
 logging.getLogger('cjn_PiTools.shared').setLevel(logging.DEBUG)
 logging.getLogger('cjn_PiTools.ADC121C').setLevel(logging.DEBUG)
+logging.getLogger('cjn_PiTools.PCA9548').setLevel(logging.DEBUG)
+logging.getLogger('cjn_PiTools.MCP23008').setLevel(logging.DEBUG)
 
 
 parser = argparse.ArgumentParser(description=__doc__ + __version__, formatter_class=argparse.RawTextHelpFormatter)
@@ -100,11 +69,11 @@ pca9548_resBd_handle_pigpio =   PCA9548(PCA9548_RESBD['name'], PCA9548_RESBD['ad
 pca9548_irrBd_handle_pigpio =   PCA9548(PCA9548_IRRBD['name'], PCA9548_IRRBD['addr'], i2c_bus_handle_pio)
 
 pca9548_resBd_handle_pigpio.write_control_reg ('0')
-pca9548_irrBd_handle_pigpio.write_control_reg ('4')
+pca9548_irrBd_handle_pigpio.write_control_reg (MCP23008_IO_CH)
 MCP23008_IO_inst_pio =      mcp23008('MCP23008_IO', MCP23008_IO_ADDR, i2c_bus_handle_pio,
                                      IO_dir_init=0xF0, out_bits_init=0x00, ins_pullups_init=0xf0)
 
-pca9548_irrBd_handle_pigpio.write_control_reg ('3')
+pca9548_irrBd_handle_pigpio.write_control_reg (MCP23008_ADC_CH)
 ADC121C_50_inst_pigpio =    ADC121C('ADC121C_50', 0x50, i2c_bus_handle_pio, Vref=4.2)
 ADC121C_51_inst_pigpio =    ADC121C('ADC121C_51', 0x51, i2c_bus_handle_pio, Vref=4.2)
 
@@ -140,12 +109,6 @@ def check_tnum(tnum_in, include0='0'):
     return False
 
 
-# selective write_config_reg after init
-# alert low/high reg write/read
-# See alert flag set in read_conversion_result
-# See alert flags set in alert_status_register
-# see auto clear or not (alert hold)
-
 #===============================================================================================
 if __name__ == '__main__':
 
@@ -155,10 +118,6 @@ if __name__ == '__main__':
         dotest ("read_conversion_result pigpio api", "(0, voltage value)", ADC121C_50_inst_pigpio.read_conversion_result)
 
     if check_tnum('1b'):
-        # def func():
-        #     alert, val = ADC121C_50_inst_smbus.read_conversion_result()
-        #     return ADC121C_50_inst_smbus.read_conversion_result()           # Address Pointer Register write skipped on 2nd call
-
         dotest ("read_conversion_result smbus api", "(0, voltage value)", ADC121C_50_inst_smbus.read_conversion_result)
 
     if check_tnum('1c'):
@@ -175,6 +134,8 @@ if __name__ == '__main__':
 
     #-------------------------------------------------------------------------
     # Alert cases
+    #-------------------------------------------------------------------------
+
     if check_tnum('2a'):
         def func():
             ADC121C_51_inst_pigpio.write_vlow_alert_limit(1.5)
@@ -190,34 +151,34 @@ if __name__ == '__main__':
             ADC121C_51_inst_pigpio.read_alert_status()
 
             logging.info ("\nEnable pulldown.  VIN = ~1.4V.  Low alert.")
-            pca9548_irrBd_handle_pigpio.write_control_reg('4')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
             MCP23008_IO_inst_pio.set_bits(0b0010, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg('3')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
             ADC121C_51_inst_pigpio.read_conversion_result()
             ADC121C_51_inst_pigpio.read_alert_status()
 
             logging.info ("\nDisable pulldown.  VIN = ~2.1V.  Still in low alert due to hysteresis 0.7V.")
-            pca9548_irrBd_handle_pigpio.write_control_reg('4')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
             MCP23008_IO_inst_pio.set_bits(0b0000, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg('3')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
             ADC121C_51_inst_pigpio.read_conversion_result()
             ADC121C_51_inst_pigpio.read_alert_status()
 
             logging.info ("\nEnable pullup.  VIN = ~2.8V.  Low alert clears.")
-            pca9548_irrBd_handle_pigpio.write_control_reg('4')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
             MCP23008_IO_inst_pio.set_bits(0b0100, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg('3')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
             ADC121C_51_inst_pigpio.read_conversion_result()
             ADC121C_51_inst_pigpio.read_alert_status()
 
             logging.info ("\nDisable pullup.  VIN = ~2.1V.  No alert.")
-            pca9548_irrBd_handle_pigpio.write_control_reg('4')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
             MCP23008_IO_inst_pio.set_bits(0b0000, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg('3')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
             ADC121C_51_inst_pigpio.read_conversion_result()
             ADC121C_51_inst_pigpio.read_alert_status()
 
@@ -242,34 +203,34 @@ if __name__ == '__main__':
             ADC121C_51_inst_pigpio.read_alert_status()
 
             logging.info ("\nEnable pullup.  VIN = ~2.8V.  High alert.")
-            pca9548_irrBd_handle_pigpio.write_control_reg('4')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
             MCP23008_IO_inst_pio.set_bits(0b0100, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg('3')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
             ADC121C_51_inst_pigpio.read_conversion_result()
             ADC121C_51_inst_pigpio.read_alert_status()
 
             logging.info ("\nDisable pullup.  VIN = ~2.1V.  Still in high alert due to hysteresis 0.7V.")
-            pca9548_irrBd_handle_pigpio.write_control_reg('4')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
             MCP23008_IO_inst_pio.set_bits(0b0000, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg('3')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
             ADC121C_51_inst_pigpio.read_conversion_result()
             ADC121C_51_inst_pigpio.read_alert_status()
 
             logging.info ("\nEnable pulldown.  VIN = ~1.4V.  High alert clears.")
-            pca9548_irrBd_handle_pigpio.write_control_reg('4')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
             MCP23008_IO_inst_pio.set_bits(0b0010, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg('3')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
             ADC121C_51_inst_pigpio.read_conversion_result()
             ADC121C_51_inst_pigpio.read_alert_status()
 
             logging.info ("\nDisable pulldown.  VIN = ~2.1V.  No alert.")
-            pca9548_irrBd_handle_pigpio.write_control_reg('4')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
             MCP23008_IO_inst_pio.set_bits(0b0000, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg('3')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
             ADC121C_51_inst_pigpio.read_conversion_result()
             ADC121C_51_inst_pigpio.read_alert_status()
 
@@ -292,26 +253,26 @@ if __name__ == '__main__':
             ADC121C_51_inst_pigpio.read_alert_status()
 
             logging.info ("\nEnable pullup.  VIN = ~2.8V.  High alert.")
-            pca9548_irrBd_handle_pigpio.write_control_reg('4')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
             MCP23008_IO_inst_pio.set_bits(0b0100, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg('3')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
             ADC121C_51_inst_pigpio.read_conversion_result()
             ADC121C_51_inst_pigpio.read_alert_status()
 
             logging.info ("\nEnable pulldown.  VIN = ~1.4V.  Low alert.")
-            pca9548_irrBd_handle_pigpio.write_control_reg('4')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
             MCP23008_IO_inst_pio.set_bits(0b0010, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg('3')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
             ADC121C_51_inst_pigpio.read_conversion_result()
             ADC121C_51_inst_pigpio.read_alert_status()
 
             logging.info ("\n Disable pulldown.  VIN = ~2.1V.  Both alerts still set.")
-            pca9548_irrBd_handle_pigpio.write_control_reg('4')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
             MCP23008_IO_inst_pio.set_bits(0b0000, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg('3')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
             ADC121C_51_inst_pigpio.read_conversion_result()
             ADC121C_51_inst_pigpio.read_alert_status()
             ADC121C_51_inst_pigpio.write_alert_status(clear_over=1)
@@ -330,34 +291,34 @@ if __name__ == '__main__':
     # Capture lowest and highest readings
     if check_tnum('3'):
         def func():
-            ADC121C_51_inst_pigpio.write_config(cycle_time=0b111)  # Auto Conversion mode
+            ADC121C_51_inst_pigpio.write_config(cycle_time=0b111)   # Auto Conversion mode
             ADC121C_51_inst_pigpio.read_config()
-            ADC121C_51_inst_pigpio.write_highest_conversion()   # Clear the registers
+            ADC121C_51_inst_pigpio.write_highest_conversion()       # Clear the registers
             ADC121C_51_inst_pigpio.write_lowest_conversion()
             ADC121C_51_inst_pigpio.read_highest_conversion()
             ADC121C_51_inst_pigpio.read_lowest_conversion()
 
             logging.info ("\nEnable pulldown.  VIN = ~1.4V.")
-            pca9548_irrBd_handle_pigpio.write_control_reg('4')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
             MCP23008_IO_inst_pio.set_bits(0b0010, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg('3')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
             ADC121C_51_inst_pigpio.read_highest_conversion()
             ADC121C_51_inst_pigpio.read_lowest_conversion()
 
             logging.info ("\nDisable pulldown, Enable pullup.  VIN = ~2.8V.")
-            pca9548_irrBd_handle_pigpio.write_control_reg('4')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
             MCP23008_IO_inst_pio.set_bits(0b0100, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg('3')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
             ADC121C_51_inst_pigpio.read_highest_conversion()
             ADC121C_51_inst_pigpio.read_lowest_conversion()
 
             logging.info ("\nDisable pullup.  VIN = ~2.1V.")
-            pca9548_irrBd_handle_pigpio.write_control_reg('4')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
             MCP23008_IO_inst_pio.set_bits(0b0000, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg('3')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
             ADC121C_51_inst_pigpio.read_highest_conversion()
             ADC121C_51_inst_pigpio.read_lowest_conversion()
 
@@ -365,24 +326,24 @@ if __name__ == '__main__':
             ADC121C_51_inst_pigpio.write_config()
             ADC121C_51_inst_pigpio.read_highest_conversion()
             ADC121C_51_inst_pigpio.read_lowest_conversion()
-            ADC121C_51_inst_pigpio.write_highest_conversion()   # Clear the registers
+            ADC121C_51_inst_pigpio.write_highest_conversion()               # Clear the registers
             ADC121C_51_inst_pigpio.write_lowest_conversion()
             ADC121C_51_inst_pigpio.read_highest_conversion()
             ADC121C_51_inst_pigpio.read_lowest_conversion()
 
             logging.info ("\nCapture highest/lowest in Normal mode")
             ADC121C_51_inst_pigpio.read_conversion_result()
-            pca9548_irrBd_handle_pigpio.write_control_reg('4')
-            MCP23008_IO_inst_pio.set_bits(0b0010, 0x0F)         # Enable pulldown
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
+            MCP23008_IO_inst_pio.set_bits(0b0010, 0x0F)                     # Enable pulldown
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg('3')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
             ADC121C_51_inst_pigpio.read_conversion_result()
             ADC121C_51_inst_pigpio.read_highest_conversion()
             ADC121C_51_inst_pigpio.read_lowest_conversion()
 
-            pca9548_irrBd_handle_pigpio.write_control_reg('4')  # Disable pulldown
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)   # Disable pulldown
             MCP23008_IO_inst_pio.set_bits(0b0000, 0x0F)
-            pca9548_irrBd_handle_pigpio.write_control_reg('3')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
 
         dotest ("demo capture lowest and highest readings", "None", func)
 
@@ -391,17 +352,65 @@ if __name__ == '__main__':
     # write_config with config_byte
     if check_tnum('4a'):
         def func():
-            ADC121C_50_inst_pigpio.write_config(config_byte=0b10101001, cycle_time=0b111)
+            ADC121C_50_inst_pigpio.write_config(config_byte=0b10101001,
+                         cycle_time=0b111, alert_hold=0, alert_flag_en=0, alert_pin_en=0, polarity=1)
             return ADC121C_50_inst_pigpio.read_config()
-        dotest ("write_config with config_byte wins over individual settings", "169 (0b10101001)", func)
+        dotest ("write_config with config_byte wins over individual settings and defaults", "169 (0b10101001)", func)
 
     if check_tnum('4b'):
         def func():
-            xx = ADC121C('ADC_xx', 0x50, i2c_bus_handle_smbus, Vref=4.2, config_byte=0b10101001, polarity=1)
+            logging.info ("Instantiation with both config_byte and individuals (ignored)")
+            xx = ADC121C('ADC_xx', 0x50, i2c_bus_handle_smbus, Vref=4.2, config_byte=0b10111111,
+                         cycle_time=0b000, alert_hold=0, alert_flag_en=0, alert_pin_en=0, polarity=0)
             xx.read_config()
-            xx.write_config(cycle_time=0b010)
+
+            logging.info ("write_config with new config_byte overriding defaults from config_byte at instantiation")
+            xx.write_config(config_byte=0b11000010, alert_hold=0, alert_flag_en=0, alert_pin_en=0, polarity=0)
+            xx.read_config()
+
+            logging.info ("write_config with individuals overriding defaults from config_byte at instantiation")
+            xx.write_config(cycle_time=0b010, alert_hold=0, alert_flag_en=0, alert_pin_en=0, polarity=0)
+            xx.read_config()
+
+            logging.info ("write_config using instantiation defaults")
+            xx.write_config()
             return xx.read_config()
-        dotest ("init with config_byte, then write_config with individual setting", "65 (0b01000001)", func)
+        dotest ("config instantiation defaults from config_byte", "189 (0b10111101)", func)
+
+    if check_tnum('4c'):
+        def func():
+            logging.info ("Instantiation with individuals")
+            xx = ADC121C('ADC_xx', 0x50, i2c_bus_handle_smbus, Vref=4.2,
+                         cycle_time=0b001, alert_flag_en=1, alert_pin_en=1, alert_hold=1, polarity=1)
+            xx.read_config()
+
+            logging.info ("write_config with config_byte overriding defaults from instantiation")
+            xx.write_config(config_byte=0xff)
+            xx.read_config()
+
+            logging.info ("write_config with individuals overriding defaults from instantiation")
+            xx.write_config(cycle_time=0b110, alert_hold=0, alert_flag_en=0, alert_pin_en=0, polarity=0)
+            xx.read_config()
+
+            logging.info ("write_config using instantiation defaults")
+            xx.write_config()
+            return xx.read_config()
+        dotest ("config instantiation defaults from indiv settings", "61 (0b00111101)", func)
+
+    if check_tnum('4d'):
+        def func():
+            logging.info ("Instantiation with defaults")
+            xx = ADC121C('ADC_xx', 0x50, i2c_bus_handle_smbus, Vref=4.2)
+            xx.read_config()
+
+            logging.info ("write_config with individuals overriding defaults from instantiation")
+            xx.write_config(cycle_time=0b110, alert_hold=1, alert_flag_en=1, alert_pin_en=1, polarity=1)
+            xx.read_config()
+
+            logging.info ("write_config using instantiation defaults")
+            xx.write_config()
+            return xx.read_config()
+        dotest ("config instantiation default defaults", "0 (0b00000000)", func)
 
 
     # #-------------------------------------------------------------------------
@@ -422,11 +431,11 @@ if __name__ == '__main__':
 
     if check_tnum('13d'):
         def func():
-            pca9548_irrBd_handle_pigpio.write_control_reg('4')
+            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
             return ADC121C_51_inst_pigpio.read_conversion_result()
 
         dotest ("Device inaccessible after successful init", "(-256, -256)", func)
-        pca9548_irrBd_handle_pigpio.write_control_reg('3')
+        pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
 
     if check_tnum('13e'):
         dotest ("Invalid value to write_alert_status", "ValueError: clear_over and clear_under must be ints 0 or 1 - received <a, 0>",
@@ -459,81 +468,6 @@ if __name__ == '__main__':
         dotest ("Invalid config_byte in init", "ValueError: config_byte must be int between 0x00 and 0xff - received <4095>",
                 ADC121C, 'ADC121C_50', 0x50, i2c_bus_handle_pio, Vref=4.2, config_byte=0xFFF)
 
-
-
-    # if check_tnum('9b'):
-    #     def func():
-    #         pca9548_class_handle.write_control_reg (7)          # No SHT3x connected at address 0x44
-    #         return sht3x_44_inst_pio.soft_reset()
-
-    #     dotest ("Attempt soft_reset() with inaccessible device - pigpio api", "I2C_ERROR -256", func)
-
-    #     # Restore to default i2c network config
-    #     pca9548_class_handle.write_control_reg ('0b110')        # Enable Channels 1 and 2 (SHT3x devices available at 0x44 and 0x45)
-
-
-    # if check_tnum('9c'):
-    #     def func():
-    #         pca9548_class_handle.write_control_reg (7)
-    #         return sht3x_44_inst_pio.fetch_data(send_fetch=False)
-
-    #     dotest ("Attempt fetch_data() with inaccessible device - pigpio api", "I2C_ERROR (-256, -256)", func)
-
-    #     # Restore to default i2c network config
-    #     pca9548_class_handle.write_control_reg ('0b110')
-
-
-    # if check_tnum('9d'):
-    #     def func():
-    #         pca9548_class_handle.write_control_reg (7)
-    #         return sht3x_44_inst_smbus.soft_reset()
-
-    #     dotest ("Attempt soft_reset() with inaccessible device - smbus api", "I2C_ERROR -256", func)
-
-    #     # Restore to default i2c network config
-    #     pca9548_class_handle.write_control_reg ('0b110')
-
-
-    # if check_tnum('9e'):
-    #     def func():
-    #         pca9548_class_handle.write_control_reg (7)
-    #         return sht3x_44_inst_smbus.fetch_data(send_fetch=False)
-
-    #     dotest ("Attempt fetch_data() with inaccessible device - smbus api", "I2C_ERROR (-256, -256)", func)
-
-    #     # Restore to default i2c network config
-    #     pca9548_class_handle.write_control_reg ('0b110')
-
-
-    # if check_tnum('9f'):
-    #     def func():
-    #         return sht3x_44_inst_smbus.single_shot(repeatability="NOTA")
-
-    #     dotest ("Attempt fetch_data() with invalid repeatability - smbus api", "ValueError: Invalid Single Shot mode selection - received repeatability <NOTA>", func)
-
-
-    # if check_tnum('9g'):
-    #     def func():
-    #         return sht3x_44_inst_pio.start_periodic_DA(repeatability="NOTA", mps='16')
-
-    #     dotest ("Attempt start_periodic_DA() with invalid repeatability & mps - pigpio api", "ValueError: Invalid Periodic Data Acquisition mode selection - received repeatability <NOTA>, mps: <16>", func)
-
-
-    # if check_tnum('9h'):
-    #     def func():
-    #         sht3x_44_inst_pio.start_periodic_DA()
-    #         temp, rh = sht3x_44_inst_pio.fetch_data(force_CRC_fail=True)
-    #         sht3x_44_inst_pio.stop_periodic_DA()
-    #         return temp, rh
-
-    #     dotest ("fetch_data() CRC fail - pigpio api", "(-255, -255)", func)
-
-
-    # if check_tnum('9i'):
-    #     def func():
-    #         return sht3x_44_inst_pio.read_status_reg(force_CRC_fail=True)
-
-    #     dotest ("read_status_reg() CRC fail - pigpio api", "-255", func)
 
 
     # #-------------------------------------------------------------------------
@@ -593,67 +527,36 @@ if __name__ == '__main__':
         logging.info ("Test 51")
         print (ADC121C_51_inst_pigpio.read_conversion_result())
 
-        pca9548_irrBd_handle_pigpio.write_control_reg('4')
+        pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
         MCP23008_IO_inst_pio.set_bits(0b0010, 0x0F)
         time.sleep (0.1)
-        pca9548_irrBd_handle_pigpio.write_control_reg('3')
+        pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
         print (ADC121C_51_inst_pigpio.read_conversion_result())
         print (ADC121C_51_inst_pigpio.read_conversion_result())
 
-        pca9548_irrBd_handle_pigpio.write_control_reg('4')
+        pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
         MCP23008_IO_inst_pio.set_bits(0b0100, 0x0F)
         time.sleep (0.1)
-        pca9548_irrBd_handle_pigpio.write_control_reg('3')
+        pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
         print (ADC121C_51_inst_pigpio.read_conversion_result())
         print (ADC121C_51_inst_pigpio.read_conversion_result())
 
-        pca9548_irrBd_handle_pigpio.write_control_reg('4')
+        pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
         MCP23008_IO_inst_pio.set_bits(0b0000, 0x0F)
         time.sleep (0.1)
-        pca9548_irrBd_handle_pigpio.write_control_reg('3')
+        pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
         print (ADC121C_51_inst_pigpio.read_conversion_result())
         print (ADC121C_51_inst_pigpio.read_conversion_result())
 
 
-
-    #     def func():
-    #         sht3x_44_inst_pio.clear_status_reg()
-    #         sht3x_44_inst_pio.soft_reset()
-    #         sht3x_44_inst_pio.read_status_reg()
-    #         # sht3x_44_inst_pio.write_alert_reg('High_Set', 60, 80, tempunits='C')
-    #         sht3x_44_inst_pio.read_alert_reg('High_Set',   tempunits='C')
-    #         # sht3x_44_inst_pio.read_alert_reg('High_Set')
-    #         sht3x_44_inst_pio.read_alert_reg('High_Clear', tempunits='C')
-    #         sht3x_44_inst_pio.read_alert_reg('Low_Clear',  tempunits='C')
-    #         sht3x_44_inst_pio.read_alert_reg('Low_Set',    tempunits='C')
-
-    #         sht3x_44_inst_pio.write_alert_reg('High_Set',  40, 50, tempunits='C')
-    #         sht3x_44_inst_pio.read_alert_reg('High_Set',   tempunits='C')
-    #         sht3x_44_inst_pio.soft_reset()
-    #         sht3x_44_inst_pio.read_alert_reg('High_Set',   tempunits='C')
-    #         # sht3x_44_inst_pio.read_status_reg()
-
-
-    #     dotest ("read_alert_reg", "Pass", func)
-
-
-    # if check_tnum('52', include0=False):
-
-    #     def func():
-    #         sht3x_44_inst_pio.soft_reset()
-    #         # sht3x_44_inst_pio.write_alert_reg('High_Set', 60, 80, tempunits='C')
-    #         sht3x_44_inst_pio.read_alert_reg('High_Set',   tempunits='C')
-    #         sht3x_44_inst_pio.read_alert_reg('High_Set')
-    #         sht3x_44_inst_pio.read_alert_reg('High_Clear', tempunits='C')
-    #         sht3x_44_inst_pio.read_alert_reg('Low_Clear',  tempunits='C')
-    #         sht3x_44_inst_pio.read_alert_reg('Low_Set',    tempunits='C')
-
-    #         sht3x_44_inst_pio.write_alert_reg('High_Set',  40, 50, tempunits='C')
-    #         sht3x_44_inst_pio.read_alert_reg('High_Set',   tempunits='C')
-    #         sht3x_44_inst_pio.read_status_reg()
-
-
-    #     dotest ("read_alert_reg", "Pass", func)
+    if check_tnum('52', include0=False):
+        logging.info ("Test 52 - write_config Behaviors notes")
+        xx = ADC121C('ADC_xx', 0x50, i2c_bus_handle_smbus, Vref=4.2, cycle_time=0b100, alert_flag_en=1, alert_pin_en=1)
+        xx.read_config()
+        xx.write_config(cycle_time=0b001, alert_hold=1, alert_pin_en=0, polarity=1)
+        xx.read_config()
+        # xx.write_config(config_byte=0b11111111)
+        # xx.read_config()
 
 
     logging.warning (f"\n\n---- Cleanup --------------------------------------------------------")
