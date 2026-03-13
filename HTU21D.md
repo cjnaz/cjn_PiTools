@@ -1,34 +1,17 @@
-# DS18B20 high-featured library/driver for Raspberry Pi using the w1_therm kernel driver
+# HTU21D driver for Raspberry Pi
 
 Skip to [API documentation](#links)
 
-This module provides a clean and mostly complete (*) API for DS18B20 temperature sensors 
-using the w1_therm kernel driver.  Also provided is a command line interface for interactive dev/debug.
+This module provides a clean and complete API for HTU21D temperature/RH sensor.
 
 Supports:
-- Reading temperatures
-- Bulk parallel conversion of temperatures for all sensors on the bus
-- Resolution setting and Alarm thresholds setting in scratchpad
-- Setting and measuring actual conversion (temperature measurement) time
-- Scratchpad save/restore to/from EEPROM
-- Multiple w1 busses
+- Reading temperature and RH values using either I2C bus hold mode (aka clock stretching) or no-hold mode
+- Writing and reading the User Register (aka the config/status register)
+- Asserting a soft_reset
 
-(*) Not supported:
- - Alarm search - I've not found any useful documentation for triggering an alarm search nor reading back the in-alarm sensor list.  I'm happy to add the feature if I only knew how.
- - 'features' register (conversion error check and poll for completion)
- - async_io (just needs development)
- - Other sensor models
+Tested on Python 3.9.2
 
-Tested on Python 3.9.2 and kernel version 6.1.21-v7+ #1642 SMP Mon Apr  3 17:20:52 BST 2023, and should work on similar kernel versions since about 2020.
-
-Do read the [fine datasheet](https://www.analog.com/media/en/technical-documentation/data-sheets/DS18B20.pdf).
-
-
-<br>
-
-## Setup / Installation
-
-If you wish to use the `bulk_convert_trigger ()` api (without root privilege) it is necessary to setup/install the W1 bus initialization module [initW1buses](https://github.com/cjnaz/cjn_PiTools/initW1buses.md).  Alternately, run your tool script with root privilege.
+Do read the [fine datasheet](https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv&DocNm=HPC199_6&DocType=Data%20Sheet&DocLang=English&DocFormat=pdf&PartCntxt=CAT-HSC0004).
 
 
 <br>
@@ -38,26 +21,40 @@ If you wish to use the `bulk_convert_trigger ()` api (without root privilege) it
 Example code:
 ```
 #!/usr/bin/env python3
-# DS18B20_README_ex.py available in the docs directory in the github repo
+# HTU21D_README_ex.py available in the docs directory in the github repo
 
 import logging
-from cjn_PiTools.DS18B20 import DS18B20
+from cjn_PiTools.shared import pi_i2c
+from cjn_PiTools.HTU21D import HTU21D
 
 logging.basicConfig()
-logging.getLogger('cjn_PiTools.DS18B20').setLevel(logging.DEBUG)
+logging.getLogger('cjn_PiTools.HTU21D').setLevel(logging.DEBUG)
 
+i2c_bus_handle = pi_i2c('smbus')
+htu21d =         HTU21D('My_HTU21D', i2c_bus_handle)
 
-sensor = DS18B20('28-0b2280337113', 'My_DS18B20')
-logging.info (f"Current temperature for sensor {sensor.device_name} / {sensor.device_id}:  {sensor.read_temperature(tempunits='F'):7.3f} F")
+logging.warning (f"Current temperature for sensor {htu21d.device_name}:  " + \
+                 f"{htu21d.read_temperature(tempunits='F'):7.3f} F,  " + \
+                 f"RH:  {htu21d.read_RH():7.3f} %")
+
+# Clean up
+i2c_bus_handle.close()
 ```
 
 And running it:
 ```
-$ ./DS18B20_README_ex.py 
-DEBUG:cjn_PiTools.DS18B20:28-0b2280337113 / My_DS18B20 - w1_slave file content:
-8e 01 3c 0f 7f ff 7f 10 3a : crc=3a YES
-8e 01 3c 0f 7f ff 7f 10 3a t=24875
-DEBUG:cjn_PiTools.DS18B20:28-0b2280337113 / My_DS18B20 - temperature:   76.775 F
+$ ./HTU21D_README_ex.py 
+DEBUG:cjn_PiTools.HTU21D:<My_HTU21D> ***** soft_reset()
+DEBUG:cjn_PiTools.HTU21D:<My_HTU21D> New HTU21D device defined at addr <0x40> using api <smbus> on i2c bus <1>
+DEBUG:cjn_PiTools.HTU21D:<My_HTU21D> ***** read_temperature()
+DEBUG:cjn_PiTools.HTU21D:<My_HTU21D> ***** fetch_temperature()
+DEBUG:cjn_PiTools.HTU21D:<My_HTU21D>  Raw bytes:  0x69 0x88 0x55
+DEBUG:cjn_PiTools.HTU21D:<My_HTU21D> - Temperature:    (F):  <78.05715722656248>
+DEBUG:cjn_PiTools.HTU21D:<My_HTU21D> ***** read_RH()
+DEBUG:cjn_PiTools.HTU21D:<My_HTU21D> ***** fetch_RH()
+DEBUG:cjn_PiTools.HTU21D:<My_HTU21D>  Raw bytes:  0x59 0xce 0x7c
+DEBUG:cjn_PiTools.HTU21D:<My_HTU21D> - RH:                   <37.84613037109375>
+WARNING:root:Current temperature for sensor My_HTU21D:   78.057 F,  RH:   37.846 %
 ```
 
 <br>
@@ -68,115 +65,6 @@ To enabled debug logging from this module's classes/functions, add this to your 
 
      logging.getLogger('cjn_PiTools.DS18B20').setLevel(logging.DEBUG)
 
-
-<br>
-
-## Command Line Interface and Demo
-
-Once installed a cli tool is available.  The cli tool provides some useful debug and configuration features (such as setting and permanently saving 
-the resolution setting), and also a few demonstration cases (such as triggering a bulk/parallel conversion on multiple sensors and reading back their values).
-
-```
-$ DS18B20 --help
-usage: DS18B20 [-h] [-m MODE] [-n NAME] [-r RESOLUTION] [-L TL] [-H TH] [-c CONV_TIME] [-v] [-V] [DeviceID]
-
-DS18B20 driver and CLI/demo for Raspberry Pi
-
-Modes:
-    0:  Dump info for all sensors (-m 0)  (DeviceID is optional, ignored for mode 0 only)
-    1:  Get current temp (<DeviceID> -m 1)
-    2:  Read scratchpad (<DeviceID> -m 2)
-    3:  Get current resolution (<DeviceID> -m 3)
-    4:  Set resolution (<DeviceID> -m 4 -r 9)
-    5:  Get current alarm temps (<DeviceID> -m 5)
-    6:  Set alarm temps (<DeviceID> -m 6 -L 20 -H 30)
-    7:  Send bulk_convert_trigger (<DeviceID> -m 7)
-    8:  Save scratchpad to EEPROM (<DeviceID> -m 8)
-    9:  Restore EEPROM to scratchpad (<DeviceID> -m 9)
-    10: Get current conversion time (<DeviceID> -m 10)
-    11: Set conversion time or start measurement (<DeviceID> -m 11 -c 1)
-    12: Get parasitic/external power status (<DeviceID> -m 12)
-
-    20: Minimal example for README (<DeviceID> -m 20)
-    21: Demonstrate saving alarm/resolution to EEPROM and restoring (<DeviceID> -m 21)
-    22: Demonstrate bulk/parallel temperature conversions and sensor reads (<DeviceID> -m 22) (Supply the DeviceID of one of the sensors on the bus of interest.)
-1.1
-
-positional arguments:
-  DeviceID              ID of target device, eg 28-0b2280337113
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -m MODE, --mode MODE  Test mode select (default 0, you probably also want -v or -vv)
-  -n NAME, --name NAME  Name of the sensor to be displayed (default DS18B20)
-  -r RESOLUTION, --resolution RESOLUTION
-                        Resolution value (9, 10, 11, or 12) to be set with --mode 4 (default 12)
-  -L TL, --TL TL        TL alarm value (degrees C) to be set with --mode 6 (default -25)
-  -H TH, --TH TH        TH alarm value (degrees C) to be set with --mode 6 (default 50)
-  -c CONV_TIME, --conv-time CONV_TIME
-                        Conversion time setting or trigger measurement operation  (default 0 - set to spec value)
-  -v, --verbose         Print info-level (-v) and debug-level (-vv) status and activity messages
-  -V, --version         Print version number and exit
-```
-
-<br>
-
-## Using the CLI for debug
-
-Mode 2 calls `read_scratchpad()` which invokes a dump and parse of a sensor's return results register, `w1_slave`:
-
-```
-$ DS18B20 28-0b228004203c --name "My_Sensor" --mode 2 -vv
-        DS18B20.read_scratchpad      -    DEBUG:  28-0b228004203c / My_Sensor - w1_slave file content:
-8b 01 3c 0f 7f ff 7f 10 6c : crc=6c YES
-8b 01 3c 0f 7f ff 7f 10 6c t=24687
-        DS18B20.read_scratchpad      -    DEBUG:  28-0b228004203c / My_Sensor - temperature code:  01 8b   24.688 C,   76.438 F,  297.837 K
-        DS18B20.read_scratchpad      -    DEBUG:  28-0b228004203c / My_Sensor - High alarm limit:  3c      60 C,      140.000 F,  333.150 K
-        DS18B20.read_scratchpad      -    DEBUG:  28-0b228004203c / My_Sensor - Low  alarm limit:  0f      15 C,       59.000 F,  288.150 K
-        DS18B20.read_scratchpad      -    DEBUG:  28-0b228004203c / My_Sensor - Resolution:        7f      12
-        DS18B20.read_scratchpad      -    DEBUG:  28-0b228004203c / My_Sensor - Sensor root directory:     /sys/bus/w1/devices/28-0b228004203c
-        DS18B20.read_scratchpad      -    DEBUG:  28-0b228004203c / My_Sensor - Bus master root directory: /sys/bus/w1/devices/w1_bus_master1
-        DS18B20.cli                  -     INFO:  ['8b', '01', '3c', '0f', '7f', 'ff', '7f', '10', '6c', ':', 'crc=6c', 'YES']
-```
-
-Mode 0 (the default mode) invokes a similar dump for every sensor found on the host, across all w1 busses, and includes conversion time and external power status:
-
-```
-$ DS18B20
-        DS18B20.cli                  -     INFO:  Sensor </sys/bus/w1/devices/28-0b228004203c> on bus master </sys/bus/w1/devices/w1_bus_master1>:
-        DS18B20.read_scratchpad      -    DEBUG:  28-0b228004203c / DS18B20 - w1_slave file content:
-8a 01 3c 0f 7f ff 7f 10 2f : crc=2f YES
-8a 01 3c 0f 7f ff 7f 10 2f t=24625
-        DS18B20.read_scratchpad      -    DEBUG:  28-0b228004203c / DS18B20 - temperature code:  01 8a   24.625 C,   76.325 F,  297.775 K
-        DS18B20.read_scratchpad      -    DEBUG:  28-0b228004203c / DS18B20 - High alarm limit:  3c      60 C,      140.000 F,  333.150 K
-        DS18B20.read_scratchpad      -    DEBUG:  28-0b228004203c / DS18B20 - Low  alarm limit:  0f      15 C,       59.000 F,  288.150 K
-        DS18B20.read_scratchpad      -    DEBUG:  28-0b228004203c / DS18B20 - Resolution:        7f      12
-        DS18B20.read_scratchpad      -    DEBUG:  28-0b228004203c / DS18B20 - Sensor root directory:     /sys/bus/w1/devices/28-0b228004203c
-        DS18B20.read_scratchpad      -    DEBUG:  28-0b228004203c / DS18B20 - Bus master root directory: /sys/bus/w1/devices/w1_bus_master1
-        DS18B20.get_conv_time        -    DEBUG:  28-0b228004203c / DS18B20 - Current conversion time:   750
-        DS18B20.get_ext_power        -    DEBUG:  28-0b228004203c / DS18B20 - External power status:     1
-        DS18B20.cli                  -     INFO:  Sensor </sys/bus/w1/devices/28-0b2280337113> on bus master </sys/bus/w1/devices/w1_bus_master1>:
-        DS18B20.read_scratchpad      -    DEBUG:  28-0b2280337113 / DS18B20 - w1_slave file content:
-91 01 3c 0f 7f ff 7f 10 94 : crc=94 YES
-91 01 3c 0f 7f ff 7f 10 94 t=25062
-        DS18B20.read_scratchpad      -    DEBUG:  28-0b2280337113 / DS18B20 - temperature code:  01 91   25.062 C,   77.113 F,  298.212 K
-        DS18B20.read_scratchpad      -    DEBUG:  28-0b2280337113 / DS18B20 - High alarm limit:  3c      60 C,      140.000 F,  333.150 K
-        DS18B20.read_scratchpad      -    DEBUG:  28-0b2280337113 / DS18B20 - Low  alarm limit:  0f      15 C,       59.000 F,  288.150 K
-        DS18B20.read_scratchpad      -    DEBUG:  28-0b2280337113 / DS18B20 - Resolution:        7f      12
-        DS18B20.read_scratchpad      -    DEBUG:  28-0b2280337113 / DS18B20 - Sensor root directory:     /sys/bus/w1/devices/28-0b2280337113
-        DS18B20.read_scratchpad      -    DEBUG:  28-0b2280337113 / DS18B20 - Bus master root directory: /sys/bus/w1/devices/w1_bus_master1
-        DS18B20.get_conv_time        -    DEBUG:  28-0b2280337113 / DS18B20 - Current conversion time:   750
-        DS18B20.get_ext_power        -    DEBUG:  28-0b2280337113 / DS18B20 - External power status:     1
-```
-
-
-<br>
-
-## References
-  - [https://www.analog.com/media/en/technical-documentation/data-sheets/DS18B20.pdf](https://www.analog.com/media/en/technical-documentation/data-sheets/DS18B20.pdf)
-  - [https://docs.kernel.org/w1/slaves/w1_therm.html](https://docs.kernel.org/w1/slaves/w1_therm.html)
-  - [https://docs.kernel.org/w1/w1-generic.html](https://docs.kernel.org/w1/w1-generic.html)
-  - [https://www.kernel.org/doc/Documentation/ABI/testing/sysfs-driver-w1_therm](https://www.kernel.org/doc/Documentation/ABI/testing/sysfs-driver-w1_therm)
 
 
 
@@ -190,8 +78,14 @@ $ DS18B20
 
 - [HTU21D](#HTU21D)
 - [soft_reset](#soft_reset)
-- [read_temp_data](#read_temp_data)
-- [read_RH_data](#read_RH_data)
+- [read_user_reg](#read_user_reg)
+- [write_user_reg](#write_user_reg)
+- [read_temperature](#read_temperature)
+- [trigger_temperature_nohold](#trigger_temperature_nohold)
+- [fetch_temperature](#fetch_temperature)
+- [read_RH](#read_RH)
+- [trigger_RH_nohold](#trigger_RH_nohold)
+- [fetch_RH](#fetch_RH)
 
 
 
@@ -216,11 +110,16 @@ Create an HTU21D device instance
 
 ### Class instance variables - as passed in at instantiation
 - `device_name` (str)
-- 'device_addr' (int 0x40 - fixed value for this sensor model)
+- `device_addr` (int 0x40 - fixed value for this sensor model)
+
+
+### Returns
+- Handle to the HTU21D device on success
+- Raises RuntimeError if the device fails soft reset
 
 
 ### Behaviors and rules
-- Only hold-based trigger temp/rh measurement methods are implemented.  Readings are blocking operations.
+- A soft_reset() is applied as part of instantiation
 - Debug logging may be enabled in the tool script code by setting this module's logging level:
 
         logging.getLogger('cjn_PiTools.HTU21D').setLevel(logging.DEBUG)
@@ -243,19 +142,122 @@ Issue a soft reset and wait 15ms (blocking) for completion
 
 
 ### Behaviors and rules
+- A soft reset sets the resolution code to 0b00 (Temperature 14-bits, RH 12-bits), On-chip heater disabled (0), 
+and OTP reload disabled (1).
 - This is a blocking operation for the spec 15ms.
+- The datasheet implies that `soft_reset()` does not clear the heater enable bit in the user register: "with the exception
+of the heater bit in the user register".  Test 4b demonstrates that the heater enable bit is cleared by soft reset.
 
 <br/>
 
-<a id="read_temp_data"></a>
+<a id="read_user_reg"></a>
 
 ---
 
-# read_temp_data () - Trigger measurement and retrieve temperature
+# read_user_reg () - Return the content of the user register
 
 ***HTU21D class member function***
 
-Issue a hold-mode temperature measurement.
+The user register is the configuration and status register
+
+
+### Returns
+- User register content for successful operation
+- I2C_ERROR on I2C IO error
+
+
+### Behaviors and rules
+- If debug logging is enabled the register content is decoded and logged
+
+<br/>
+
+<a id="write_user_reg"></a>
+
+---
+
+# write_user_reg (resolution=None, heater_enable=None, OTP_reload_disable=None) - Set fields in the user register
+
+***HTU21D class member function***
+
+Writeable fields in the user register are changed to specified values, leaving other fields unchanged.
+
+
+### Args
+`resolution` (int, default None)
+- If int, sets the *Measurement resolution* field to the given value.  The value must be in 
+range 0b00 to 0b11.
+- If None, the measurement resolution is unchanged
+- The default resolution settings from `soft_reset()` is 0b00: temperature 14-bits, RH 12-bits
+
+`heater_enable` (int, default None)
+- If int, sets the *Enable on-chip heater* field to the given value.  The value must be 0 or 1.
+- If None, the heater enable field is unchanged
+- The default heater enable setting from `soft_reset()` is 0: heater disabled.  See note on `soft_reset()`.
+
+`OTP_reload_disable` (int, default None)
+- If int, sets the *Disable OTP reload* field to the given value.  The value must be 0 or 1.
+- If None, the Disable OTP reload field is unchanged
+- The default OTP reload disable setting from `soft_reset()` is 1: OTP reload disabled
+
+### Returns
+- 0 for successful operation
+- I2C_ERROR on I2C IO error
+- Raises ValueError on illegal input values
+
+
+### Behaviors and rules
+- The current value of the user register is read and overlaid with specified new values.  User register fields
+for Non-specified values remain unchanged.
+
+<br/>
+
+<a id="read_temperature"></a>
+
+---
+
+# read_temperature (tempunits='C') - Trigger a hold mode temperature measurement and return the measured temperature
+
+***HTU21D class member function***
+
+NOTE that this is a blocking operation for the duration of the internal temperature measurement conversion.
+
+Calls `fetch_temperature()` after triggering the hold mode temperature measurement.  See `fetch_temperature()` for
+Args, Returns, and Behaviors info.  
+
+<br/>
+
+<a id="trigger_temperature_nohold"></a>
+
+---
+
+# trigger_temperature_nohold () - Trigger measurement in no-hold mode
+
+***HTU21D class member function***
+
+Issue a no-hold mode temperature measurement.  The tool script code normally will follow up with a separate call to 
+`fetch_temperature()`.
+
+
+### Returns
+- 0 on success
+- I2C_ERROR on I2C IO error
+
+
+### Behaviors and rules
+- Uses the no-hold temperature measurement trigger.  Tool script code must separately call `fetch_temperature()` to
+obtain the measured result after an appropriate delay. See the datasheet for measurement times based on the resolution settings.
+- If the measurement is still in progress then I2C_ERROR is returned, and `fetch_temperature()` should be called again later.
+
+<br/>
+
+<a id="fetch_temperature"></a>
+
+---
+
+# fetch_temperature (tempunits='C') - Retrieve measured temperature
+
+***HTU21D class member function***
+
 
 ### Args
 `tempunits` (str, default 'C', case-independent)
@@ -266,34 +268,84 @@ Issue a hold-mode temperature measurement.
 - Temperature value in specified tempunits on success
 - I2C_ERROR on I2C IO error
 - CRC_ERROR on CRC mismatch
-- Raises ValueError if tempunits is invalid
+- OPEN_CIRCUIT_ERROR or CLOSED_CIRCUIT_ERROR is returned on device error
+- Raises ValueError if `tempunits` is invalid
 
 
 ### Behaviors and rules
-- Uses the hold-mode transaction, so the I2C bus is held/blocked until the completion of the temperature measurement.
-See the datasheet for the temperature measurement times based on the configured resolution.  The default 14-bit mode
-specifies a maximum of 50ms. 
+- When called from `read_temperature()` the HTU21D will assert SCK=0 until the internal measurement sequence is complete
+then release SCK, then fetching the measurement data proceeds in this code.  No I2C_ERROR normally occurs. 
+This sequence is the standard I2C bus clock stretching mode.
+- When called by the tool script code after calling `trigger_temperature_nohold()`, if the measurement is still in progress
+then the HTU21D will assert NACK during the read attempt by this code, which is returned to the tool script as an I2C_ERROR.
+The tool script should then retry the `fetch_temperature()` call again after an appropriate wait time for the measurement 
+sequence to complete.  See the datasheet for measurement times based on the resolution settings.
+- The return data is checked for the "open circuit" code (0x0000), and OPEN_CIRCUIT_ERROR is returned.  The "closed circuit"
+code 0xFFFF returns CLOSED_CIRCUIT_ERROR.  These names should be imported from this module, if needed in the tool script code.
 
 <br/>
 
-<a id="read_RH_data"></a>
+<a id="read_RH"></a>
 
 ---
 
-# read_RH_data () - Trigger measurement and retrieve relative humidity
+# read_RH () - Trigger a hold mode relative humidity measurement and return the measured RH
 
 ***HTU21D class member function***
 
-Issue a hold-mode RH measurement.
+NOTE that this is a blocking operation for the duration of the internal RH measurement conversion.
+
+Calls `fetch_RH()` after triggering the hold mode RH measurement.  See `fetch_RH()` for
+Args, Returns, and Behaviors info.
+
+<br/>
+
+<a id="trigger_RH_nohold"></a>
+
+---
+
+# trigger_RH_nohold () - Trigger measurement in no-hold mode
+
+***HTU21D class member function***
+
+Issue a no-hold mode RH measurement.  The tool script code normally will follow up with a separate call to `fetch_RH()`.
+
+
+### Returns
+- 0 on success
+- I2C_ERROR on I2C IO error
+
+
+### Behaviors and rules
+- Uses the no-hold RH measurement trigger.  Tool script code must separately call `fetch_RH()` to
+obtain the measured result after an appropriate delay. See the datasheet for measurement times based on the resolution settings.
+- If the measurement is still in progress then I2C_ERROR is returned, and `fetch_RH()` should be called again later.
+
+<br/>
+
+<a id="fetch_RH"></a>
+
+---
+
+# fetch_RH () - Retrieve measured relative humidity
+
+***HTU21D class member function***
 
 
 ### Returns
 - RH value on success
 - I2C_ERROR on I2C IO error
 - CRC_ERROR on CRC mismatch
+- OPEN_CIRCUIT_ERROR or CLOSED_CIRCUIT_ERROR is returned on device error
 
 
 ### Behaviors and rules
-- Uses the hold-mode transaction, so the I2C bus is held/blocked until the completion of the RH measurement.
-See the datasheet for the RH measurement times based on the configured resolution.  The default 12-bit mode
-specifies a maximum of 16ms. 
+- When called from `read_RH()` the HTU21D will assert SCK=0 until the internal measurement sequence is complete
+then release SCK, then fetching the measurement data proceeds in this code.  No I2C_ERROR normally occurs. 
+This sequence is the standard I2C bus clock stretching mode.
+- When called by the tool script code after calling `trigger_RH_nohold()`, if the measurement is still in progress
+then the HTU21D will assert NACK during the read attempt by this code, which is returned to the tool script as an I2C_ERROR.
+The tool script should then retry the `fetch_RH()` call again after an appropriate wait time for the measurement 
+sequence to complete.  See the datasheet for measurement times based on the resolution settings.
+- The return data is checked for the "open circuit" code (0x0000), and OPEN_CIRCUIT_ERROR is returned.  The "closed circuit"
+code 0xFFFF returns CLOSED_CIRCUIT_ERROR.  These names should be imported from this module, if needed in the tool script code.

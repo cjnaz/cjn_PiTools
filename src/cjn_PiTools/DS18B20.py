@@ -129,7 +129,7 @@ Create an DS18B20 device instance
             temp = CtoK(temp)
         
 
-        ds18b20_logger.debug (f"{self.device_id} / {self.device_name} - temperature:  {temp:7.3f} {tempunits}")
+        ds18b20_logger.debug (f"{self.device_id} / {self.device_name} - Temperature:  {temp:7.3f} {tempunits}")
         return temp
 
 
@@ -247,7 +247,7 @@ and return a new measurement.
         if tempunits == 'K':
             temp = CtoK(temp)
 
-        ds18b20_logger.debug (f"{self.device_id} / {self.device_name} - temperature:  {temp:7.3f} {tempunits}")
+        ds18b20_logger.debug (f"{self.device_id} / {self.device_name} - Temperature:  {temp:7.3f} {tempunits}")
         return temp
 
 

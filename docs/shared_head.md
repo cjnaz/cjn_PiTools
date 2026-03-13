@@ -14,16 +14,14 @@ This module contains a collection of classes and functions that are shared acros
 
 Validation testing is done on a set of boards with the following configuration.  Consider this an FYI.
 
-    ***** i2c bus 1 test boards configuration *****
-
-    Board 1 (connected directly to RPi I2C bus 1)
+    Board_1 (connected directly to RPi I2C bus 1)
       PCA9548 address 0x71
-          Channel 0:  Connected to Board 2 PCA9548
+          Channel 0:  Connected to Board_2 PCA9548
           Channel 1:  Connected to SHT3x at address 0x44
           Channel 2:  Connected to SHT3x at address 0x45
           Channel 6:  Connected to HTU21D at address 0x40
 
-    Board 2 (connected to Board 1 PCA9548 Channel 0)
+    Board_2 (connected to Board_1 PCA9548 Channel 0)
       PCA9548 address 0x75
           Channel 0:  Jack I2C1 with SHT3x at address 0x44
           Channel 1:  Jack I2C2

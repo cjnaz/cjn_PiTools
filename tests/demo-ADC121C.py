@@ -38,6 +38,9 @@ PCA9548_IRRBD =     {'addr': 0x75, 'name': 'PCA9548_Irr'}
 MCP23008_IO_ADDR =  0x20
 MCP23008_ADC_CH =   '3'
 MCP23008_IO_CH =    '4'
+RESET_GPIO =        25
+RELAY_3V3_GPIO =    21
+RELAY_5V0_GPIO =    26
 
 
 set_toolname(TOOLNAME)
@@ -65,14 +68,24 @@ pio =                   pigpio.pi()
 i2c_bus_handle_pio =    pi_i2c(pio)
 i2c_bus_handle_smbus =  pi_i2c('smbus')
 
+# Turn on power control relays which power devices plugged into the Board_1 I2C jacks
+pio.write(RELAY_3V3_GPIO, 1)
+pio.write(RELAY_5V0_GPIO, 1)
+time.sleep(0.1)
+pio.write(RESET_GPIO, 1)            # De-assert reset on Board_1 pca9548
+time.sleep(0.1)
+
+# Instantiate and configure I2C bus switches
 pca9548_resBd_handle_pigpio =   PCA9548(PCA9548_RESBD['name'], PCA9548_RESBD['addr'], i2c_bus_handle_pio)
 pca9548_irrBd_handle_pigpio =   PCA9548(PCA9548_IRRBD['name'], PCA9548_IRRBD['addr'], i2c_bus_handle_pio)
-
 pca9548_resBd_handle_pigpio.write_control_reg ('0')
+
+# Instantiate and configure IO expander for ADC input level shifting
 pca9548_irrBd_handle_pigpio.write_control_reg (MCP23008_IO_CH)
 MCP23008_IO_inst_pio =      mcp23008('MCP23008_IO', MCP23008_IO_ADDR, i2c_bus_handle_pio,
                                      IO_dir_init=0xF0, out_bits_init=0x00, ins_pullups_init=0xf0)
 
+# Instantiate and configure ADCs
 pca9548_irrBd_handle_pigpio.write_control_reg (MCP23008_ADC_CH)
 ADC121C_50_inst_pigpio =    ADC121C('ADC121C_50', 0x50, i2c_bus_handle_pio, Vref=4.2)
 ADC121C_51_inst_pigpio =    ADC121C('ADC121C_51', 0x51, i2c_bus_handle_pio, Vref=4.2)
