@@ -2,9 +2,9 @@
 """Demo/test for DS18B20
 
 Produce / compare to golden results:
-    sudo /path_to/venvs/pydev-3.9/bin/python ./demo-DS18B20.py > testrun.log
+    sudo /path_to/venvs/pydev-3.9/bin/python ./DS18B20-demo.py > testrun.log
 
-    sudo /path_to/venvs/pydev-3.9/bin/python ./demo-DS18B20.py | diff demo-DS18B20-golden.txt -
+    sudo /path_to/venvs/pydev-3.9/bin/python ./DS18B20-demo.py | diff DS18B20-golden.txt -
         Expected differences:
             Log timestamps, w1_slave file content, and temperature values
 """
@@ -18,7 +18,7 @@ Produce / compare to golden results:
 #==========================================================
 
 __version__ =   '1.0'
-TOOLNAME =      'demo_DS18B20'
+TOOLNAME =      'DS18B20_demo'
 
 import argparse
 import re

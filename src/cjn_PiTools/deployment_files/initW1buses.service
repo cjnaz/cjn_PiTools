@@ -4,8 +4,9 @@ Description=Initialize W1 busses therm_bulk_read permission
 
 [Service]
 ExecStart=/<path to>/initW1buses
-# Or optionally specify a GPIO pin to be driven to logic 1 using the --GPIO switch
-#ExecStart=/<path to>/initW1buses --GPIO 21
+# Or optionally specify a GPIO pin to be driven to logic 1 or 0 using the --GPIO switch
+# The driven state is specified with --HiLo (default 1)
+#ExecStart=/<path to>/initW1buses --GPIO 21 --HiLo 1
 
 # Runs as root because the file therm_bulk_read is owned by root
 User=root

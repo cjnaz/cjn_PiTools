@@ -68,13 +68,14 @@ Create an HTU21D device instance
 
         logging.getLogger('cjn_PiTools.HTU21D').setLevel(logging.DEBUG)
 """
-    def __init__(self, device_name, pi_i2c_bus_handle):
+    def __init__(self, device_name, pi_i2c_bus_handle, do_soft_reset=True):
         self.device_name =          device_name
         self.device_addr =          HTU21D_ADDR
         self.pi_i2c_bus_handle =    pi_i2c_bus_handle
 
-        if self.soft_reset() == I2C_ERROR:
-            raise RuntimeError (f"<{self.device_name}> soft_reset during instantiation failed")
+        if do_soft_reset:
+            if self.soft_reset() == I2C_ERROR:
+                raise RuntimeError (f"<{self.device_name}> soft_reset during instantiation failed")
 
         api = 'smbus'  if self.pi_i2c_bus_handle.api == 'smbus'  else 'pigpio'
         htu21d_logger.debug (f"<{self.device_name}> New HTU21D device defined at addr <0x{self.device_addr:0>2x}> using api <{api}> on i2c bus <{self.pi_i2c_bus_handle.i2c_bus_num}>")

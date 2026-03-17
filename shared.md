@@ -29,7 +29,7 @@ Validation testing is done on a set of boards with the following configuration. 
           Channel 3:  ADC121C ADC1 at address 0x50, Jack SOIL 1
               ADC121C chips use 4.2V reference
           Channel 3:  ADC121C ADC2 at address 0x51, Jack SOIL 2 - ADC test pullup/pulldown ckt
-          Channel 4:  MCP23008_IO_ADDR at address 0x70 
+          Channel 4:  MCP23008_IO_ADDR at address 0x20 
               Bit 0: OUT 1
               Bit 1: OUT 2 - ADC test pulldown
               Bit 2: OUT 3 - ADC test pullup
@@ -38,7 +38,7 @@ Validation testing is done on a set of boards with the following configuration. 
               Bit 5: S2 input with weak pullup
               Bit 6: S3 input with weak pullup
               Bit 7: NC
-          Channel 4:  MCP23008_7SEG_ADDR at address 0x71
+          Channel 4:  MCP23008_7SEG_ADDR at address 0x21
               All bits as outputs serving as pulldowns on common anode 7-segment display
               Segment selects in DIG_2_SEG are inverted when written to MCP23008_7SEG_ADDR
           Channel 5:  ADC121C ADC3 at address 0x52, Jack SOIL 3

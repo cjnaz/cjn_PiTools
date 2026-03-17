@@ -1,0 +1,838 @@
+                      MCP23008-demo.<module>                       -  WARNING:  
+
+---- Test Init ------------------------------------------------------
+                             shared.__init__                       -    DEBUG:  Set up <pigpio> mode for i2c_bus_num <1>
+                             shared.__init__                       -    DEBUG:  Set up <smbus> mode for i2c_bus_num <1>
+                            PCA9548.__init__                       -    DEBUG:  <PCA9548_Res> New PCA9548 device defined at addr <0x71> using api <pigpio> on i2c bus <1>
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> New mask:     <0b00000001>, channels <0>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x71> data <0x01>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  New i2c_device_handle: <3> for addr <0x71>
+                            PCA9548.__init__                       -    DEBUG:  <PCA9548_Irr> New PCA9548 device defined at addr <0x75> using api <pigpio> on i2c bus <1>
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  New i2c_device_handle: <4> for addr <0x75>
+                           MCP23008.initialize                     -    DEBUG:  <IO_device> ***** initialize()
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x00 0xff ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  New i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x01 0x00 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x02 0x00 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x03 0x00 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x04 0x00 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x05 0x20 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x06 0x00 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x07 0x00 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x08 0x00 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x09 0x00 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x0a 0x00 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                           MCP23008.registers_dump                 -    DEBUG:  <IO_device> ***** registers_dump()
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x00 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x01 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x02 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x03 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x04 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x05 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x06 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x07 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x08 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x09 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x0a ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                           MCP23008.__init__                       -    DEBUG:  <IO_device> initialized registers:
+  IODIR   :  Init value: 0b11111111, Cached value: 0b11111111, Read value: 0b11111111
+  IPOL    :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  GPINTEN :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  DEFVAL  :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  INTCON  :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  IOCON   :  Init value: 0b00100000, Cached value: 0b00100000, Read value: 0b00100000
+  GPPU    :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  INTF    :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  INTCAP  :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  GPIO    :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  OLAT    :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+                           MCP23008.__init__                       -    DEBUG:  <IO_device> New MCP23008 device defined at addr <0x20> using api <pigpio> on i2c bus <1>
+                           MCP23008.initialize                     -    DEBUG:  <IO_device> ***** initialize()
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x00 0xff ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x01 0x00 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x02 0x00 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x03 0x00 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x04 0x00 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x05 0x20 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x06 0x00 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x07 0x00 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x08 0x00 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x09 0x00 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x0a 0x00 ]>
+                           MCP23008.registers_dump                 -    DEBUG:  <IO_device> ***** registers_dump()
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x00 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x01 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x02 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x03 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x04 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x05 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x06 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x07 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x08 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x09 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x0a ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                           MCP23008.__init__                       -    DEBUG:  <IO_device> initialized registers:
+  IODIR   :  Init value: 0b11111111, Cached value: 0b11111111, Read value: 0b11111111
+  IPOL    :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  GPINTEN :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  DEFVAL  :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  INTCON  :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  IOCON   :  Init value: 0b00100000, Cached value: 0b00100000, Read value: 0b00100000
+  GPPU    :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  INTF    :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  INTCAP  :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  GPIO    :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  OLAT    :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+                           MCP23008.__init__                       -    DEBUG:  <IO_device> New MCP23008 device defined at addr <0x20> using api <smbus> on i2c bus <1>
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 1a - Do all with smbus api
+  GIVEN:      (), {}
+  EXPECT:     None
+                      MCP23008-demo.func                           -     INFO:  
+Set unique value in each register
+                           MCP23008.set_registers                  -    DEBUG:  <IO_device> ***** set_registers()
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x00 0x01 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x01 0x02 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x02 0x03 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x03 0x04 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x04 0x05 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x05 0x06 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x06 0x07 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x07 0x08 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x08 0x09 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x09 0x0a ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x0a 0x0b ]>
+                           MCP23008.registers_dump                 -    DEBUG:  <IO_device> ***** registers_dump()
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x00 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x01 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x02 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x03 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x04 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x05 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x06 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x07 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x08 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x09 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x0a ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                      MCP23008-demo.func                           -     INFO:  
+Registers with unique values:
+  IODIR   :  Init value: 0b11111111, Cached value: 0b00000001, Read value: 0b00000001
+  IPOL    :  Init value: 0b00000000, Cached value: 0b00000010, Read value: 0b00000010
+  GPINTEN :  Init value: 0b00000000, Cached value: 0b00000011, Read value: 0b00000011
+  DEFVAL  :  Init value: 0b00000000, Cached value: 0b00000100, Read value: 0b00000100
+  INTCON  :  Init value: 0b00000000, Cached value: 0b00000101, Read value: 0b00000101
+  IOCON   :  Init value: 0b00100000, Cached value: 0b00000110, Read value: 0b00000110
+  GPPU    :  Init value: 0b00000000, Cached value: 0b00000111, Read value: 0b00000111
+  INTF    :  Init value: 0b00000000, Cached value: 0b00001000, Read value: 0b00000000
+  INTCAP  :  Init value: 0b00000000, Cached value: 0b00001001, Read value: 0b00000000
+  GPIO    :  Init value: 0b00000000, Cached value: 0b00001010, Read value: 0b00001010
+  OLAT    :  Init value: 0b00000000, Cached value: 0b00001011, Read value: 0b00001011
+                      MCP23008-demo.func                           -     INFO:  
+Reinitialize
+                           MCP23008.initialize                     -    DEBUG:  <IO_device> ***** initialize()
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x00 0xff ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x01 0x00 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x02 0x00 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x03 0x00 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x04 0x00 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x05 0x20 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x06 0x00 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x07 0x00 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x08 0x00 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x09 0x00 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x0a 0x00 ]>
+                           MCP23008.registers_dump                 -    DEBUG:  <IO_device> ***** registers_dump()
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x00 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x01 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x02 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x03 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x04 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x05 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x06 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x07 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x08 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x09 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x0a ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                      MCP23008-demo.func                           -     INFO:  
+Registers after reinitialize:
+  IODIR   :  Init value: 0b11111111, Cached value: 0b11111111, Read value: 0b11111111
+  IPOL    :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  GPINTEN :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  DEFVAL  :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  INTCON  :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  IOCON   :  Init value: 0b00100000, Cached value: 0b00100000, Read value: 0b00100000
+  GPPU    :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  INTF    :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  INTCAP  :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  GPIO    :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  OLAT    :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+                      MCP23008-demo.func                           -     INFO:  
+Set bits in IODIR reg - Expect 11001111
+                           MCP23008.set_bits                       -    DEBUG:  <IO_device> ***** set_bits()
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x00 0xcf ]>
+                           MCP23008.read_reg                       -    DEBUG:  <IO_device> ***** read_reg()
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x00 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                      MCP23008-demo.func                           -     INFO:  
+Read IODIR reg: 0b11001111
+                      MCP23008-demo.dotest                         -  WARNING:  
+  RETURNED:   None
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 1b - Do all with pigpio api
+  GIVEN:      (), {}
+  EXPECT:     None
+                      MCP23008-demo.func                           -     INFO:  
+Set unique value in each register
+                           MCP23008.set_registers                  -    DEBUG:  <IO_device> ***** set_registers()
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x00 0x01 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x01 0x02 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x02 0x03 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x03 0x04 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x04 0x05 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x05 0x06 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x06 0x07 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x07 0x08 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x08 0x09 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x09 0x0a ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x0a 0x0b ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                           MCP23008.registers_dump                 -    DEBUG:  <IO_device> ***** registers_dump()
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x00 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x01 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x02 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x03 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x04 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x05 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x06 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x07 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x08 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x09 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x0a ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                      MCP23008-demo.func                           -     INFO:  
+Registers with unique values:
+  IODIR   :  Init value: 0b11111111, Cached value: 0b00000001, Read value: 0b00000001
+  IPOL    :  Init value: 0b00000000, Cached value: 0b00000010, Read value: 0b00000010
+  GPINTEN :  Init value: 0b00000000, Cached value: 0b00000011, Read value: 0b00000011
+  DEFVAL  :  Init value: 0b00000000, Cached value: 0b00000100, Read value: 0b00000100
+  INTCON  :  Init value: 0b00000000, Cached value: 0b00000101, Read value: 0b00000101
+  IOCON   :  Init value: 0b00100000, Cached value: 0b00000110, Read value: 0b00000110
+  GPPU    :  Init value: 0b00000000, Cached value: 0b00000111, Read value: 0b00000111
+  INTF    :  Init value: 0b00000000, Cached value: 0b00001000, Read value: 0b00000000
+  INTCAP  :  Init value: 0b00000000, Cached value: 0b00001001, Read value: 0b00000000
+  GPIO    :  Init value: 0b00000000, Cached value: 0b00001010, Read value: 0b00001010
+  OLAT    :  Init value: 0b00000000, Cached value: 0b00001011, Read value: 0b00001011
+                      MCP23008-demo.func                           -     INFO:  
+Reinitialize
+                           MCP23008.initialize                     -    DEBUG:  <IO_device> ***** initialize()
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x00 0xff ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x01 0x00 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x02 0x00 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x03 0x00 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x04 0x00 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x05 0x20 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x06 0x00 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x07 0x00 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x08 0x00 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x09 0x00 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x0a 0x00 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                           MCP23008.registers_dump                 -    DEBUG:  <IO_device> ***** registers_dump()
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x00 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x01 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x02 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x03 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x04 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x05 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x06 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x07 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x08 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x09 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x0a ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                      MCP23008-demo.func                           -     INFO:  
+Registers after reinitialize:
+  IODIR   :  Init value: 0b11111111, Cached value: 0b11111111, Read value: 0b11111111
+  IPOL    :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  GPINTEN :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  DEFVAL  :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  INTCON  :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  IOCON   :  Init value: 0b00100000, Cached value: 0b00100000, Read value: 0b00100000
+  GPPU    :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  INTF    :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  INTCAP  :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  GPIO    :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+  OLAT    :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
+                      MCP23008-demo.func                           -     INFO:  
+Set bits in IODIR reg - Expect 11001111
+                           MCP23008.set_bits                       -    DEBUG:  <IO_device> ***** set_bits()
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x00 0xcf ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                           MCP23008.read_reg                       -    DEBUG:  <IO_device> ***** read_reg()
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x00 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                      MCP23008-demo.func                           -     INFO:  
+Read IODIR reg: 0b11001111
+                      MCP23008-demo.dotest                         -  WARNING:  
+  RETURNED:   None
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 2a - Instantiation with unique values per reg
+  GIVEN:      (), {}
+  EXPECT:     <cjn_PiTools.MCP23008.MCP23008 object at 0x762f5b20>
+                           MCP23008.initialize                     -    DEBUG:  <MyXX> ***** initialize()
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x00 0x01 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x01 0x02 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x02 0x03 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x03 0x04 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x04 0x05 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x05 0x06 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x06 0x07 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x07 0x08 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x08 0x09 ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x09 0x0a ]>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x0a 0x0b ]>
+                           MCP23008.registers_dump                 -    DEBUG:  <MyXX> ***** registers_dump()
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x00 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x01 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x02 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x03 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x04 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x05 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x06 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x07 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x08 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x09 ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x0a ]>
+                             shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x20> read_byte_count <1>
+                           MCP23008.__init__                       -    DEBUG:  <MyXX> initialized registers:
+  IODIR   :  Init value: 0b00000001, Cached value: 0b00000001, Read value: 0b00000001
+  IPOL    :  Init value: 0b00000010, Cached value: 0b00000010, Read value: 0b00000010
+  GPINTEN :  Init value: 0b00000011, Cached value: 0b00000011, Read value: 0b00000011
+  DEFVAL  :  Init value: 0b00000100, Cached value: 0b00000100, Read value: 0b00000100
+  INTCON  :  Init value: 0b00000101, Cached value: 0b00000101, Read value: 0b00000101
+  IOCON   :  Init value: 0b00000110, Cached value: 0b00000110, Read value: 0b00000110
+  GPPU    :  Init value: 0b00000111, Cached value: 0b00000111, Read value: 0b00000111
+  INTF    :  Init value: 0b00001000, Cached value: 0b00001000, Read value: 0b00000000
+  INTCAP  :  Init value: 0b00001001, Cached value: 0b00001001, Read value: 0b00000000
+  GPIO    :  Init value: 0b00001010, Cached value: 0b00001010, Read value: 0b00001010
+  OLAT    :  Init value: 0b00001011, Cached value: 0b00001011, Read value: 0b00001011
+                           MCP23008.__init__                       -    DEBUG:  <MyXX> New MCP23008 device defined at addr <0x20> using api <smbus> on i2c bus <1>
+                      MCP23008-demo.func                           -     INFO:  Instance name:  MyXX
+                      MCP23008-demo.func                           -     INFO:  Instance addr:  0x20
+                      MCP23008-demo.func                           -     INFO:  DEFVAL addr:    0x03,  init: 0b00000100,  cached: 0b00000100
+                      MCP23008-demo.dotest                         -  WARNING:  
+  RETURNED:   None
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 13a - Instantiation with illegal device name
+  GIVEN:      ({'whatever': 5}, 32, <cjn_PiTools.shared.pi_i2c object at 0x761b73e8>), {}
+  EXPECT:     ValueError: device_name must be str - Received <{'whatever': 5}>
+                      MCP23008-demo.dotest                         -    ERROR:  
+  RAISED:     ValueError: device_name must be str - Received <{'whatever': 5}>
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 13b - Instantiation with illegal device addr
+  GIVEN:      ('MyXX', 48, <cjn_PiTools.shared.pi_i2c object at 0x761b73e8>), {}
+  EXPECT:     ValueError: <MyXX> Device address must be in range of 0x20 to 0x27.  Received <48>
+                      MCP23008-demo.dotest                         -    ERROR:  
+  RAISED:     ValueError: <MyXX> Device address must be in range of 0x20 to 0x27 - Received <48>
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 13c - Instantiation with malformed init_settings
+  GIVEN:      ('MyXX', 32, <cjn_PiTools.shared.pi_i2c object at 0x761b73e8>), {'init_settings': 'whatever'}
+  EXPECT:     ValueError: <MyXX> Malformed init_settings - received <whatever>
+                      MCP23008-demo.dotest                         -    ERROR:  
+  RAISED:     ValueError: <MyXX> Malformed init_settings - Received <whatever>
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 13d - Instantiation with invalid register name
+  GIVEN:      ('MyXX', 32, <cjn_PiTools.shared.pi_i2c object at 0x761b73e8>), {'init_settings': {'IODIRx': 511}}
+  EXPECT:     ValueError: <MyXX> Invalid register name - Received <IODIRx>
+                      MCP23008-demo.dotest                         -    ERROR:  
+  RAISED:     ValueError: <MyXX> Invalid register name - Received <IODIRx>
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 13e - Instantiation with illegal register value
+  GIVEN:      ('MyXX', 32, <cjn_PiTools.shared.pi_i2c object at 0x761b73e8>), {'init_settings': {'IODIR': 511}}
+  EXPECT:     ValueError: <MyXX> <IODIR> init_settings illegal value - received <511>
+                      MCP23008-demo.dotest                         -    ERROR:  
+  RAISED:     ValueError: <MyXX> <IODIR> init_settings illegal value - Received <511>
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 13f - Instantiation with illegal register value
+  GIVEN:      ('MyXX', 32, <cjn_PiTools.shared.pi_i2c object at 0x761b73e8>), {'init_settings': {'IODIR': [5]}}
+  EXPECT:     ValueError: <MyXX> <IODIR> init_settings illegal value - Received <[5]>
+                      MCP23008-demo.dotest                         -    ERROR:  
+  RAISED:     ValueError: <MyXX> <IODIR> init_settings illegal value - Received <[5]>
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00000001>, channels <0>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x01>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x75>
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 13g - Instantiate unavailable device - smbus
+  GIVEN:      ('MyXX', 32, <cjn_PiTools.shared.pi_i2c object at 0x761b73e8>), {}
+  EXPECT:     OSError: <MyXX> I2C communication error
+                           MCP23008.initialize                     -    DEBUG:  <MyXX> ***** initialize()
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x00 0xff ]>
+                           MCP23008.initialize                     -    DEBUG:  <MyXX> exception:
+  OSError: [Errno 121] Remote I/O error
+                      MCP23008-demo.dotest                         -    ERROR:  
+  RAISED:     OSError: <MyXX> I2C communication error
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x75>
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00000001>, channels <0>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x01>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x75>
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 13h - Instantiate unavailable device - pigpio
+  GIVEN:      ('MyXX', 32, <cjn_PiTools.shared.pi_i2c object at 0x761b7388>), {}
+  EXPECT:     OSError: <MyXX> I2C communication error
+                           MCP23008.initialize                     -    DEBUG:  <MyXX> ***** initialize()
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x00 0xff ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                           MCP23008.initialize                     -    DEBUG:  <MyXX> exception:
+  error: 'I2C write failed'
+                      MCP23008-demo.dotest                         -    ERROR:  
+  RAISED:     OSError: <MyXX> I2C communication error
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x75>
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 14a - Malformed reg_dict
+  GIVEN:      (), {'reg_dict': 'whatever'}
+  EXPECT:     ValueError: <IO_device> Malformed reg_dict - Received <whatever>
+                           MCP23008.set_registers                  -    DEBUG:  <IO_device> ***** set_registers()
+                      MCP23008-demo.dotest                         -    ERROR:  
+  RAISED:     ValueError: <IO_device> Malformed reg_dict - Received <whatever>
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 14b - Invalid register name
+  GIVEN:      (), {'reg_dict': {'IODIRx': 511}}
+  EXPECT:     ValueError: <IO_device> Invalid register name - Received <IODIRx>
+                           MCP23008.set_registers                  -    DEBUG:  <IO_device> ***** set_registers()
+                      MCP23008-demo.dotest                         -    ERROR:  
+  RAISED:     ValueError: <IO_device> Invalid register name - Received <IODIRx>
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 14c - Illegal register value
+  GIVEN:      (), {'reg_dict': {'IODIR': 511}}
+  EXPECT:     ValueError: <IO_device> <IODIR> Illegal value - Received <511>
+                           MCP23008.set_registers                  -    DEBUG:  <IO_device> ***** set_registers()
+                      MCP23008-demo.dotest                         -    ERROR:  
+  RAISED:     ValueError: <IO_device> <IODIR> illegal value - Received <511>
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 14d - Illegal register value
+  GIVEN:      (), {'reg_dict': {'IODIR': [5]}}
+  EXPECT:     ValueError: <IO_device> <IODIR> Illegal value - Received <[5]>
+                           MCP23008.set_registers                  -    DEBUG:  <IO_device> ***** set_registers()
+                      MCP23008-demo.dotest                         -    ERROR:  
+  RAISED:     ValueError: <IO_device> <IODIR> illegal value - Received <[5]>
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00000001>, channels <0>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x01>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x75>
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 14e - Unavailable device - smbus
+  GIVEN:      (), {'reg_dict': {'IODIR': 85}}
+  EXPECT:     -256
+                           MCP23008.set_registers                  -    DEBUG:  <IO_device> ***** set_registers()
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x00 0x55 ]>
+                           MCP23008.set_registers                  -    DEBUG:  <IO_device> exception:
+  OSError: [Errno 121] Remote I/O error
+                      MCP23008-demo.dotest                         -  WARNING:  
+  RETURNED:   -256
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x75>
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00000001>, channels <0>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x01>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x75>
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 14f - Unavailable device - pigpio
+  GIVEN:      (), {'reg_dict': {'IODIR': 85}}
+  EXPECT:     -256
+                           MCP23008.set_registers                  -    DEBUG:  <IO_device> ***** set_registers()
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x00 0x55 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                           MCP23008.set_registers                  -    DEBUG:  <IO_device> exception:
+  error: 'I2C write failed'
+                      MCP23008-demo.dotest                         -  WARNING:  
+  RETURNED:   -256
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x75>
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 15a - Invalid register name
+  GIVEN:      (), {'reg_name': 'IODIRx', 'bits': 511, 'mask': 511}
+  EXPECT:     ValueError: <IO_device> Invalid register name - Received <IODIRx>
+                           MCP23008.set_bits                       -    DEBUG:  <IO_device> ***** set_bits()
+                      MCP23008-demo.dotest                         -    ERROR:  
+  RAISED:     ValueError: <IO_device> Invalid register name - Received <IODIRx>
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 15b - Illegal bits value
+  GIVEN:      (), {'reg_name': 'IODIR', 'bits': 511, 'mask': 511}
+  EXPECT:     ValueError: <IO_device> Invalid bits value - Received <511>
+                           MCP23008.set_bits                       -    DEBUG:  <IO_device> ***** set_bits()
+                      MCP23008-demo.dotest                         -    ERROR:  
+  RAISED:     ValueError: <IO_device> Invalid bits value - Received <511>
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 15c - Illegal mask value
+  GIVEN:      (), {'reg_name': 'IODIR', 'bits': 255, 'mask': 511}
+  EXPECT:     ValueError: <IO_device> Invalid mask value - Received <511>
+                           MCP23008.set_bits                       -    DEBUG:  <IO_device> ***** set_bits()
+                      MCP23008-demo.dotest                         -    ERROR:  
+  RAISED:     ValueError: <IO_device> Invalid mask value - Received <511>
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00000001>, channels <0>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x01>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x75>
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 15d - Unavailable device - smbus
+  GIVEN:      (), {'reg_name': 'IODIR', 'bits': 255, 'mask': 255}
+  EXPECT:     -256
+                           MCP23008.set_bits                       -    DEBUG:  <IO_device> ***** set_bits()
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x00 0xff ]>
+                           MCP23008.set_bits                       -    DEBUG:  <IO_device> exception:
+  OSError: [Errno 121] Remote I/O error
+                      MCP23008-demo.dotest                         -  WARNING:  
+  RETURNED:   -256
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x75>
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00000001>, channels <0>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x01>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x75>
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 15e - Unavailable device - pigpio
+  GIVEN:      (), {'reg_name': 'IODIR', 'bits': 255, 'mask': 255}
+  EXPECT:     -256
+                           MCP23008.set_bits                       -    DEBUG:  <IO_device> ***** set_bits()
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x00 0xff ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                           MCP23008.set_bits                       -    DEBUG:  <IO_device> exception:
+  error: 'I2C write failed'
+                      MCP23008-demo.dotest                         -  WARNING:  
+  RETURNED:   -256
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x75>
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00000001>, channels <0>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x01>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x75>
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 16a - registers_dump() Unavailable device - smbus
+  GIVEN:      (), {}
+  EXPECT:     -256
+                           MCP23008.registers_dump                 -    DEBUG:  <IO_device> ***** registers_dump()
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x00 ]>
+                           MCP23008.registers_dump                 -    DEBUG:  <IO_device> exception:
+  OSError: [Errno 121] Remote I/O error
+                      MCP23008-demo.dotest                         -  WARNING:  
+  RETURNED:   -256
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x75>
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00000001>, channels <0>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x01>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x75>
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 16b - registers_dump() Unavailable device - pigpio
+  GIVEN:      (), {}
+  EXPECT:     -256
+                           MCP23008.registers_dump                 -    DEBUG:  <IO_device> ***** registers_dump()
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x00 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                           MCP23008.registers_dump                 -    DEBUG:  <IO_device> exception:
+  error: 'I2C write failed'
+                      MCP23008-demo.dotest                         -  WARNING:  
+  RETURNED:   -256
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x75>
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 17a - Invalid register name
+  GIVEN:      (), {'reg_name': 'IODIRx'}
+  EXPECT:     ValueError: <IO_device> Invalid register name - Received <IODIRx>
+                           MCP23008.read_reg                       -    DEBUG:  <IO_device> ***** read_reg()
+                      MCP23008-demo.dotest                         -    ERROR:  
+  RAISED:     ValueError: <IO_device> Invalid register name - Received <IODIRx>
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00000001>, channels <0>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x01>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x75>
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 17b - read_reg() Unavailable device - smbus
+  GIVEN:      (), {'reg_name': 'IODIR'}
+  EXPECT:     -256
+                           MCP23008.read_reg                       -    DEBUG:  <IO_device> ***** read_reg()
+                             shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x20> data <[ 0x00 ]>
+                           MCP23008.read_reg                       -    DEBUG:  <IO_device> exception:
+  OSError: [Errno 121] Remote I/O error
+                      MCP23008-demo.dotest                         -  WARNING:  
+  RETURNED:   -256
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x75>
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00000001>, channels <0>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x01>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x75>
+                      MCP23008-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 17c - registers_dump() Unavailable device - pigpio
+  GIVEN:      (), {'reg_name': 'IODIR'}
+  EXPECT:     -256
+                           MCP23008.read_reg                       -    DEBUG:  <IO_device> ***** read_reg()
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x00 ]>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x20>
+                           MCP23008.read_reg                       -    DEBUG:  <IO_device> exception:
+  error: 'I2C write failed'
+                      MCP23008-demo.dotest                         -  WARNING:  
+  RETURNED:   -256
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x75>
+                      MCP23008-demo.<module>                       -  WARNING:  
+
+---- Cleanup --------------------------------------------------------
+                             shared.close                          -    DEBUG:  Closing i2c_device_handle <3>
+                             shared.close                          -    DEBUG:  Closing i2c_device_handle <4>
+                             shared.close                          -    DEBUG:  Closing i2c_device_handle <5>
+                             shared.close                          -    DEBUG:  smbus_handle closed

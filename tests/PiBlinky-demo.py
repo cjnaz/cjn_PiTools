@@ -2,9 +2,9 @@
 """Demo/test for PiBlinky
 
 Produce / compare to golden results:
-    ./demo-piblinky.py -vv &> testrun.log
+    ./PiBlinky-demo.py -vv &> testrun.log
   or
-    ./demo-piblinky.py --host GPIO -vv &> testrun.log
+    ./PiBlinky-demo.py --host GPIO -vv &> testrun.log
 
     Expected differences:
         Log order can shift due to 3 independent threads

@@ -2,9 +2,10 @@
 """Demo/test for PCA9548
 
 Produce / compare to golden results:
-    ./demo-PCA9548.py > testrun.log
+    ./PCA9548-demo.py > testrun.log
 
-    ./fsactivity_plugin_test.py | diff fsactivity_plugin_test.golden -
+    ./PCA9548-demo.py | diff PCA9548-golden.txt -
+    
         Expected differences:
             File timestamps and ages for newfile, george, mahesh
             Ages for too old tests 2e, 2f, 4e, 4f, 6b1, 6b2, 6c
@@ -14,45 +15,12 @@ Produce / compare to golden results:
 #
 #  Chris Nelson, Copyright 2026
 #
-# ***** i2c bus 1 test boards configuration *****
-#
-# Board 1 (connected directly to RPi I2C bus 1)
-#   PCA9548 address 0x71
-#       Channel 0:  Connected to Board 2 PCA9548
-#       Channel 1:  Connected to SHT3x at address 0x44
-#       Channel 2:  Connected to SHT3x at address 0x45
-#       Channel 6:  Connected to HTU21D at address 0x40
-#
-# Board 2 (connected to Board 1 PCA9548 Channel 0)
-#   PCA9548 address 0x75
-#       Channel 0:  Jack I2C1 with SHT3x at address 0x44
-#       Channel 1:  Jack I2C2
-#       Channel 2:  Jack I2C3
-#       Channel 3:  ADC121C ADC1 at address 0x50, Jack SOIL 1
-#           ADC121C chips use 4.2V reference
-#       Channel 3:  ADC121C ADC2 at address 0x51, Jack SOIL 2
-#       Channel 4:  MCP23008_IO_ADDR at address 0x70 
-#           Bit 0: OUT 1
-#           Bit 1: OUT 2
-#           Bit 2: OUT 3
-#           Bit 3: OUT 4
-#           Bit 4: S1 input with weak pullup
-#           Bit 5: S2 input with weak pullup
-#           Bit 6: S3 input with weak pullup
-#           Bit 7: NC
-#       Channel 4:  MCP23008_7SEG_ADDR at address 0x71
-#           All bits as outputs serving as pulldowns on common anode 7-segment display
-#           Segment selects in DIG_2_SEG are inverted when written to MCP23008_7SEG_ADDR
-#       Channel 5:  ADC121C ADC3 at address 0x52, Jack SOIL 3
-#       Channel 5:  ADC121C ADC4 at address 0x50, Jack SOIL 4
-#       Channels 6 and 7: No connect
-#
 # 1.0 260212 - New
 #
 #==========================================================
 
 __version__ =   '1.0'
-TOOLNAME =      'demo_PCA9548'
+TOOLNAME =      'PCA9548_demo'
 
 
 import argparse

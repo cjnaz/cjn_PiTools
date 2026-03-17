@@ -6,10 +6,10 @@ Produce / compare to golden results:
         cd to test directory
         rm testrun.log
         PiOLED --service --val-logfile ./testrun.log -vv &
-        ./demo-pioled.py -vv >> testrun.log
+        ./PiOLED-demo.py -vv >> testrun.log
         fg
         (ctrl-C)
-        diff testrun.log to the golden file
+        diff testrun.log PiOLED-golden.txt
     
     Expected differences:
         timestamps

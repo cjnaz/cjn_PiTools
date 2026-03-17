@@ -2,9 +2,9 @@
 """Demo/test for HTU21D
 
 Produce / compare to golden results:
-    ./demo-HTU21D.py > testrun.log
+    ./HTU21D-demo.py > testrun.log
 
-    ./demo-HTU21D.py | diff demo-HTU21D-golden.txt -
+    ./HTU21D-demo.py | diff HTU21D-golden.txt -
         Expected differences:
             Measured raw byte codes, temperatures and RHs
             Measurement times in tests 1 and 6
@@ -20,7 +20,7 @@ Produce / compare to golden results:
 #==========================================================
 
 __version__ =   '1.0'
-TOOLNAME =      'demo_HTU21D'
+TOOLNAME =      'HTU21D_demo'
 
 import argparse
 import re

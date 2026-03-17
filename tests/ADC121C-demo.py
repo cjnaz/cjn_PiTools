@@ -2,9 +2,9 @@
 """Demo/test for ADC121C
 
 Produce / compare to golden results:
-    ./demo-ADC121C.py > testrun.log
+    ./ADC121C-demo.py > testrun.log
 
-    ./demo-ADC121C.py | diff demo-ADC121C-golden.txt -
+    ./ADC121C-demo.py | diff ADC121C-golden.txt -
         Expected differences:
             Measured register values and voltages
             Addresses of cjn_PiTools.shared.pi_i2c objects in test 13
@@ -19,7 +19,7 @@ Produce / compare to golden results:
 #==========================================================
 
 __version__ =   '1.0'
-TOOLNAME =      'demo_ADC121C'
+TOOLNAME =      'ADC121C_demo'
 
 import argparse
 import re
@@ -30,7 +30,7 @@ from cjnfuncs.core              import set_toolname, setuplogging, logging, set_
 from cjn_PiTools.shared         import pi_i2c
 from cjn_PiTools.ADC121C        import ADC121C
 from cjn_PiTools.PCA9548        import PCA9548
-from cjn_PiTools.MCP23008       import mcp23008
+from cjn_PiTools.MCP23008       import MCP23008
 
 
 PCA9548_RESBD =     {'addr': 0x71, 'name': 'PCA9548_Res'}
@@ -65,7 +65,7 @@ logging.warning (f"\n\n---- Test Init ------------------------------------------
 
 # Get i2c bus and device handles
 pio =                   pigpio.pi()
-i2c_bus_handle_pio =    pi_i2c(pio)
+i2c_bus_handle_pigpio = pi_i2c(pio)
 i2c_bus_handle_smbus =  pi_i2c('smbus')
 
 # Turn on power control relays which power devices plugged into the Board_1 I2C jacks
@@ -76,19 +76,19 @@ pio.write(RESET_GPIO, 1)            # De-assert reset on Board_1 pca9548
 time.sleep(0.1)
 
 # Instantiate and configure I2C bus switches
-pca9548_resBd_handle_pigpio =   PCA9548(PCA9548_RESBD['name'], PCA9548_RESBD['addr'], i2c_bus_handle_pio)
-pca9548_irrBd_handle_pigpio =   PCA9548(PCA9548_IRRBD['name'], PCA9548_IRRBD['addr'], i2c_bus_handle_pio)
+pca9548_resBd_handle_pigpio =   PCA9548(PCA9548_RESBD['name'], PCA9548_RESBD['addr'], i2c_bus_handle_pigpio)
+pca9548_irrBd_handle_pigpio =   PCA9548(PCA9548_IRRBD['name'], PCA9548_IRRBD['addr'], i2c_bus_handle_pigpio)
 pca9548_resBd_handle_pigpio.write_control_reg ('0')
 
 # Instantiate and configure IO expander for ADC input level shifting
 pca9548_irrBd_handle_pigpio.write_control_reg (MCP23008_IO_CH)
-MCP23008_IO_inst_pio =      mcp23008('MCP23008_IO', MCP23008_IO_ADDR, i2c_bus_handle_pio,
-                                     IO_dir_init=0xF0, out_bits_init=0x00, ins_pullups_init=0xf0)
+MCP23008_IO_inst_pio =      MCP23008('MCP23008_IO', MCP23008_IO_ADDR, i2c_bus_handle_pigpio,
+                                     IODIR_init=0xF0, GPIO_init=0x00, GPPU_init=0xf0)
 
 # Instantiate and configure ADCs
 pca9548_irrBd_handle_pigpio.write_control_reg (MCP23008_ADC_CH)
-ADC121C_50_inst_pigpio =    ADC121C('ADC121C_50', 0x50, i2c_bus_handle_pio, Vref=4.2)
-ADC121C_51_inst_pigpio =    ADC121C('ADC121C_51', 0x51, i2c_bus_handle_pio, Vref=4.2)
+ADC121C_50_inst_pigpio =    ADC121C('ADC121C_50', 0x50, i2c_bus_handle_pigpio, Vref=4.2)
+ADC121C_51_inst_pigpio =    ADC121C('ADC121C_51', 0x51, i2c_bus_handle_pigpio, Vref=4.2)
 
 ADC121C_50_inst_smbus =     ADC121C('ADC121C_50', 0x50, i2c_bus_handle_smbus, Vref=4.2)
 ADC121C_51_inst_smbus =     ADC121C('ADC121C_51', 0x51, i2c_bus_handle_smbus, Vref=4.2)
@@ -430,15 +430,15 @@ if __name__ == '__main__':
     # # Error cases
     if check_tnum('13a'):
         dotest ("Slave address out of range", "ValueError: ADC121C device address must be one of <0x50, 0x51, 0x52, 0x54, 0x55, 0x56, 0x58, 0x59, 0x5a>.  Received <0x60>",
-                ADC121C, 'ADC121C_50', 0x60, i2c_bus_handle_pio, Vref=4.2)
+                ADC121C, 'ADC121C_50', 0x60, i2c_bus_handle_pigpio, Vref=4.2)
 
     if check_tnum('13b'):
         dotest ("Invalid slave address", "ValueError: ADC121C device address must be one of <0x50, 0x51, 0x52, 0x54, 0x55, 0x56, 0x58, 0x59, 0x5a>.  Received <Hello>",
-                ADC121C, 'ADC121C_50', 'Hello', i2c_bus_handle_pio, Vref=4.2)
+                ADC121C, 'ADC121C_50', 'Hello', i2c_bus_handle_pigpio, Vref=4.2)
 
     if check_tnum('13c'):
         def func():
-            xx = ADC121C('ADC121C_5a', 0x5a, i2c_bus_handle_pio, Vref=4.2)
+            xx = ADC121C('ADC121C_5a', 0x5a, i2c_bus_handle_pigpio, Vref=4.2)
             return xx.read_config()
         dotest ("Device inaccessible during init", "-256 (Later accesses return I2C_ERROR)", func)
 
@@ -460,7 +460,7 @@ if __name__ == '__main__':
 
     if check_tnum('13g'):
         def func():
-            xx = ADC121C('ADC121C_5a', 0x5a, i2c_bus_handle_pio, Vref=4.2, alert_hold=5)
+            xx = ADC121C('ADC121C_5a', 0x5a, i2c_bus_handle_pigpio, Vref=4.2, alert_hold=5)
             xx.write_config(cycle_time=3)
             return xx
         dotest ("Invalid alert_hold value from init during later write_config during init", "ValueError: alert_hold must be int 0 or 1 - received <5>", func)
@@ -479,7 +479,7 @@ if __name__ == '__main__':
 
     if check_tnum('13k'):
         dotest ("Invalid config_byte in init", "ValueError: config_byte must be int between 0x00 and 0xff - received <4095>",
-                ADC121C, 'ADC121C_50', 0x50, i2c_bus_handle_pio, Vref=4.2, config_byte=0xFFF)
+                ADC121C, 'ADC121C_50', 0x50, i2c_bus_handle_pigpio, Vref=4.2, config_byte=0xFFF)
 
 
 
@@ -574,7 +574,7 @@ if __name__ == '__main__':
 
     logging.warning (f"\n\n---- Cleanup --------------------------------------------------------")
 
-    i2c_bus_handle_pio.close()
+    i2c_bus_handle_pigpio.close()
     pio.stop()
 
     i2c_bus_handle_smbus.close()

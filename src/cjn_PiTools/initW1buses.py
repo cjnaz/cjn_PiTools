@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """initW1busses
 
-1. Optionally enable power to the W1 bus(es) by setting a GPIO,
+1. Optionally enable power to the W1 bus(es) by setting a GPIO to 1 or 0
 2. Delay to allow the kernel to scan for W1 devices, and 
 3. Set user write permissions on therm_bulk_read for each found bus.
 
@@ -16,15 +16,14 @@ __version__ = importlib.metadata.version(__package__ or __name__)
 #
 #  Chris Nelson, Copyright 2024 - 2026
 #
-# TODO
-#   add status command
-#
 #==========================================================
 
 import logging
 import sys
 import os
 import time
+import stat
+import subprocess
 from pathlib import Path
 import argparse
 import RPi.GPIO as GPIO
@@ -44,10 +43,15 @@ set_toolname (TOOLNAME)
 
 def cli():
     parser = argparse.ArgumentParser(description=__doc__ + __version__, formatter_class=argparse.RawTextHelpFormatter)
-    parser.add_argument('-g', '--GPIO', type=int,
-                        help="Optional GPIO pin number to be set to output 1 before the delay time")
+    parser.add_argument('-G', '--GPIO', type=int,
+                        help="Optional GPIO pin number to be set to drive --HiLo before the delay time")
+    parser.add_argument('-S', '--HiLo', type=int, default=1,
+                        help="Set the --GPIO pin drive state to 0 or 1 (default 1)")
     parser.add_argument('-d', '--delay', type=int, default=20,
                         help="Delay time in seconds before setting therm_bulk_read permission (default 20)")
+
+    parser.add_argument('-s', '--status', action='store_true',
+                        help=f"Display status of W1 buses initialization")
     parser.add_argument('--setup-user', action='store_true',
                         help=f"Install starter files in user space")
     parser.add_argument('-V', '--version', action='version', version=__version__,
@@ -63,14 +67,41 @@ def cli():
         sys.exit()
 
 
+    # Status
+    if args.status:
+        print ("--------- Service status --------------------")
+        print (f"\n{subprocess.run(['systemctl', 'status', 'initW1buses.service'],  capture_output=True, text=True).stdout}")
+
+        print ("--------- Found buses and sensors --------------------")
+        buses_list = list(w1_buses_root_path.glob('w1_bus*'))
+        if len(buses_list) == 0:
+            print("Found no W1 busses - Aborting")
+        else:
+            for bus in buses_list:
+                print (bus)
+
+                tbr = bus / 'therm_bulk_read'
+                print (f"    {tbr}:   <{stat.filemode(tbr.stat().st_mode)}>")
+
+                sensors_list = list(bus.glob('28*'))
+                if len(sensors_list) == 0:
+                    print ("Found no DS18B20 sensors on this bus")
+                else:
+                    print ("    Sensors")
+                for sensor in sensors_list:
+                    print (f"        {sensor}")
+
+        sys.exit()
+
+
     # Do the initialization
     if args.GPIO:
         gpio = args.GPIO
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
         GPIO.setup(gpio, GPIO.OUT)
-        GPIO.output(gpio, 1)
-        logging.warning(f"Set GPIO <{gpio}> to Output 1")
+        GPIO.output(gpio, args.HiLo)
+        logging.warning(f"Set GPIO <{gpio}> to drive <{args.HiLo}>")
 
     logging.warning(f"Waiting {args.delay} seconds for W1 devices discovery")
     time.sleep (args.delay)
