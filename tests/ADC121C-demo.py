@@ -4,17 +4,16 @@
 Produce / compare to golden results:
     ./ADC121C-demo.py > testrun.log
 
-    ./ADC121C-demo.py | diff ADC121C-golden.txt -
-        Expected differences:
-            Measured register values and voltages
-            Addresses of cjn_PiTools.shared.pi_i2c objects in test 13
+    Expected differences:
+        Measured register values and voltages
+        Addresses of cjn_PiTools.shared.pi_i2c objects in test 13
 """
 
 #==========================================================
 #
 #  Chris Nelson, Copyright 2026
 #
-# 1.0 260212 - New
+# 1.0 260401 - New
 #
 #==========================================================
 
@@ -33,23 +32,23 @@ from cjn_PiTools.PCA9548        import PCA9548
 from cjn_PiTools.MCP23008       import MCP23008
 
 
-PCA9548_RESBD =     {'addr': 0x71, 'name': 'PCA9548_Res'}
-PCA9548_IRRBD =     {'addr': 0x75, 'name': 'PCA9548_Irr'}
-MCP23008_IO_ADDR =  0x20
-MCP23008_ADC_CH =   '3'
-MCP23008_IO_CH =    '4'
-RESET_GPIO =        25
-RELAY_3V3_GPIO =    21
-RELAY_5V0_GPIO =    26
+PCA9548_RESBD =         {'addr': 0x71, 'name': 'PCA9548_Res'}
+PCA9548_IRRBD =         {'addr': 0x75, 'name': 'PCA9548_Irr'}
+PCA_IRRBD_ADC12_CH =    '3'
+PCA_IRRBD_MCP_IO_CH =   '4'
+MCP23008_IO_ADDR =      0x20
+RESET_GPIO =            25
+RELAY_3V3_GPIO =        21
+RELAY_5V0_GPIO =        26
 
 
 set_toolname(TOOLNAME)
 setuplogging(ConsoleLogFormat="{module:>35}.{funcName:30} - {levelname:>8}:  {message}")
 set_logging_level(logging.DEBUG)
 logging.getLogger('cjn_PiTools.shared').setLevel(logging.DEBUG)
-logging.getLogger('cjn_PiTools.ADC121C').setLevel(logging.DEBUG)
 logging.getLogger('cjn_PiTools.PCA9548').setLevel(logging.DEBUG)
 logging.getLogger('cjn_PiTools.MCP23008').setLevel(logging.DEBUG)
+logging.getLogger('cjn_PiTools.ADC121C').setLevel(logging.DEBUG)
 
 
 parser = argparse.ArgumentParser(description=__doc__ + __version__, formatter_class=argparse.RawTextHelpFormatter)
@@ -77,16 +76,16 @@ time.sleep(0.1)
 
 # Instantiate and configure I2C bus switches
 pca9548_resBd_handle_pigpio =   PCA9548(PCA9548_RESBD['name'], PCA9548_RESBD['addr'], i2c_bus_handle_pigpio)
-pca9548_irrBd_handle_pigpio =   PCA9548(PCA9548_IRRBD['name'], PCA9548_IRRBD['addr'], i2c_bus_handle_pigpio)
 pca9548_resBd_handle_pigpio.write_control_reg ('0')
+pca9548_irrBd_handle_pigpio =   PCA9548(PCA9548_IRRBD['name'], PCA9548_IRRBD['addr'], i2c_bus_handle_pigpio)
 
-# Instantiate and configure IO expander for ADC input level shifting
-pca9548_irrBd_handle_pigpio.write_control_reg (MCP23008_IO_CH)
-MCP23008_IO_inst_pio =      MCP23008('MCP23008_IO', MCP23008_IO_ADDR, i2c_bus_handle_pigpio,
-                                     IODIR_init=0xF0, GPIO_init=0x00, GPPU_init=0xf0)
+# Instantiate and configure MCP IO expander for ADC input level shifting
+pca9548_irrBd_handle_pigpio.write_control_reg (PCA_IRRBD_MCP_IO_CH)
+MCP23008_IO_inst_pigpio =   MCP23008('MCP23008_IO', MCP23008_IO_ADDR, i2c_bus_handle_pigpio,
+                                     init_settings={'IODIR': 0xF0, 'GPIO': 0x00, 'GPPU': 0xf0})
 
 # Instantiate and configure ADCs
-pca9548_irrBd_handle_pigpio.write_control_reg (MCP23008_ADC_CH)
+pca9548_irrBd_handle_pigpio.write_control_reg (PCA_IRRBD_ADC12_CH)
 ADC121C_50_inst_pigpio =    ADC121C('ADC121C_50', 0x50, i2c_bus_handle_pigpio, Vref=4.2)
 ADC121C_51_inst_pigpio =    ADC121C('ADC121C_51', 0x51, i2c_bus_handle_pigpio, Vref=4.2)
 
@@ -164,34 +163,34 @@ if __name__ == '__main__':
             ADC121C_51_inst_pigpio.read_alert_status()
 
             logging.info ("\nEnable pulldown.  VIN = ~1.4V.  Low alert.")
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
-            MCP23008_IO_inst_pio.set_bits(0b0010, 0x0F)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_MCP_IO_CH)
+            MCP23008_IO_inst_pigpio.set_bits('OLAT', 0b0010, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_ADC12_CH)
             ADC121C_51_inst_pigpio.read_conversion_result()
             ADC121C_51_inst_pigpio.read_alert_status()
 
             logging.info ("\nDisable pulldown.  VIN = ~2.1V.  Still in low alert due to hysteresis 0.7V.")
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
-            MCP23008_IO_inst_pio.set_bits(0b0000, 0x0F)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_MCP_IO_CH)
+            MCP23008_IO_inst_pigpio.set_bits('OLAT', 0b0000, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_ADC12_CH)
             ADC121C_51_inst_pigpio.read_conversion_result()
             ADC121C_51_inst_pigpio.read_alert_status()
 
             logging.info ("\nEnable pullup.  VIN = ~2.8V.  Low alert clears.")
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
-            MCP23008_IO_inst_pio.set_bits(0b0100, 0x0F)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_MCP_IO_CH)
+            MCP23008_IO_inst_pigpio.set_bits('OLAT', 0b0100, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_ADC12_CH)
             ADC121C_51_inst_pigpio.read_conversion_result()
             ADC121C_51_inst_pigpio.read_alert_status()
 
             logging.info ("\nDisable pullup.  VIN = ~2.1V.  No alert.")
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
-            MCP23008_IO_inst_pio.set_bits(0b0000, 0x0F)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_MCP_IO_CH)
+            MCP23008_IO_inst_pigpio.set_bits('OLAT', 0b0000, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_ADC12_CH)
             ADC121C_51_inst_pigpio.read_conversion_result()
             ADC121C_51_inst_pigpio.read_alert_status()
 
@@ -216,34 +215,34 @@ if __name__ == '__main__':
             ADC121C_51_inst_pigpio.read_alert_status()
 
             logging.info ("\nEnable pullup.  VIN = ~2.8V.  High alert.")
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
-            MCP23008_IO_inst_pio.set_bits(0b0100, 0x0F)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_MCP_IO_CH)
+            MCP23008_IO_inst_pigpio.set_bits('OLAT', 0b0100, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_ADC12_CH)
             ADC121C_51_inst_pigpio.read_conversion_result()
             ADC121C_51_inst_pigpio.read_alert_status()
 
             logging.info ("\nDisable pullup.  VIN = ~2.1V.  Still in high alert due to hysteresis 0.7V.")
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
-            MCP23008_IO_inst_pio.set_bits(0b0000, 0x0F)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_MCP_IO_CH)
+            MCP23008_IO_inst_pigpio.set_bits('OLAT', 0b0000, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_ADC12_CH)
             ADC121C_51_inst_pigpio.read_conversion_result()
             ADC121C_51_inst_pigpio.read_alert_status()
 
             logging.info ("\nEnable pulldown.  VIN = ~1.4V.  High alert clears.")
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
-            MCP23008_IO_inst_pio.set_bits(0b0010, 0x0F)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_MCP_IO_CH)
+            MCP23008_IO_inst_pigpio.set_bits('OLAT', 0b0010, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_ADC12_CH)
             ADC121C_51_inst_pigpio.read_conversion_result()
             ADC121C_51_inst_pigpio.read_alert_status()
 
             logging.info ("\nDisable pulldown.  VIN = ~2.1V.  No alert.")
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
-            MCP23008_IO_inst_pio.set_bits(0b0000, 0x0F)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_MCP_IO_CH)
+            MCP23008_IO_inst_pigpio.set_bits('OLAT', 0b0000, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_ADC12_CH)
             ADC121C_51_inst_pigpio.read_conversion_result()
             ADC121C_51_inst_pigpio.read_alert_status()
 
@@ -266,26 +265,26 @@ if __name__ == '__main__':
             ADC121C_51_inst_pigpio.read_alert_status()
 
             logging.info ("\nEnable pullup.  VIN = ~2.8V.  High alert.")
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
-            MCP23008_IO_inst_pio.set_bits(0b0100, 0x0F)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_MCP_IO_CH)
+            MCP23008_IO_inst_pigpio.set_bits('OLAT', 0b0100, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_ADC12_CH)
             ADC121C_51_inst_pigpio.read_conversion_result()
             ADC121C_51_inst_pigpio.read_alert_status()
 
             logging.info ("\nEnable pulldown.  VIN = ~1.4V.  Low alert.")
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
-            MCP23008_IO_inst_pio.set_bits(0b0010, 0x0F)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_MCP_IO_CH)
+            MCP23008_IO_inst_pigpio.set_bits('OLAT', 0b0010, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_ADC12_CH)
             ADC121C_51_inst_pigpio.read_conversion_result()
             ADC121C_51_inst_pigpio.read_alert_status()
 
             logging.info ("\n Disable pulldown.  VIN = ~2.1V.  Both alerts still set.")
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
-            MCP23008_IO_inst_pio.set_bits(0b0000, 0x0F)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_MCP_IO_CH)
+            MCP23008_IO_inst_pigpio.set_bits('OLAT', 0b0000, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_ADC12_CH)
             ADC121C_51_inst_pigpio.read_conversion_result()
             ADC121C_51_inst_pigpio.read_alert_status()
             ADC121C_51_inst_pigpio.write_alert_status(clear_over=1)
@@ -312,26 +311,26 @@ if __name__ == '__main__':
             ADC121C_51_inst_pigpio.read_lowest_conversion()
 
             logging.info ("\nEnable pulldown.  VIN = ~1.4V.")
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
-            MCP23008_IO_inst_pio.set_bits(0b0010, 0x0F)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_MCP_IO_CH)
+            MCP23008_IO_inst_pigpio.set_bits('OLAT', 0b0010, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_ADC12_CH)
             ADC121C_51_inst_pigpio.read_highest_conversion()
             ADC121C_51_inst_pigpio.read_lowest_conversion()
 
             logging.info ("\nDisable pulldown, Enable pullup.  VIN = ~2.8V.")
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
-            MCP23008_IO_inst_pio.set_bits(0b0100, 0x0F)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_MCP_IO_CH)
+            MCP23008_IO_inst_pigpio.set_bits('OLAT', 0b0100, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_ADC12_CH)
             ADC121C_51_inst_pigpio.read_highest_conversion()
             ADC121C_51_inst_pigpio.read_lowest_conversion()
 
             logging.info ("\nDisable pullup.  VIN = ~2.1V.")
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
-            MCP23008_IO_inst_pio.set_bits(0b0000, 0x0F)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_MCP_IO_CH)
+            MCP23008_IO_inst_pigpio.set_bits('OLAT', 0b0000, 0x0F)
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_ADC12_CH)
             ADC121C_51_inst_pigpio.read_highest_conversion()
             ADC121C_51_inst_pigpio.read_lowest_conversion()
 
@@ -346,17 +345,17 @@ if __name__ == '__main__':
 
             logging.info ("\nCapture highest/lowest in Normal mode")
             ADC121C_51_inst_pigpio.read_conversion_result()
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
-            MCP23008_IO_inst_pio.set_bits(0b0010, 0x0F)                     # Enable pulldown
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_MCP_IO_CH)
+            MCP23008_IO_inst_pigpio.set_bits('OLAT', 0b0010, 0x0F)                     # Enable pulldown
             time.sleep (0.1)
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_ADC12_CH)
             ADC121C_51_inst_pigpio.read_conversion_result()
             ADC121C_51_inst_pigpio.read_highest_conversion()
             ADC121C_51_inst_pigpio.read_lowest_conversion()
 
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)   # Disable pulldown
-            MCP23008_IO_inst_pio.set_bits(0b0000, 0x0F)
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_MCP_IO_CH)   # Disable pulldown
+            MCP23008_IO_inst_pigpio.set_bits('OLAT', 0b0000, 0x0F)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_ADC12_CH)
 
         dotest ("demo capture lowest and highest readings", "None", func)
 
@@ -444,11 +443,11 @@ if __name__ == '__main__':
 
     if check_tnum('13d'):
         def func():
-            pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
+            pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_MCP_IO_CH)
             return ADC121C_51_inst_pigpio.read_conversion_result()
 
         dotest ("Device inaccessible after successful init", "(-256, -256)", func)
-        pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
+        pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_ADC12_CH)
 
     if check_tnum('13e'):
         dotest ("Invalid value to write_alert_status", "ValueError: clear_over and clear_under must be ints 0 or 1 - received <a, 0>",
@@ -483,8 +482,8 @@ if __name__ == '__main__':
 
 
 
-    # #-------------------------------------------------------------------------
-    # # Development/testing/debug
+    #-------------------------------------------------------------------------
+    # Development/testing/debug
     if check_tnum('50', include0=False):
 
         logging.info ("Test 50")
@@ -540,24 +539,24 @@ if __name__ == '__main__':
         logging.info ("Test 51")
         print (ADC121C_51_inst_pigpio.read_conversion_result())
 
-        pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
-        MCP23008_IO_inst_pio.set_bits(0b0010, 0x0F)
+        pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_MCP_IO_CH)
+        MCP23008_IO_inst_pigpio.set_bits('OLAT', 0b0010, 0x0F)
         time.sleep (0.1)
-        pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
+        pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_ADC12_CH)
         print (ADC121C_51_inst_pigpio.read_conversion_result())
         print (ADC121C_51_inst_pigpio.read_conversion_result())
 
-        pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
-        MCP23008_IO_inst_pio.set_bits(0b0100, 0x0F)
+        pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_MCP_IO_CH)
+        MCP23008_IO_inst_pigpio.set_bits('OLAT', 0b0100, 0x0F)
         time.sleep (0.1)
-        pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
+        pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_ADC12_CH)
         print (ADC121C_51_inst_pigpio.read_conversion_result())
         print (ADC121C_51_inst_pigpio.read_conversion_result())
 
-        pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_IO_CH)
-        MCP23008_IO_inst_pio.set_bits(0b0000, 0x0F)
+        pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_MCP_IO_CH)
+        MCP23008_IO_inst_pigpio.set_bits('OLAT', 0b0000, 0x0F)
         time.sleep (0.1)
-        pca9548_irrBd_handle_pigpio.write_control_reg(MCP23008_ADC_CH)
+        pca9548_irrBd_handle_pigpio.write_control_reg(PCA_IRRBD_ADC12_CH)
         print (ADC121C_51_inst_pigpio.read_conversion_result())
         print (ADC121C_51_inst_pigpio.read_conversion_result())
 

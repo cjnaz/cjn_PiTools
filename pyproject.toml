@@ -1,6 +1,7 @@
 [project]
 name = 'cjn_PiTools'
-version = "1.1b9"
+version = "1.1b10"
+    # 1.1b10 - PiBlinkly complete, PCA9548 complete, MCP23008 complete
     # 1.1b9 - initW1buses complete, MCP23008 almost, renamed demo files
     # 1.1b8 - HTU21D complete
     # 1.1b7 - ADC121C complete, HTU21D partial

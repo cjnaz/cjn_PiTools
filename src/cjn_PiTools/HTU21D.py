@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-HTU21D library for Raspberry Pi
+HTU21D Temperature/RH sensor library for Raspberry Pi
 """
 #==========================================================
 #

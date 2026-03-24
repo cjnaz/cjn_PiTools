@@ -291,10 +291,10 @@ With debug logging, logs full w1_slave file, temperature (bytes 0 & 1), TH and T
         # Decode TH and TL bytes 2 and 3
         TH_byte = int(line[2], base=16)
         TH = -(TL_byte & 0x7f)-128  if TH_byte & 0x80  else TH_byte
-        ds18b20_logger.debug (f"{self.device_id} / {self.device_name} - High alarm limit:  {line[2]}     {TH:3} C,      {CtoF(tempC):7.3f} F,  {CtoK(tempC):7.3f} K")
+        ds18b20_logger.debug (f"{self.device_id} / {self.device_name} - High alarm limit:  {line[2]}     {TH:3} C,      {CtoF(TH):7.3f} F,  {CtoK(TH):7.3f} K")
         TL_byte = int(line[3], base=16)
         TL = (TL_byte & 0x7f)-128  if TL_byte & 0x80  else TL_byte
-        ds18b20_logger.debug (f"{self.device_id} / {self.device_name} - Low  alarm limit:  {line[3]}     {TL:3} C,      {CtoF(tempC):7.3f} F,  {CtoK(tempC):7.3f} K")
+        ds18b20_logger.debug (f"{self.device_id} / {self.device_name} - Low  alarm limit:  {line[3]}     {TL:3} C,      {CtoF(TL):7.3f} F,  {CtoK(TL):7.3f} K")
 
         # Decode resolution code from config register
         resolution = (int(line[4], base=16) >> 5) + 9

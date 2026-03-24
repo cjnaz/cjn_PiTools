@@ -1,95 +1,206 @@
-DEBUG:cjn_PiTools.PiBlinky:Setting up piblinky instance <BLU> using pigpio, pin# <4>
-DEBUG:cjn_PiTools.PiBlinky:BLU thread on GPIO  4 created
-DEBUG:cjn_PiTools.PiBlinky:Setting up piblinky instance <RED> using pigpio, pin# <17>
-DEBUG:cjn_PiTools.PiBlinky:RED thread on GPIO 17 created
-DEBUG:cjn_PiTools.PiBlinky:Setting up piblinky instance <YEL> using pigpio, pin# <20>
-DEBUG:cjn_PiTools.PiBlinky:YEL thread on GPIO 20 created
-INFO:cjn_PiTools.PiBlinky:
+  PiBlinky-demo.<module>             -  WARNING:  
+
+---- Test Init ------------------------------------------------------
+       PiBlinky.__init__             -    DEBUG:  <BLU> - Setting up PiBlinky instance using pigpio, ch# <4>
+       PiBlinky.start                -    DEBUG:  <BLU> thread on GPIO  4 created
+       PiBlinky.__init__             -    DEBUG:  <RED> - Setting up PiBlinky instance using pigpio, ch# <17>
+       PiBlinky.start                -    DEBUG:  <RED> thread on GPIO 17 created
+       PiBlinky.__init__             -    DEBUG:  <YEL> - Setting up PiBlinky instance using pigpio, ch# <20>
+       PiBlinky.start                -    DEBUG:  <YEL> thread on GPIO 20 created
+  PiBlinky-demo.print_test_header    -  WARNING:  
 
 ======================================================================================================
-***** Test number 1: Blink all three LEDs 10 times fast *****
-======================================================================================================
-DEBUG:cjn_PiTools.PiBlinky:BLU Command:  <[50, '10', 10]>
-DEBUG:cjn_PiTools.PiBlinky:RED Command:  <[50, '10', 10]>
-DEBUG:cjn_PiTools.PiBlinky:YEL Command:  <[50, '10', 10]>
-DEBUG:cjn_PiTools.PiBlinky:BLU Stream:   Period 0.05s, bitstream ['1', '0'], repeat 10
-DEBUG:cjn_PiTools.PiBlinky:RED Stream:   Period 0.05s, bitstream ['1', '0'], repeat 10
-DEBUG:cjn_PiTools.PiBlinky:YEL Stream:   Period 0.05s, bitstream ['1', '0'], repeat 10
-INFO:cjn_PiTools.PiBlinky:
+Test 1a - Blink all three LEDs 10 times fast
+
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Command:  <[50, '10', 10]>
+       PiBlinky.piblinky             -    DEBUG:  <RED> Command:  <[50, '10', 10]>
+       PiBlinky.piblinky             -    DEBUG:  <YEL> Command:  <[50, '10', 10]>
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Stream:   period 0.05s, bitstream ['1', '0'], play_cnt 10
+       PiBlinky.piblinky             -    DEBUG:  <RED> Stream:   period 0.05s, bitstream ['1', '0'], play_cnt 10
+       PiBlinky.piblinky             -    DEBUG:  <YEL> Stream:   period 0.05s, bitstream ['1', '0'], play_cnt 10
+  PiBlinky-demo.print_test_header    -  WARNING:  
 
 ======================================================================================================
-***** Test number 2: Blink YEL continuously, interrupted by new command after 3s, BLU on, Red off *****
-======================================================================================================
-DEBUG:cjn_PiTools.PiBlinky:RED Command:  <[0, '0', 1]>
-DEBUG:cjn_PiTools.PiBlinky:YEL Command:  <[100, '10', -1]>
-DEBUG:cjn_PiTools.PiBlinky:BLU Command:  <[0, '1', 1]>
-DEBUG:cjn_PiTools.PiBlinky:RED Stream:   Period 0.0s, bitstream ['0'], repeat 1
-DEBUG:cjn_PiTools.PiBlinky:YEL Stream:   Period 0.1s, bitstream ['1', '0'], repeat -1
-DEBUG:cjn_PiTools.PiBlinky:BLU Stream:   Period 0.0s, bitstream ['1'], repeat 1
-DEBUG:cjn_PiTools.PiBlinky:YEL Command:  <[0, '0', 1]>
-DEBUG:cjn_PiTools.PiBlinky:YEL Stream:   Period 0.0s, bitstream ['0'], repeat 1
-INFO:cjn_PiTools.PiBlinky:
+Test 1b - Blink YEL continuously, interrupted by new command after 3s, BLU on, RED off
+
+       PiBlinky.piblinky             -    DEBUG:  <RED> Command:  <[0, '0', 1]>
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Command:  <[0, '1', 1]>
+       PiBlinky.piblinky             -    DEBUG:  <YEL> Command:  <[100, '10', -1]>
+       PiBlinky.piblinky             -    DEBUG:  <RED> Stream:   period 0.0s, bitstream ['0'], play_cnt 1
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Stream:   period 0.0s, bitstream ['1'], play_cnt 1
+       PiBlinky.piblinky             -    DEBUG:  <YEL> Stream:   period 0.1s, bitstream ['1', '0'], play_cnt -1
+       PiBlinky.piblinky             -    DEBUG:  <YEL> Command:  <[0, '0', 1]>
+       PiBlinky.piblinky             -    DEBUG:  <YEL> Stream:   period 0.0s, bitstream ['0'], play_cnt 1
+  PiBlinky-demo.print_test_header    -  WARNING:  
 
 ======================================================================================================
-***** Test number 3a: Error Restore without Save *****
-======================================================================================================
-DEBUG:cjn_PiTools.PiBlinky:BLU Command:  <[100, '10', 5, 2]>
-WARNING:cjn_PiTools.PiBlinky:BLU Attempted command restore with no prior save - <[100, '10', 5, 2]> - Skipped
-INFO:cjn_PiTools.PiBlinky:
+Test 1c - Save a blink pattern, apply a new one, then restore the prior one
+
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Command:  <[500, '10', 2]>
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Stream:   period 0.5s, bitstream ['1', '0'], play_cnt 2
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Command:  <[50, '1000', -1, 1]>
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Saving prior PiBlinky command
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Stream:   period 0.05s, bitstream ['1', '0', '0', '0'], play_cnt -1
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Command:  <[0, '0', 0, 2]>
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Restoring prior PiBlinky command
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Stream:   period 0.5s, bitstream ['1', '0'], play_cnt 2
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Command:  <[0, '0', 0, 2]>
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Restoring prior PiBlinky command
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Stream:   period 0.5s, bitstream ['1', '0'], play_cnt 2
+  PiBlinky-demo.print_test_header    -  WARNING:  
 
 ======================================================================================================
-***** Test number 3b: Save a blink pattern, apply a new one, then restore the prior one *****
-======================================================================================================
-DEBUG:cjn_PiTools.PiBlinky:BLU Command:  <[500, '10', 2]>
-DEBUG:cjn_PiTools.PiBlinky:BLU Stream:   Period 0.5s, bitstream ['1', '0'], repeat 2
-DEBUG:cjn_PiTools.PiBlinky:BLU Command:  <[50, '1000', -1, 1]>
-DEBUG:cjn_PiTools.PiBlinky:BLU Saving prior piblinky command
-DEBUG:cjn_PiTools.PiBlinky:BLU Stream:   Period 0.05s, bitstream ['1', '0', '0', '0'], repeat -1
-DEBUG:cjn_PiTools.PiBlinky:BLU Command:  <[0, '0', 0, 2]>
-DEBUG:cjn_PiTools.PiBlinky:BLU Restoring prior piblinky command
-DEBUG:cjn_PiTools.PiBlinky:BLU Stream:   Period 0.5s, bitstream ['1', '0'], repeat 2
-DEBUG:cjn_PiTools.PiBlinky:BLU Command:  <[0, '0', 0, 2]>
-DEBUG:cjn_PiTools.PiBlinky:BLU Restoring prior piblinky command
-DEBUG:cjn_PiTools.PiBlinky:BLU Stream:   Period 0.5s, bitstream ['1', '0'], repeat 2
-INFO:cjn_PiTools.PiBlinky:
+Test 2a - play_cnt 0
+
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Command:  <[100, ' 1 1 1 1 0 1 0 1 0 1 0 ', 0]>
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Stream:   period 0.1s, bitstream ['1', '1', '1', '1', '0', '1', '0', '1', '0', '1', '0'], play_cnt 0
+  PiBlinky-demo.print_test_header    -  WARNING:  
 
 ======================================================================================================
-***** Test number 4: Bad bittime value *****
-======================================================================================================
-DEBUG:cjn_PiTools.PiBlinky:BLU Command:  <['500x', '10', 2]>
-WARNING:cjn_PiTools.PiBlinky:BLU Invalid command received - <['500x', '10', 2]> - Skipped
-INFO:cjn_PiTools.PiBlinky:
+Test 2b - play_cnt 1
+
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Command:  <[100, '11110101010', 1]>
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Stream:   period 0.1s, bitstream ['1', '1', '1', '1', '0', '1', '0', '1', '0', '1', '0'], play_cnt 1
+  PiBlinky-demo.print_test_header    -  WARNING:  
 
 ======================================================================================================
-***** Test number 5: Bad bitstream *****
-======================================================================================================
-DEBUG:cjn_PiTools.PiBlinky:BLU Command:  <[100, '102', 2]>
-WARNING:cjn_PiTools.PiBlinky:BLU Invalid bitstream <['1', '0', '2']> - Skipped
-INFO:cjn_PiTools.PiBlinky:
+Test 2c - play_cnt 2
+
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Command:  <[100, '11110101010', 2]>
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Stream:   period 0.1s, bitstream ['1', '1', '1', '1', '0', '1', '0', '1', '0', '1', '0'], play_cnt 2
+       PiBlinky.__init__             -    DEBUG:  <BLUx> - Setting up PiBlinky instance using pigpio, ch# <4>
+       PiBlinky.start                -    DEBUG:  <BLUx> thread on GPIO  4 created
+  PiBlinky-demo.dotest               -  WARNING:  
+
+==============================================================================================
+Test 2d - inverted = 1
+  GIVEN:      (), {}
+  EXPECT:     None
+       PiBlinky.piblinky             -    DEBUG:  <BLUx> Command:  <[100, '1111111010101', 2]>
+       PiBlinky.piblinky             -    DEBUG:  <BLUx> Stream:   period 0.1s, bitstream ['1', '1', '1', '1', '1', '1', '1', '0', '1', '0', '1', '0', '1'], play_cnt 2
+  PiBlinky-demo.dotest               -  WARNING:  
+  RETURNED:   None
+  PiBlinky-demo.<module>             -     INFO:  LED turned on
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Command:  <[0, '1', 1]>
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Stream:   period 0.0s, bitstream ['1'], play_cnt 1
+  PiBlinky-demo.dotest               -  WARNING:  
+
+==============================================================================================
+Test 2e - Empty bitstream
+  GIVEN:      ([1000, '', 2],), {}
+  EXPECT:     None
+  PiBlinky-demo.dotest               -  WARNING:  
+  RETURNED:   None
+  PiBlinky-demo.<module>             -     INFO:  LED unchanged
+       PiBlinky.piblinky             -    DEBUG:  <YEL> Command:  <[100, '10', 3]>
+       PiBlinky.piblinky             -    DEBUG:  <YEL> Stream:   period 0.1s, bitstream ['1', '0'], play_cnt 3
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Command:  <[1000, '', 2]>
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Stream:   period 1.0s, bitstream [], play_cnt 2
+  PiBlinky-demo.print_test_header    -  WARNING:  
 
 ======================================================================================================
-***** Test number 6: Bad repeat count *****
-======================================================================================================
-DEBUG:cjn_PiTools.PiBlinky:BLU Command:  <[100, '10', 'a']>
-WARNING:cjn_PiTools.PiBlinky:BLU Invalid command received - <[100, '10', 'a']> - Skipped
-INFO:cjn_PiTools.PiBlinky:
+Test 13a - Error Restore without Save
+
+       PiBlinky.__init__             -    DEBUG:  <BLUx> - Setting up PiBlinky instance using pigpio, ch# <4>
+       PiBlinky.start                -    DEBUG:  <BLUx> thread on GPIO  4 created
+       PiBlinky.piblinky             -    DEBUG:  <BLUx> Command:  <[100, '10', 5, 2]>
+       PiBlinky.piblinky             -  WARNING:  <BLUx> Attempted command restore with no prior save - <[100, '10', 5, 2]> - Skipped
+  PiBlinky-demo.print_test_header    -  WARNING:  
 
 ======================================================================================================
-***** Test number 7: Bad option flag *****
-======================================================================================================
-DEBUG:cjn_PiTools.PiBlinky:BLU Command:  <[100, '10', 5, 7]>
-WARNING:cjn_PiTools.PiBlinky:BLU Invalid option flag received - <[100, '10', 5, 7]> - Skipped
-INFO:cjn_PiTools.PiBlinky:
+Test 13b - Bad bittime value
+
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Command:  <['500x', '10', 2]>
+       PiBlinky.piblinky             -  WARNING:  <BLU> Invalid command received - <['500x', '10', 2]> - Skipped
+  PiBlinky-demo.print_test_header    -  WARNING:  
 
 ======================================================================================================
-Cleanup
+Test 13c - Bad bitstream
+
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Command:  <[100, '102', 2]>
+       PiBlinky.piblinky             -  WARNING:  <BLU> Invalid bitstream <['1', '0', '2']> - Skipped
+  PiBlinky-demo.print_test_header    -  WARNING:  
+
 ======================================================================================================
-DEBUG:cjn_PiTools.PiBlinky:RED Command:  <[100, '0 111 001 001 001', 1, -99]>
-DEBUG:cjn_PiTools.PiBlinky:RED Stream:   Period 0.1s, bitstream ['0', '1', '1', '1', '0', '0', '1', '0', '0', '1', '0', '0', '1'], repeat 1
-DEBUG:cjn_PiTools.PiBlinky:YEL Command:  <[0, '0', 1, -99]>
-DEBUG:cjn_PiTools.PiBlinky:YEL Stream:   Period 0.0s, bitstream ['0'], repeat 1
-DEBUG:cjn_PiTools.PiBlinky:BLU Command:  <[0, '0', 1, -99]>
-DEBUG:cjn_PiTools.PiBlinky:BLU Stream:   Period 0.0s, bitstream ['0'], repeat 1
-DEBUG:cjn_PiTools.PiBlinky:YEL Thread exiting
-DEBUG:cjn_PiTools.PiBlinky:BLU Thread exiting
-DEBUG:cjn_PiTools.PiBlinky:RED Thread exiting
+Test 13d - Bad play_cnt
+
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Command:  <[100, '10', 'a']>
+       PiBlinky.piblinky             -  WARNING:  <BLU> Invalid command received - <[100, '10', 'a']> - Skipped
+  PiBlinky-demo.print_test_header    -  WARNING:  
+
+======================================================================================================
+Test 13e - Bad option flag
+
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Command:  <[100, '10', 5, 7]>
+       PiBlinky.piblinky             -  WARNING:  <BLU> Invalid option flag received - <[100, '10', 5, 7]> - Skipped
+       PiBlinky.__init__             -    DEBUG:  <BLUx> - Setting up PiBlinky instance using pigpio, ch# <4>
+       PiBlinky.start                -    DEBUG:  <BLUx> thread on GPIO  4 created
+  PiBlinky-demo.dotest               -  WARNING:  
+
+==============================================================================================
+Test 13f - pigpio died
+  GIVEN:      (), {}
+  EXPECT:     None, Logged: AttributeError: 'NoneType' object has no attribute 'send'
+       PiBlinky.piblinky             -    DEBUG:  <BLUx> Command:  <[100, '10', 5]>
+       PiBlinky.piblinky             -    DEBUG:  <BLUx> Stream:   period 0.1s, bitstream ['1', '0'], play_cnt 5
+       PiBlinky.piblinky             -    DEBUG:  <BLUx> Command:  <[100, '10', 5]>
+       PiBlinky.piblinky             -    DEBUG:  <BLUx> Stream:   period 0.1s, bitstream ['1', '0'], play_cnt 5
+       PiBlinky.piblinky             -  WARNING:  <BLUx> Error writing <1> - Skipped:
+  AttributeError: 'NoneType' object has no attribute 'send'
+  PiBlinky-demo.dotest               -  WARNING:  
+  RETURNED:   None
+  PiBlinky-demo.dotest               -  WARNING:  
+
+==============================================================================================
+Test 14a - Invalid instance name
+  GIVEN:      (), {}
+  EXPECT:     ValueError: LED_name must be str - received <5> - <class 'int'>
+  PiBlinky-demo.dotest               -    ERROR:  
+  RAISED:     ValueError: LED_name must be str - received <5> - <class 'int'>
+  PiBlinky-demo.dotest               -  WARNING:  
+
+==============================================================================================
+Test 14b - Invalid GPIO channel number
+  GIVEN:      (), {}
+  EXPECT:     ValueError: <BLUx> gpio_num must be a valid GPIO Broadcom SOC channel number - received <30> - <class 'int'>
+  PiBlinky-demo.dotest               -    ERROR:  
+  RAISED:     ValueError: <BLUx> gpio_num must be a valid GPIO Broadcom SOC channel number - received <30> - <class 'int'>
+  PiBlinky-demo.dotest               -  WARNING:  
+
+==============================================================================================
+Test 14c - Invalid GPIO channel number
+  GIVEN:      (), {}
+  EXPECT:     ValueError: <BLUx> gpio_num must be a valid GPIO Broadcom SOC channel number - received <['hello']> - <class 'list'>
+  PiBlinky-demo.dotest               -    ERROR:  
+  RAISED:     ValueError: <BLUx> gpio_num must be a valid GPIO Broadcom SOC channel number - received <['hello']> - <class 'list'>
+  PiBlinky-demo.dotest               -  WARNING:  
+
+==============================================================================================
+Test 14d - Invalid inverted
+  GIVEN:      (), {}
+  EXPECT:     ValueError: <BLUx> inverted must be int 0 or 1 - received <Hello> - <class 'str'>
+  PiBlinky-demo.dotest               -    ERROR:  
+  RAISED:     ValueError: <BLUx> inverted must be int 0 or 1 - received <Hello> - <class 'str'>
+  PiBlinky-demo.dotest               -  WARNING:  
+
+==============================================================================================
+Test 14e - Invalid inverted
+  GIVEN:      (), {}
+  EXPECT:     ValueError: <BLUx> inverted must be int 0 or 1 - received <2> - <class 'int'>
+  PiBlinky-demo.dotest               -    ERROR:  
+  RAISED:     ValueError: <BLUx> inverted must be int 0 or 1 - received <2> - <class 'int'>
+  PiBlinky-demo.<module>             -  WARNING:  
+
+---- Cleanup --------------------------------------------------------
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Command:  <[0, '0', 1, -99]>
+       PiBlinky.piblinky             -    DEBUG:  <YEL> Command:  <[0, '0', 1, -99]>
+       PiBlinky.piblinky             -    DEBUG:  <RED> Command:  <[100, '0 111 001 001 001', 1, -99]>
+       PiBlinky.piblinky             -    DEBUG:  <BLUx> Command:  <[0, '', 1, -99]>
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Stream:   period 0.0s, bitstream ['0'], play_cnt 1
+       PiBlinky.piblinky             -    DEBUG:  <YEL> Stream:   period 0.0s, bitstream ['0'], play_cnt 1
+       PiBlinky.piblinky             -    DEBUG:  <RED> Stream:   period 0.1s, bitstream ['0', '1', '1', '1', '0', '0', '1', '0', '0', '1', '0', '0', '1'], play_cnt 1
+       PiBlinky.piblinky             -    DEBUG:  <BLUx> Stream:   period 0.0s, bitstream [], play_cnt 1
+       PiBlinky.piblinky             -    DEBUG:  <BLUx> Thread exiting
+       PiBlinky.piblinky             -    DEBUG:  <YEL> Thread exiting
+       PiBlinky.piblinky             -    DEBUG:  <BLU> Thread exiting
+       PiBlinky.piblinky             -    DEBUG:  <RED> Thread exiting

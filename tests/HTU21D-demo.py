@@ -4,18 +4,17 @@
 Produce / compare to golden results:
     ./HTU21D-demo.py > testrun.log
 
-    ./HTU21D-demo.py | diff HTU21D-golden.txt -
-        Expected differences:
-            Measured raw byte codes, temperatures and RHs
-            Measurement times in tests 1 and 6
-            Object memory address in test 13g
+    Expected differences:
+        Measured raw byte codes, temperatures and RHs
+        Measurement times in tests 1 and 6
+        Object memory address in test 13g
 """
 
 #==========================================================
 #
 #  Chris Nelson, Copyright 2026
 #
-# 1.0 260212 - New
+# 1.0 260401 - New
 #
 #==========================================================
 
@@ -45,8 +44,8 @@ set_toolname(TOOLNAME)
 setuplogging(ConsoleLogFormat="{module:>35}.{funcName:30} - {levelname:>8}:  {message}")
 set_logging_level(logging.DEBUG)
 logging.getLogger('cjn_PiTools.shared').setLevel(logging.DEBUG)
-logging.getLogger('cjn_PiTools.HTU21D').setLevel(logging.DEBUG)
 logging.getLogger('cjn_PiTools.PCA9548').setLevel(logging.DEBUG)
+logging.getLogger('cjn_PiTools.HTU21D').setLevel(logging.DEBUG)
 
 
 parser = argparse.ArgumentParser(description=__doc__ + __version__, formatter_class=argparse.RawTextHelpFormatter)
@@ -110,7 +109,6 @@ def check_tnum(tnum_in, include0='0'):
 
 
 #===============================================================================================
-
 if __name__ == '__main__':
 
     #-------------------------------------------------------------------------

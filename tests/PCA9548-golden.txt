@@ -1,4 +1,4 @@
-                       demo-PCA9548.<module>                       -  WARNING:  
+                       PCA9548-demo.<module>                       -  WARNING:  
 
 ---- Test Init ------------------------------------------------------
                              shared.__init__                       -    DEBUG:  Set up <pigpio> mode for i2c_bus_num <1>
@@ -7,7 +7,7 @@
                             PCA9548.__init__                       -    DEBUG:  <PCA9548_Irr> New PCA9548 device defined at addr <0x75> using api <pigpio> on i2c bus <1>
                             PCA9548.__init__                       -    DEBUG:  <PCA9548_Res> New PCA9548 device defined at addr <0x71> using api <smbus> on i2c bus <1>
                             PCA9548.__init__                       -    DEBUG:  <PCA9548_Irr> New PCA9548 device defined at addr <0x75> using api <smbus> on i2c bus <1>
-                       demo-PCA9548.dotest                         -  WARNING:  
+                       PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 1a - write and read the control reg - pigpio api
@@ -15,16 +15,16 @@ Test 1a - write and read the control reg - pigpio api
   EXPECT:     85 (0x55)
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> New mask:     <0b01010101>, channels <0 2 4 6>
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x71> data <85>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  New i2c_device_handle: <12> for addr <0x71>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x71> data <0x55>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  New i2c_device_handle: <0> for addr <0x71>
                             PCA9548.read_control_reg               -    DEBUG:  <PCA9548_Res> ***** read_control_reg()
                              shared.i2c_read_byte                  -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read 1 byte from bus <1> addr <0x71>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <12> for addr <0x71>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
                              shared.i2c_read_byte                  -    DEBUG:  i2c_read_byte from addr <0x71>:  <0x55>
                             PCA9548.read_control_reg               -    DEBUG:  <PCA9548_Res> Current mask: <0b01010101>, channels <0 2 4 6>
-                       demo-PCA9548.dotest                         -  WARNING:    RETURNED:
+                       PCA9548-demo.dotest                         -  WARNING:    RETURNED:
 85
-                       demo-PCA9548.dotest                         -  WARNING:  
+                       PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 1b - write and read the control reg - api smbus
@@ -32,14 +32,14 @@ Test 1b - write and read the control reg - api smbus
   EXPECT:     170 (0xaa)
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> New mask:     <0b10101010>, channels <1 3 5 7>
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x71> data <170>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x71> data <0xaa>
                             PCA9548.read_control_reg               -    DEBUG:  <PCA9548_Res> ***** read_control_reg()
                              shared.i2c_read_byte                  -    DEBUG:  Using api <smbus> read 1 byte from bus <1> addr <0x71>
                              shared.i2c_read_byte                  -    DEBUG:  i2c_read_byte from addr <0x71>:  <0xaa>
                             PCA9548.read_control_reg               -    DEBUG:  <PCA9548_Res> Current mask: <0b10101010>, channels <1 3 5 7>
-                       demo-PCA9548.dotest                         -  WARNING:    RETURNED:
+                       PCA9548-demo.dotest                         -  WARNING:    RETURNED:
 170
-                       demo-PCA9548.dotest                         -  WARNING:  
+                       PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 1c - Mix it up across apis
@@ -47,166 +47,173 @@ Test 1c - Mix it up across apis
   EXPECT:     None, no exception
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> New mask:     <0b10101010>, channels <1 3 5 7>
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x71> data <170>
-                            PCA9548.read_control_reg               -    DEBUG:  <PCA9548_Irr> ***** read_control_reg()
-                             shared.i2c_read_byte                  -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read 1 byte from bus <1> addr <0x75>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  New i2c_device_handle: <13> for addr <0x75>
-                            PCA9548.read_control_reg               -    DEBUG:  <PCA9548_Irr> exception:  error: 'I2C read failed'
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x71> data <0xaa>
+                       PCA9548-demo.func                           -     INFO:  channel_enable_bit_map:  0b10101010
+                            PCA9548.read_control_reg               -    DEBUG:  <PCA9548_Res> ***** read_control_reg()
+                             shared.i2c_read_byte                  -    DEBUG:  Using api <smbus> read 1 byte from bus <1> addr <0x71>
+                             shared.i2c_read_byte                  -    DEBUG:  i2c_read_byte from addr <0x71>:  <0xaa>
+                            PCA9548.read_control_reg               -    DEBUG:  <PCA9548_Res> Current mask: <0b10101010>, channels <1 3 5 7>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> New mask:     <0b11111111>, channels <0 1 2 3 4 5 6 7>
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x71> data <255>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <12> for addr <0x71>
-                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
-                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00100000>, channels <5>
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x75> data <32>
-                            PCA9548.read_control_reg               -    DEBUG:  <PCA9548_Irr> ***** read_control_reg()
-                             shared.i2c_read_byte                  -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read 1 byte from bus <1> addr <0x75>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <13> for addr <0x75>
-                             shared.i2c_read_byte                  -    DEBUG:  i2c_read_byte from addr <0x75>:  <0x20>
-                            PCA9548.read_control_reg               -    DEBUG:  <PCA9548_Irr> Current mask: <0b00100000>, channels <5>
-                       demo-PCA9548.dotest                         -  WARNING:    RETURNED:
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x71> data <0xff>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
+                       PCA9548-demo.func                           -     INFO:  channel_enable_bit_map:  0b11111111
+                            PCA9548.read_control_reg               -    DEBUG:  <PCA9548_Res> ***** read_control_reg()
+                             shared.i2c_read_byte                  -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read 1 byte from bus <1> addr <0x71>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
+                             shared.i2c_read_byte                  -    DEBUG:  i2c_read_byte from addr <0x71>:  <0xff>
+                            PCA9548.read_control_reg               -    DEBUG:  <PCA9548_Res> Current mask: <0b11111111>, channels <0 1 2 3 4 5 6 7>
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> New mask:     <0b00100000>, channels <5>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x71> data <0x20>
+                       PCA9548-demo.func                           -     INFO:  channel_enable_bit_map:  0b00100000
+                            PCA9548.read_control_reg               -    DEBUG:  <PCA9548_Res> ***** read_control_reg()
+                             shared.i2c_read_byte                  -    DEBUG:  Using api <smbus> read 1 byte from bus <1> addr <0x71>
+                             shared.i2c_read_byte                  -    DEBUG:  i2c_read_byte from addr <0x71>:  <0x20>
+                            PCA9548.read_control_reg               -    DEBUG:  <PCA9548_Res> Current mask: <0b00100000>, channels <5>
+                       PCA9548-demo.dotest                         -  WARNING:    RETURNED:
 None
-                       demo-PCA9548.dotest                         -  WARNING:  
+                       PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 2a - int value 0
   GIVEN:      (), {}
   EXPECT:     0
-                       demo-PCA9548.dotest                         -  WARNING:    RETURNED:
+                       PCA9548-demo.dotest                         -  WARNING:    RETURNED:
 0
-                       demo-PCA9548.dotest                         -  WARNING:  
+                       PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 2b - int value 0x55
   GIVEN:      (), {}
   EXPECT:     85 (0x55)
-                       demo-PCA9548.dotest                         -  WARNING:    RETURNED:
+                       PCA9548-demo.dotest                         -  WARNING:    RETURNED:
 85
-                       demo-PCA9548.dotest                         -  WARNING:  
+                       PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 2c - str '0'
   GIVEN:      (), {}
   EXPECT:     1 - channel 0 enabled
-                       demo-PCA9548.dotest                         -  WARNING:    RETURNED:
+                       PCA9548-demo.dotest                         -  WARNING:    RETURNED:
 1
-                       demo-PCA9548.dotest                         -  WARNING:  
+                       PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 2d - str '7'
   GIVEN:      (), {}
   EXPECT:     128 (decimal) - channel 7 enabled
-                       demo-PCA9548.dotest                         -  WARNING:    RETURNED:
+                       PCA9548-demo.dotest                         -  WARNING:    RETURNED:
 128
-                       demo-PCA9548.dotest                         -  WARNING:  
+                       PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 2e - str -1
   GIVEN:      (), {}
   EXPECT:     0 - No channel enabled
-                       demo-PCA9548.dotest                         -  WARNING:    RETURNED:
+                       PCA9548-demo.dotest                         -  WARNING:    RETURNED:
 0
-                       demo-PCA9548.dotest                         -  WARNING:  
+                       PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 2f - str 'Hello'
   GIVEN:      (), {}
   EXPECT:     ValueError: invalid literal for int() with base 10: 'Hello'
-                       demo-PCA9548.dotest                         -    ERROR:  
+                       PCA9548-demo.dotest                         -    ERROR:  
   RAISED:     ValueError: invalid literal for int() with base 10: 'Hello'
-                       demo-PCA9548.dotest                         -  WARNING:  
+                       PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 2g - str '9'
   GIVEN:      (), {}
   EXPECT:     ValueError: channel_value (str) must be int range -1 to 7 - received <9>
-                       demo-PCA9548.dotest                         -    ERROR:  
+                       PCA9548-demo.dotest                         -    ERROR:  
   RAISED:     ValueError: channel_value (str) must be int range -1 to 7 - received <9>
-                       demo-PCA9548.dotest                         -  WARNING:  
+                       PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 3a - bit_map 1
   GIVEN:      (1,), {}
   EXPECT:     '0'
-                       demo-PCA9548.dotest                         -  WARNING:    RETURNED:
+                       PCA9548-demo.dotest                         -  WARNING:    RETURNED:
 0
-                       demo-PCA9548.dotest                         -  WARNING:  
+                       PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 3b - bit_map 0x55
   GIVEN:      (85,), {}
   EXPECT:     '0, 2, 4, 6'
-                       demo-PCA9548.dotest                         -  WARNING:    RETURNED:
+                       PCA9548-demo.dotest                         -  WARNING:    RETURNED:
 0 2 4 6
-                       demo-PCA9548.dotest                         -  WARNING:  
+                       PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 3c - bit_map 0xff
   GIVEN:      (255,), {}
   EXPECT:     '0, 1, 2, 3, 4, 5, 6, 7'
-                       demo-PCA9548.dotest                         -  WARNING:    RETURNED:
+                       PCA9548-demo.dotest                         -  WARNING:    RETURNED:
 0 1 2 3 4 5 6 7
-                       demo-PCA9548.dotest                         -  WARNING:  
+                       PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 3d - bit_map 0
   GIVEN:      (0,), {}
   EXPECT:     ''
-                       demo-PCA9548.dotest                         -  WARNING:    RETURNED:
+                       PCA9548-demo.dotest                         -  WARNING:    RETURNED:
 
-                       demo-PCA9548.dotest                         -  WARNING:  
+                       PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 13a - Bad I2C address
   GIVEN:      (), {}
   EXPECT:     ValueError: PCA9548 device.addr must be 0x70 - 0x77, received <0x80>
-                       demo-PCA9548.dotest                         -    ERROR:  
+                       PCA9548-demo.dotest                         -    ERROR:  
   RAISED:     ValueError: PCA9548 device.addr must be 0x70 - 0x77, received <0x80>
-                       demo-PCA9548.dotest                         -  WARNING:  
+                       PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 13b - Bad device.name
   GIVEN:      (), {}
   EXPECT:     ValueError: PCA9548 device.name must be str, received <['PCA9548_Bad']>
-                       demo-PCA9548.dotest                         -    ERROR:  
+                       PCA9548-demo.dotest                         -    ERROR:  
   RAISED:     ValueError: PCA9548 device.name must be str, received <['PCA9548_Bad']>
-                       demo-PCA9548.dotest                         -  WARNING:  
+                       PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 13c - Int bit-map out of range
   GIVEN:      (), {}
   EXPECT:     ValueError: channel_value (int) must be int range 0x00 to 0xFF - received <511> / <0x1ff>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> ***** write_control_reg()
-                       demo-PCA9548.dotest                         -    ERROR:  
+                       PCA9548-demo.dotest                         -    ERROR:  
   RAISED:     ValueError: channel_value (int) must be int range 0x00 to 0xFF - received <511> / <0x1ff>
-                       demo-PCA9548.dotest                         -  WARNING:  
+                       PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 13d - Bad string channel select
   GIVEN:      (), {}
   EXPECT:     ValueError: invalid literal for int() with base 10: '7c'
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> ***** write_control_reg()
-                       demo-PCA9548.dotest                         -    ERROR:  
+                       PCA9548-demo.dotest                         -    ERROR:  
   RAISED:     ValueError: invalid literal for int() with base 10: '7c'
-                       demo-PCA9548.dotest                         -  WARNING:  
+                       PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 13e - String channel select out of range
   GIVEN:      (), {}
   EXPECT:     ValueError: channel_value (str) must be int range -1 to 7 - received <-2>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> ***** write_control_reg()
-                       demo-PCA9548.dotest                         -    ERROR:  
+                       PCA9548-demo.dotest                         -    ERROR:  
   RAISED:     ValueError: channel_value (str) must be int range -1 to 7 - received <-2>
-                       demo-PCA9548.dotest                         -  WARNING:  
+                       PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 13f - String channel select out of range
   GIVEN:      (), {}
   EXPECT:     ValueError: channel_value (str) must be int range -1 to 7 - received <8>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> ***** write_control_reg()
-                       demo-PCA9548.dotest                         -    ERROR:  
+                       PCA9548-demo.dotest                         -    ERROR:  
   RAISED:     ValueError: channel_value (str) must be int range -1 to 7 - received <8>
-                       demo-PCA9548.dotest                         -  WARNING:  
+                       PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 13g - PCA9548_Irr not accessible for write - pigpio api
@@ -214,16 +221,16 @@ Test 13g - PCA9548_Irr not accessible for write - pigpio api
   EXPECT:     -256 (I2C_ERROR)
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> New mask:     <0b00010000>, channels <4>
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x71> data <16>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <12> for addr <0x71>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x71> data <0x10>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b01010101>, channels <0 2 4 6>
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <85>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <13> for addr <0x75>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x55>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  New i2c_device_handle: <1> for addr <0x75>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> exception:  error: 'I2C write failed'
-                       demo-PCA9548.dotest                         -  WARNING:    RETURNED:
+                       PCA9548-demo.dotest                         -  WARNING:    RETURNED:
 -256
-                       demo-PCA9548.dotest                         -  WARNING:  
+                       PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 13h - PCA9548_Irr not accessible for write - smbus api
@@ -231,14 +238,14 @@ Test 13h - PCA9548_Irr not accessible for write - smbus api
   EXPECT:     -256 (I2C_ERROR)
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> New mask:     <0b00010000>, channels <4>
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x71> data <16>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x71> data <0x10>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b01010101>, channels <0 2 4 6>
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x75> data <85>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x75> data <0x55>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> exception:  OSError: [Errno 121] Remote I/O error
-                       demo-PCA9548.dotest                         -  WARNING:    RETURNED:
+                       PCA9548-demo.dotest                         -  WARNING:    RETURNED:
 -256
-                       demo-PCA9548.dotest                         -  WARNING:  
+                       PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 13i - PCA9548_Irr not accessible for read - pigpio api
@@ -246,23 +253,23 @@ Test 13i - PCA9548_Irr not accessible for read - pigpio api
   EXPECT:     -256 (I2C_ERROR)
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> New mask:     <0b00000001>, channels <0>
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x71> data <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <12> for addr <0x71>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x71> data <0x01>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b01010101>, channels <0 2 4 6>
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <85>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <13> for addr <0x75>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x55>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> New mask:     <0b00010000>, channels <4>
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x71> data <16>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <12> for addr <0x71>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x71> data <0x10>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
                             PCA9548.read_control_reg               -    DEBUG:  <PCA9548_Irr> ***** read_control_reg()
                              shared.i2c_read_byte                  -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read 1 byte from bus <1> addr <0x75>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <13> for addr <0x75>
+                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                             PCA9548.read_control_reg               -    DEBUG:  <PCA9548_Irr> exception:  error: 'I2C read failed'
-                       demo-PCA9548.dotest                         -  WARNING:    RETURNED:
+                       PCA9548-demo.dotest                         -  WARNING:    RETURNED:
 -256
-                       demo-PCA9548.dotest                         -  WARNING:  
+                       PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 13j - PCA9548_Irr not accessible for read - api smbus
@@ -270,21 +277,21 @@ Test 13j - PCA9548_Irr not accessible for read - api smbus
   EXPECT:     -256 (I2C_ERROR)
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> New mask:     <0b00000001>, channels <0>
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x71> data <1>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x71> data <0x01>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b01010101>, channels <0 2 4 6>
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x75> data <85>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x75> data <0x55>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> New mask:     <0b00010000>, channels <4>
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x71> data <16>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x71> data <0x10>
                             PCA9548.read_control_reg               -    DEBUG:  <PCA9548_Irr> ***** read_control_reg()
                              shared.i2c_read_byte                  -    DEBUG:  Using api <smbus> read 1 byte from bus <1> addr <0x75>
                             PCA9548.read_control_reg               -    DEBUG:  <PCA9548_Irr> exception:  OSError: [Errno 121] Remote I/O error
-                       demo-PCA9548.dotest                         -  WARNING:    RETURNED:
+                       PCA9548-demo.dotest                         -  WARNING:    RETURNED:
 -256
-                       demo-PCA9548.<module>                       -  WARNING:  
+                       PCA9548-demo.<module>                       -  WARNING:  
 
 ---- Cleanup --------------------------------------------------------
-                             shared.close                          -    DEBUG:  Closing i2c_device_handle <12>
-                             shared.close                          -    DEBUG:  Closing i2c_device_handle <13>
+                             shared.close                          -    DEBUG:  Closing i2c_device_handle <0>
+                             shared.close                          -    DEBUG:  Closing i2c_device_handle <1>
                              shared.close                          -    DEBUG:  smbus_handle closed

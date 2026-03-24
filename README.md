@@ -8,8 +8,12 @@ Module | Description/Purpose
 --|--
 [PiBlinky](https://github.com/cjnaz/cjn_PiTools/blob/main/PiBlinky.md)       | A multiple threaded LED driver for Raspberry Pi
 [PiOLED](https://github.com/cjnaz/cjn_PiTools/blob/main/PiOLED.md)           | Display multi-line messages on a shared Raspberry Pi connected OLED display
-[DS18B20](https://github.com/cjnaz/cjn_PiTools/blob/main/DS18B20.md)         | A high-featured library/driver using the w1_therm kernel driver
+[DS18B20](https://github.com/cjnaz/cjn_PiTools/blob/main/DS18B20.md)         | DS18B20 temperature sensor library using the w1_therm kernel driver
 [initW1buses](https://github.com/cjnaz/cjn_PiTools/blob/main/initW1buses.md) | Initialize the W1 buses and set write permission on found therm_bulk_read file(s)
+[ADC121C](https://github.com/cjnaz/cjn_PiTools/blob/main/ADC121C.md)         | ADC121C* 12-bit ADC library for Raspberry Pi
+[HTU21D](https://github.com/cjnaz/cjn_PiTools/blob/main/HTU21D.md)           | HTU21D Temperature/RH sensor library for Raspberry Pi
+[MCP23008](https://github.com/cjnaz/cjn_PiTools/blob/main/MCP23008.md)       | MCP23008 8-Bit I/O Expander library for Raspberry Pi
+[PCA9548](https://github.com/cjnaz/cjn_PiTools/blob/main/PCA9548.md)         | PCA9548A/TCA9548A I2C port expander library for Raspberry Pi
 [shared](https://github.com/cjnaz/cjn_PiTools/blob/main/shared.md)           | Classes and functions used across cjn_PiTools
 
 More to come!
@@ -18,7 +22,7 @@ More to come!
 - Driver for MCP23008 IO expander
 - Driver for PCA9548s I2C expander
 
-In most cases, these drivers will work with both `RPi.GPIO` (for local control) and `pigpio` for (local and remote control).
+In most cases, these drivers will work with both `RPi.GPIO` or `smbus2` (for local control) and `pigpio` for (local and remote control).
 
 Developed and tested on Raspbian GNU/Linux 11 (bullseye) and Python 3.9.2, and supported on all higher versions.
 
@@ -28,7 +32,7 @@ In this documentation, "tool script" refers to a Python project that imports and
 
 ## Installation and usage
 
-If using the RPi.GPIO driver:
+If using the RPi.GPIO and/or smbus2 drivers:
 
     pip install cjn_PiTools
 
@@ -54,11 +58,12 @@ If using the pigpio driver:
 
 <br/>
 
-## Key changes since the prior major public release (this is the first release)
+## Key changes since the prior major public release (1.0)
 
-- New.  Bundled PiBlinky, PiOLED, initW1buses, and DS18B20 modules
+- V1.1 added ADC121C, HTU21D, MCP23008, PCA9548, and SHT3x drivers
 
 <br/>
 
 ## Revision history
+- 1.1 260401 - Added ADC121C, HTU21D, MCP23008, PCA9548, and SHT3x drivers
 - 1.0 260207 - New.  Bundled PiBlinky, PiOLED, initW1buses, and DS18B20 modules

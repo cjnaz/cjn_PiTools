@@ -4,16 +4,15 @@
 Produce / compare to golden results:
     sudo /path_to/venvs/pydev-3.9/bin/python ./DS18B20-demo.py > testrun.log
 
-    sudo /path_to/venvs/pydev-3.9/bin/python ./DS18B20-demo.py | diff DS18B20-golden.txt -
-        Expected differences:
-            Log timestamps, w1_slave file content, and temperature values
+    Expected differences:
+        Log timestamps, w1_slave file content, and temperature values
 """
 
 #==========================================================
 #
 #  Chris Nelson, Copyright 2026
 #
-# 1.0 260212 - New
+# 1.0 260401 - New
 #
 #==========================================================
 
@@ -83,7 +82,6 @@ if sensor_7113.get_alarm_temps() != '-55 125'  or  sensor_7113.get_resolution() 
 
 
 #===============================================================================================
-
 if __name__ == '__main__':
 
     #-------------------------------------------------------------------------

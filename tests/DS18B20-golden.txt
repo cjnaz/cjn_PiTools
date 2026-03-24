@@ -1,338 +1,338 @@
-2026-02-26 20:10:26,140                        demo-DS18B20.<module>                       -  WARNING:  
+2026-03-22 08:00:47,007                        DS18B20-demo.<module>                       -  WARNING:  
 
 ---- Test Init ------------------------------------------------------
-2026-02-26 20:10:26,178                             DS18B20.get_alarm_temps                -    DEBUG:  28-0b2280337113 / My_7113 - Current alarm TL TH settings:  -55 125
-2026-02-26 20:10:26,218                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    12
-2026-02-26 20:10:26,218                             DS18B20.get_conv_time                  -    DEBUG:  28-0b2280337113 / My_7113 - Current conversion time:   750
-2026-02-26 20:10:26,219                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:47,049                             DS18B20.get_alarm_temps                -    DEBUG:  28-0b2280337113 / My_7113 - Current alarm TL TH settings:  -55 125
+2026-03-22 08:00:47,089                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    12
+2026-03-22 08:00:47,090                             DS18B20.get_conv_time                  -    DEBUG:  28-0b2280337113 / My_7113 - Current conversion time:   750
+2026-03-22 08:00:47,090                        DS18B20-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 1a - sensor_7113.read_temperature, value in F
   GIVEN:      (), {'tempunits': 'F'}
   EXPECT:     Pass
-2026-02-26 20:10:27,078                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - w1_slave file content:
-ae 01 7d c9 7f ff 7f 10 6e : crc=6e YES
-ae 01 7d c9 7f ff 7f 10 6e t=26875
-2026-02-26 20:10:27,079                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - temperature:   80.375 F
-2026-02-26 20:10:27,079                        demo-DS18B20.dotest                         -  WARNING:  
-  RETURNED:   80.375
-2026-02-26 20:10:27,080                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:47,939                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - w1_slave file content:
+8b 01 7d c9 7f ff 7f 10 90 : crc=90 YES
+8b 01 7d c9 7f ff 7f 10 90 t=24687
+2026-03-22 08:00:47,940                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - Temperature:   76.437 F
+2026-03-22 08:00:47,941                        DS18B20-demo.dotest                         -  WARNING:  
+  RETURNED:   76.4366
+2026-03-22 08:00:47,941                        DS18B20-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 1b - sensor_203c.read_temperature, value in C
   GIVEN:      (), {}
   EXPECT:     Pass
-2026-02-26 20:10:27,958                             DS18B20.read_temperature               -    DEBUG:  28-0b228004203c / My_203c - w1_slave file content:
-a6 01 3c 0f 7f ff 7f 10 b8 : crc=b8 YES
-a6 01 3c 0f 7f ff 7f 10 b8 t=26375
-2026-02-26 20:10:27,959                             DS18B20.read_temperature               -    DEBUG:  28-0b228004203c / My_203c - temperature:   26.375 C
-2026-02-26 20:10:27,959                        demo-DS18B20.dotest                         -  WARNING:  
-  RETURNED:   26.375
-2026-02-26 20:10:27,960                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:48,819                             DS18B20.read_temperature               -    DEBUG:  28-0b228004203c / My_203c - w1_slave file content:
+8f 01 3c 0f 7f ff 7f 10 79 : crc=79 YES
+8f 01 3c 0f 7f ff 7f 10 79 t=24937
+2026-03-22 08:00:48,820                             DS18B20.read_temperature               -    DEBUG:  28-0b228004203c / My_203c - Temperature:   24.937 C
+2026-03-22 08:00:48,820                        DS18B20-demo.dotest                         -  WARNING:  
+  RETURNED:   24.937
+2026-03-22 08:00:48,821                        DS18B20-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 1c - sensor_203c.read_temperature2, value in K
   GIVEN:      (), {'tempunits': 'K'}
   EXPECT:     Pass
-2026-02-26 20:10:28,838                             DS18B20.read_temperature2              -    DEBUG:  28-0b228004203c / My_203c - temperature file content:  26375
-2026-02-26 20:10:28,839                             DS18B20.read_temperature2              -    DEBUG:  28-0b228004203c / My_203c - temperature:  299.525 K
-2026-02-26 20:10:28,839                        demo-DS18B20.dotest                         -  WARNING:  
-  RETURNED:   299.525
-2026-02-26 20:10:28,840                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:49,699                             DS18B20.read_temperature2              -    DEBUG:  28-0b228004203c / My_203c - temperature file content:  25000
+2026-03-22 08:00:49,700                             DS18B20.read_temperature2              -    DEBUG:  28-0b228004203c / My_203c - Temperature:  298.150 K
+2026-03-22 08:00:49,700                        DS18B20-demo.dotest                         -  WARNING:  
+  RETURNED:   298.15
+2026-03-22 08:00:49,701                        DS18B20-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 1d - sensor_7113.read_scratchpad
   GIVEN:      (), {}
   EXPECT:     Pass
-2026-02-26 20:10:29,798                             DS18B20.read_scratchpad                -    DEBUG:  28-0b2280337113 / My_7113 - w1_slave file content:
-ae 01 7d c9 7f ff 7f 10 6e : crc=6e YES
-ae 01 7d c9 7f ff 7f 10 6e t=26875
-2026-02-26 20:10:29,799                             DS18B20.read_scratchpad                -    DEBUG:  28-0b2280337113 / My_7113 - temperature code:  01 ae   26.875 C,   80.375 F,  300.025 K
-2026-02-26 20:10:29,799                             DS18B20.read_scratchpad                -    DEBUG:  28-0b2280337113 / My_7113 - High alarm limit:  7d     125 C,      257.000 F,  398.150 K
-2026-02-26 20:10:29,799                             DS18B20.read_scratchpad                -    DEBUG:  28-0b2280337113 / My_7113 - Low  alarm limit:  c9     -55 C,      -67.000 F,  218.150 K
-2026-02-26 20:10:29,800                             DS18B20.read_scratchpad                -    DEBUG:  28-0b2280337113 / My_7113 - Resolution:        7f      12
-2026-02-26 20:10:29,800                             DS18B20.read_scratchpad                -    DEBUG:  28-0b2280337113 / My_7113 - Sensor root directory:     /sys/bus/w1/devices/28-0b2280337113
-2026-02-26 20:10:29,801                             DS18B20.read_scratchpad                -    DEBUG:  28-0b2280337113 / My_7113 - Bus master root directory: /sys/bus/w1/devices/w1_bus_master1
-2026-02-26 20:10:29,801                        demo-DS18B20.dotest                         -  WARNING:  
-  RETURNED:   ['ae', '01', '7d', 'c9', '7f', 'ff', '7f', '10', '6e', ':', 'crc=6e', 'YES']
-2026-02-26 20:10:29,801                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:50,579                             DS18B20.read_scratchpad                -    DEBUG:  28-0b2280337113 / My_7113 - w1_slave file content:
+8b 01 7d c9 7f ff 7f 10 90 : crc=90 YES
+8b 01 7d c9 7f ff 7f 10 90 t=24687
+2026-03-22 08:00:50,580                             DS18B20.read_scratchpad                -    DEBUG:  28-0b2280337113 / My_7113 - temperature code:  01 8b   24.688 C,   76.438 F,  297.837 K
+2026-03-22 08:00:50,581                             DS18B20.read_scratchpad                -    DEBUG:  28-0b2280337113 / My_7113 - High alarm limit:  7d     125 C,      257.000 F,  398.150 K
+2026-03-22 08:00:50,581                             DS18B20.read_scratchpad                -    DEBUG:  28-0b2280337113 / My_7113 - Low  alarm limit:  c9     -55 C,      -67.000 F,  218.150 K
+2026-03-22 08:00:50,582                             DS18B20.read_scratchpad                -    DEBUG:  28-0b2280337113 / My_7113 - Resolution:        7f      12
+2026-03-22 08:00:50,582                             DS18B20.read_scratchpad                -    DEBUG:  28-0b2280337113 / My_7113 - Sensor root directory:     /sys/bus/w1/devices/28-0b2280337113
+2026-03-22 08:00:50,582                             DS18B20.read_scratchpad                -    DEBUG:  28-0b2280337113 / My_7113 - Bus master root directory: /sys/bus/w1/devices/w1_bus_master1
+2026-03-22 08:00:50,583                        DS18B20-demo.dotest                         -  WARNING:  
+  RETURNED:   ['8b', '01', '7d', 'c9', '7f', 'ff', '7f', '10', '90', ':', 'crc=90', 'YES']
+2026-03-22 08:00:50,583                        DS18B20-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 2 - bulk_convert_trigger sequence
   GIVEN:      (), {}
   EXPECT:     None (pass, no exceptions)
-2026-02-26 20:10:30,637                             DS18B20.bulk_convert_trigger           -    DEBUG:  therm_bulk_read triggered
-2026-02-26 20:10:30,638                             DS18B20.bulk_convert_status            -    DEBUG:  therm_bulk_read status  1
-2026-02-26 20:10:30,639                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.bulk_convert_trigger() returned: <1>
-2026-02-26 20:10:30,640                             DS18B20.bulk_convert_status            -    DEBUG:  therm_bulk_read status  1
-2026-02-26 20:10:30,641                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.bulk_convert_status() returned: <1>
-2026-02-26 20:10:30,678                             DS18B20.read_temperature2              -    DEBUG:  28-0b228004203c / My_203c - temperature file content:  26375
-2026-02-26 20:10:30,679                             DS18B20.read_temperature2              -    DEBUG:  28-0b228004203c / My_203c - temperature:   26.375 C
-2026-02-26 20:10:30,679                        demo-DS18B20.func                           -    DEBUG:  sensor_203c.read_temperature2() returned: <26.375>
-2026-02-26 20:10:30,680                             DS18B20.bulk_convert_status            -    DEBUG:  therm_bulk_read status  1
-2026-02-26 20:10:30,681                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.bulk_convert_status() returned: <1>
-2026-02-26 20:10:30,718                             DS18B20.read_temperature2              -    DEBUG:  28-0b2280337113 / My_7113 - temperature file content:  26875
-2026-02-26 20:10:30,719                             DS18B20.read_temperature2              -    DEBUG:  28-0b2280337113 / My_7113 - temperature:   26.875 C
-2026-02-26 20:10:30,719                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.read_temperature2() returned: <26.875>
-2026-02-26 20:10:30,720                             DS18B20.bulk_convert_status            -    DEBUG:  therm_bulk_read status  0
-2026-02-26 20:10:30,721                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.bulk_convert_status() returned: <0>
-2026-02-26 20:10:30,721                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:51,418                             DS18B20.bulk_convert_trigger           -    DEBUG:  therm_bulk_read triggered
+2026-03-22 08:00:51,423                             DS18B20.bulk_convert_status            -    DEBUG:  therm_bulk_read status  1
+2026-03-22 08:00:51,424                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.bulk_convert_trigger() returned: <1>
+2026-03-22 08:00:51,425                             DS18B20.bulk_convert_status            -    DEBUG:  therm_bulk_read status  1
+2026-03-22 08:00:51,425                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.bulk_convert_status() returned: <1>
+2026-03-22 08:00:51,459                             DS18B20.read_temperature2              -    DEBUG:  28-0b228004203c / My_203c - temperature file content:  25000
+2026-03-22 08:00:51,460                             DS18B20.read_temperature2              -    DEBUG:  28-0b228004203c / My_203c - Temperature:   25.000 C
+2026-03-22 08:00:51,460                        DS18B20-demo.func                           -    DEBUG:  sensor_203c.read_temperature2() returned: <25.0>
+2026-03-22 08:00:51,462                             DS18B20.bulk_convert_status            -    DEBUG:  therm_bulk_read status  1
+2026-03-22 08:00:51,462                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.bulk_convert_status() returned: <1>
+2026-03-22 08:00:51,499                             DS18B20.read_temperature2              -    DEBUG:  28-0b2280337113 / My_7113 - temperature file content:  24750
+2026-03-22 08:00:51,500                             DS18B20.read_temperature2              -    DEBUG:  28-0b2280337113 / My_7113 - Temperature:   24.750 C
+2026-03-22 08:00:51,500                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.read_temperature2() returned: <24.75>
+2026-03-22 08:00:51,501                             DS18B20.bulk_convert_status            -    DEBUG:  therm_bulk_read status  0
+2026-03-22 08:00:51,502                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.bulk_convert_status() returned: <0>
+2026-03-22 08:00:51,502                        DS18B20-demo.dotest                         -  WARNING:  
   RETURNED:   None
-2026-02-26 20:10:30,722                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:51,503                        DS18B20-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 3a - Resolution 9
   GIVEN:      (), {}
   EXPECT:     None (pass, no exceptions)
-2026-02-26 20:10:30,758                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    12
-2026-02-26 20:10:30,758                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.get_resolution()   returned: <12>
-2026-02-26 20:10:30,908                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    9
-2026-02-26 20:10:30,908                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.set_resolution(9)  returned: <9>
-2026-02-26 20:10:30,909                             DS18B20.get_conv_time                  -    DEBUG:  28-0b2280337113 / My_7113 - Current conversion time:   95
-2026-02-26 20:10:30,910                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.get_conv_time()    returned: <95>
-2026-02-26 20:10:31,098                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - w1_slave file content:
-b0 01 7d c9 1f ff 1f 10 49 : crc=49 YES
-b0 01 7d c9 1f ff 1f 10 49 t=27000
-2026-02-26 20:10:31,099                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - temperature:   27.000 C
-2026-02-26 20:10:31,099                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.read_temperature() returned: <27.0>
-2026-02-26 20:10:31,100                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:51,539                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    12
+2026-03-22 08:00:51,539                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.get_resolution()   returned: <12>
+2026-03-22 08:00:51,689                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    9
+2026-03-22 08:00:51,690                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.set_resolution(9)  returned: <9>
+2026-03-22 08:00:51,691                             DS18B20.get_conv_time                  -    DEBUG:  28-0b2280337113 / My_7113 - Current conversion time:   95
+2026-03-22 08:00:51,691                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.get_conv_time()    returned: <95>
+2026-03-22 08:00:51,879                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - w1_slave file content:
+90 01 7d c9 1f ff 1f 10 e1 : crc=e1 YES
+90 01 7d c9 1f ff 1f 10 e1 t=25000
+2026-03-22 08:00:51,880                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - Temperature:   25.000 C
+2026-03-22 08:00:51,880                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.read_temperature() returned: <25.0>
+2026-03-22 08:00:51,881                        DS18B20-demo.dotest                         -  WARNING:  
   RETURNED:   None
-2026-02-26 20:10:31,100                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:51,882                        DS18B20-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 3b - Resolution 10
   GIVEN:      (), {}
   EXPECT:     None (pass, no exceptions)
-2026-02-26 20:10:31,138                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    9
-2026-02-26 20:10:31,139                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.get_resolution()   returned: <9>
-2026-02-26 20:10:31,288                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    10
-2026-02-26 20:10:31,288                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.set_resolution(10) returned: <10>
-2026-02-26 20:10:31,289                             DS18B20.get_conv_time                  -    DEBUG:  28-0b2280337113 / My_7113 - Current conversion time:   190
-2026-02-26 20:10:31,290                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.get_conv_time()    returned: <190>
-2026-02-26 20:10:31,568                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - w1_slave file content:
-ac 01 7d c9 3f ff 3f 10 93 : crc=93 YES
-ac 01 7d c9 3f ff 3f 10 93 t=26750
-2026-02-26 20:10:31,569                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - temperature:   26.750 C
-2026-02-26 20:10:31,569                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.read_temperature() returned: <26.75>
-2026-02-26 20:10:31,570                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:51,919                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    9
+2026-03-22 08:00:51,920                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.get_resolution()   returned: <9>
+2026-03-22 08:00:52,069                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    10
+2026-03-22 08:00:52,070                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.set_resolution(10) returned: <10>
+2026-03-22 08:00:52,071                             DS18B20.get_conv_time                  -    DEBUG:  28-0b2280337113 / My_7113 - Current conversion time:   190
+2026-03-22 08:00:52,071                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.get_conv_time()    returned: <190>
+2026-03-22 08:00:52,349                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - w1_slave file content:
+8c 01 7d c9 3f ff 3f 10 3b : crc=3b YES
+8c 01 7d c9 3f ff 3f 10 3b t=24750
+2026-03-22 08:00:52,350                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - Temperature:   24.750 C
+2026-03-22 08:00:52,350                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.read_temperature() returned: <24.75>
+2026-03-22 08:00:52,351                        DS18B20-demo.dotest                         -  WARNING:  
   RETURNED:   None
-2026-02-26 20:10:31,570                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:52,351                        DS18B20-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 3c - Resolution 11
   GIVEN:      (), {}
   EXPECT:     None (pass, no exceptions)
-2026-02-26 20:10:31,608                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    10
-2026-02-26 20:10:31,609                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.get_resolution()   returned: <10>
-2026-02-26 20:10:31,758                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    11
-2026-02-26 20:10:31,758                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.set_resolution(11) returned: <11>
-2026-02-26 20:10:31,759                             DS18B20.get_conv_time                  -    DEBUG:  28-0b2280337113 / My_7113 - Current conversion time:   375
-2026-02-26 20:10:31,760                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.get_conv_time()    returned: <375>
-2026-02-26 20:10:32,228                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - w1_slave file content:
-ae 01 7d c9 5f ff 5f 10 df : crc=df YES
-ae 01 7d c9 5f ff 5f 10 df t=26875
-2026-02-26 20:10:32,229                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - temperature:   26.875 C
-2026-02-26 20:10:32,229                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.read_temperature() returned: <26.875>
-2026-02-26 20:10:32,230                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:52,389                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    10
+2026-03-22 08:00:52,390                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.get_resolution()   returned: <10>
+2026-03-22 08:00:52,539                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    11
+2026-03-22 08:00:52,540                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.set_resolution(11) returned: <11>
+2026-03-22 08:00:52,541                             DS18B20.get_conv_time                  -    DEBUG:  28-0b2280337113 / My_7113 - Current conversion time:   375
+2026-03-22 08:00:52,541                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.get_conv_time()    returned: <375>
+2026-03-22 08:00:53,009                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - w1_slave file content:
+8c 01 7d c9 5f ff 5f 10 f1 : crc=f1 YES
+8c 01 7d c9 5f ff 5f 10 f1 t=24750
+2026-03-22 08:00:53,010                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - Temperature:   24.750 C
+2026-03-22 08:00:53,010                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.read_temperature() returned: <24.75>
+2026-03-22 08:00:53,011                        DS18B20-demo.dotest                         -  WARNING:  
   RETURNED:   None
-2026-02-26 20:10:32,230                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:53,011                        DS18B20-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 3d - Resolution 12
   GIVEN:      (), {}
   EXPECT:     None (pass, no exceptions)
-2026-02-26 20:10:32,268                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    11
-2026-02-26 20:10:32,268                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.get_resolution()   returned: <11>
-2026-02-26 20:10:32,418                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    12
-2026-02-26 20:10:32,418                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.set_resolution(12) returned: <12>
-2026-02-26 20:10:32,419                             DS18B20.get_conv_time                  -    DEBUG:  28-0b2280337113 / My_7113 - Current conversion time:   750
-2026-02-26 20:10:32,420                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.get_conv_time()    returned: <750>
-2026-02-26 20:10:33,318                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - w1_slave file content:
-ae 01 7d c9 7f ff 7f 10 6e : crc=6e YES
-ae 01 7d c9 7f ff 7f 10 6e t=26875
-2026-02-26 20:10:33,319                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - temperature:   26.875 C
-2026-02-26 20:10:33,319                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.read_temperature() returned: <26.875>
-2026-02-26 20:10:33,320                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:53,049                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    11
+2026-03-22 08:00:53,050                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.get_resolution()   returned: <11>
+2026-03-22 08:00:53,199                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    12
+2026-03-22 08:00:53,200                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.set_resolution(12) returned: <12>
+2026-03-22 08:00:53,201                             DS18B20.get_conv_time                  -    DEBUG:  28-0b2280337113 / My_7113 - Current conversion time:   750
+2026-03-22 08:00:53,201                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.get_conv_time()    returned: <750>
+2026-03-22 08:00:54,099                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - w1_slave file content:
+8c 01 7d c9 7f ff 7f 10 40 : crc=40 YES
+8c 01 7d c9 7f ff 7f 10 40 t=24750
+2026-03-22 08:00:54,100                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - Temperature:   24.750 C
+2026-03-22 08:00:54,100                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.read_temperature() returned: <24.75>
+2026-03-22 08:00:54,101                        DS18B20-demo.dotest                         -  WARNING:  
   RETURNED:   None
-2026-02-26 20:10:33,320                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:54,101                        DS18B20-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 4 - set_conv_time to 120/250ms, measured, and default
   GIVEN:      (), {}
   EXPECT:     None (pass, no exceptions)
-2026-02-26 20:10:33,468                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    9
-2026-02-26 20:10:33,468                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.set_resolution(9)  returned: <9>
-2026-02-26 20:10:33,469                             DS18B20.get_conv_time                  -    DEBUG:  28-0b2280337113 / My_7113 - Current conversion time:   95
-2026-02-26 20:10:33,470                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.get_conv_time()    returned: <95>
-2026-02-26 20:10:33,658                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - w1_slave file content:
-b0 01 7d c9 1f ff 1f 10 49 : crc=49 YES
-b0 01 7d c9 1f ff 1f 10 49 t=27000
-2026-02-26 20:10:33,659                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - temperature:   27.000 C
-2026-02-26 20:10:33,659                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.read_temperature() returned: <27.0>
-2026-02-26 20:10:33,661                             DS18B20.get_conv_time                  -    DEBUG:  28-0b2280337113 / My_7113 - Current conversion time:   120
-2026-02-26 20:10:33,661                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.set_conv_time(120) returned: <120>
-2026-02-26 20:10:33,868                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - w1_slave file content:
-b0 01 7d c9 1f ff 1f 10 49 : crc=49 YES
-b0 01 7d c9 1f ff 1f 10 49 t=27000
-2026-02-26 20:10:33,869                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - temperature:   27.000 C
-2026-02-26 20:10:33,869                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.read_temperature() returned: <27.0>
-2026-02-26 20:10:33,871                             DS18B20.get_conv_time                  -    DEBUG:  28-0b2280337113 / My_7113 - Current conversion time:   250
-2026-02-26 20:10:33,871                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.set_conv_time(250) returned: <250>
-2026-02-26 20:10:34,208                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - w1_slave file content:
-b0 01 7d c9 1f ff 1f 10 49 : crc=49 YES
-b0 01 7d c9 1f ff 1f 10 49 t=27000
-2026-02-26 20:10:34,209                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - temperature:   27.000 C
-2026-02-26 20:10:34,209                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.read_temperature() returned: <27.0>
-2026-02-26 20:10:34,399                             DS18B20.get_conv_time                  -    DEBUG:  28-0b2280337113 / My_7113 - Current conversion time:   144
-2026-02-26 20:10:34,399                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.set_conv_time(1)   returned: <144>
-2026-02-26 20:10:34,638                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - w1_slave file content:
-b0 01 7d c9 1f ff 1f 10 49 : crc=49 YES
-b0 01 7d c9 1f ff 1f 10 49 t=27000
-2026-02-26 20:10:34,639                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - temperature:   27.000 C
-2026-02-26 20:10:34,639                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.read_temperature() returned: <27.0>
-2026-02-26 20:10:34,641                             DS18B20.get_conv_time                  -    DEBUG:  28-0b2280337113 / My_7113 - Current conversion time:   95
-2026-02-26 20:10:34,641                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.set_conv_time(0)   returned: <95>
-2026-02-26 20:10:34,828                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - w1_slave file content:
-b0 01 7d c9 1f ff 1f 10 49 : crc=49 YES
-b0 01 7d c9 1f ff 1f 10 49 t=27000
-2026-02-26 20:10:34,829                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - temperature:   27.000 C
-2026-02-26 20:10:34,829                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.read_temperature() returned: <27.0>
-2026-02-26 20:10:34,830                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:54,249                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    9
+2026-03-22 08:00:54,250                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.set_resolution(9)  returned: <9>
+2026-03-22 08:00:54,251                             DS18B20.get_conv_time                  -    DEBUG:  28-0b2280337113 / My_7113 - Current conversion time:   95
+2026-03-22 08:00:54,251                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.get_conv_time()    returned: <95>
+2026-03-22 08:00:54,439                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - w1_slave file content:
+90 01 7d c9 1f ff 1f 10 e1 : crc=e1 YES
+90 01 7d c9 1f ff 1f 10 e1 t=25000
+2026-03-22 08:00:54,440                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - Temperature:   25.000 C
+2026-03-22 08:00:54,440                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.read_temperature() returned: <25.0>
+2026-03-22 08:00:54,442                             DS18B20.get_conv_time                  -    DEBUG:  28-0b2280337113 / My_7113 - Current conversion time:   120
+2026-03-22 08:00:54,443                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.set_conv_time(120) returned: <120>
+2026-03-22 08:00:54,649                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - w1_slave file content:
+90 01 7d c9 1f ff 1f 10 e1 : crc=e1 YES
+90 01 7d c9 1f ff 1f 10 e1 t=25000
+2026-03-22 08:00:54,650                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - Temperature:   25.000 C
+2026-03-22 08:00:54,650                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.read_temperature() returned: <25.0>
+2026-03-22 08:00:54,652                             DS18B20.get_conv_time                  -    DEBUG:  28-0b2280337113 / My_7113 - Current conversion time:   250
+2026-03-22 08:00:54,653                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.set_conv_time(250) returned: <250>
+2026-03-22 08:00:54,989                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - w1_slave file content:
+90 01 7d c9 1f ff 1f 10 e1 : crc=e1 YES
+90 01 7d c9 1f ff 1f 10 e1 t=25000
+2026-03-22 08:00:54,990                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - Temperature:   25.000 C
+2026-03-22 08:00:54,990                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.read_temperature() returned: <25.0>
+2026-03-22 08:00:55,180                             DS18B20.get_conv_time                  -    DEBUG:  28-0b2280337113 / My_7113 - Current conversion time:   144
+2026-03-22 08:00:55,180                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.set_conv_time(1)   returned: <144>
+2026-03-22 08:00:55,499                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - w1_slave file content:
+90 01 7d c9 1f ff 1f 10 e1 : crc=e1 YES
+90 01 7d c9 1f ff 1f 10 e1 t=25000
+2026-03-22 08:00:55,500                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - Temperature:   25.000 C
+2026-03-22 08:00:55,500                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.read_temperature() returned: <25.0>
+2026-03-22 08:00:55,502                             DS18B20.get_conv_time                  -    DEBUG:  28-0b2280337113 / My_7113 - Current conversion time:   95
+2026-03-22 08:00:55,503                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.set_conv_time(0)   returned: <95>
+2026-03-22 08:00:55,689                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - w1_slave file content:
+90 01 7d c9 1f ff 1f 10 e1 : crc=e1 YES
+90 01 7d c9 1f ff 1f 10 e1 t=25000
+2026-03-22 08:00:55,690                             DS18B20.read_temperature               -    DEBUG:  28-0b2280337113 / My_7113 - Temperature:   25.000 C
+2026-03-22 08:00:55,690                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.read_temperature() returned: <25.0>
+2026-03-22 08:00:55,691                        DS18B20-demo.dotest                         -  WARNING:  
   RETURNED:   None
-2026-02-26 20:10:34,830                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:55,691                        DS18B20-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 5 - get_alarm_temps/set_alarm_temps
   GIVEN:      (), {}
   EXPECT:     None (pass, no exceptions)
-2026-02-26 20:10:34,917                             DS18B20.recall_E2                      -    DEBUG:  28-0b2280337113 / My_7113 - EEPROM restored to scratchpad
-2026-02-26 20:10:34,918                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.recall_E2()                 returned: <None>
-2026-02-26 20:10:34,958                             DS18B20.get_alarm_temps                -    DEBUG:  28-0b2280337113 / My_7113 - Current alarm TL TH settings:  -55 125
-2026-02-26 20:10:34,958                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.get_alarm_temps()           returned: <-55 125>
-2026-02-26 20:10:35,068                             DS18B20.get_alarm_temps                -    DEBUG:  28-0b2280337113 / My_7113 - Current alarm TL TH settings:  20 30
-2026-02-26 20:10:35,068                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.set_alarm_temps(20, 30)     returned: <20 30>
-2026-02-26 20:10:35,108                             DS18B20.get_alarm_temps                -    DEBUG:  28-0b2280337113 / My_7113 - Current alarm TL TH settings:  20 30
-2026-02-26 20:10:35,108                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.get_alarm_temps()           returned: <20 30>
-2026-02-26 20:10:35,218                             DS18B20.get_alarm_temps                -    DEBUG:  28-0b2280337113 / My_7113 - Current alarm TL TH settings:  19 31
-2026-02-26 20:10:35,218                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.set_alarm_temps('31', '19') returned: <19 31>
-2026-02-26 20:10:35,258                             DS18B20.get_alarm_temps                -    DEBUG:  28-0b2280337113 / My_7113 - Current alarm TL TH settings:  19 31
-2026-02-26 20:10:35,258                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.get_alarm_temps()           returned: <19 31>
-2026-02-26 20:10:35,259                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:55,779                             DS18B20.recall_E2                      -    DEBUG:  28-0b2280337113 / My_7113 - EEPROM restored to scratchpad
+2026-03-22 08:00:55,779                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.recall_E2()                 returned: <None>
+2026-03-22 08:00:55,819                             DS18B20.get_alarm_temps                -    DEBUG:  28-0b2280337113 / My_7113 - Current alarm TL TH settings:  -55 125
+2026-03-22 08:00:55,820                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.get_alarm_temps()           returned: <-55 125>
+2026-03-22 08:00:55,929                             DS18B20.get_alarm_temps                -    DEBUG:  28-0b2280337113 / My_7113 - Current alarm TL TH settings:  20 30
+2026-03-22 08:00:55,930                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.set_alarm_temps(20, 30)     returned: <20 30>
+2026-03-22 08:00:55,969                             DS18B20.get_alarm_temps                -    DEBUG:  28-0b2280337113 / My_7113 - Current alarm TL TH settings:  20 30
+2026-03-22 08:00:55,970                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.get_alarm_temps()           returned: <20 30>
+2026-03-22 08:00:56,079                             DS18B20.get_alarm_temps                -    DEBUG:  28-0b2280337113 / My_7113 - Current alarm TL TH settings:  19 31
+2026-03-22 08:00:56,080                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.set_alarm_temps('31', '19') returned: <19 31>
+2026-03-22 08:00:56,119                             DS18B20.get_alarm_temps                -    DEBUG:  28-0b2280337113 / My_7113 - Current alarm TL TH settings:  19 31
+2026-03-22 08:00:56,120                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.get_alarm_temps()           returned: <19 31>
+2026-03-22 08:00:56,120                        DS18B20-demo.dotest                         -  WARNING:  
   RETURNED:   None
-2026-02-26 20:10:35,259                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:56,120                        DS18B20-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 6 - sensor_203c.get_ext_power
   GIVEN:      (), {}
   EXPECT:     1
-2026-02-26 20:10:35,293                             DS18B20.get_ext_power                  -    DEBUG:  28-0b228004203c / My_203c - External power status:     1
-2026-02-26 20:10:35,293                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:56,154                             DS18B20.get_ext_power                  -    DEBUG:  28-0b228004203c / My_203c - External power status:     1
+2026-03-22 08:00:56,154                        DS18B20-demo.dotest                         -  WARNING:  
   RETURNED:   1
-2026-02-26 20:10:35,294                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:56,155                        DS18B20-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 7 - Save/restore from EEPROM
   GIVEN:      (), {}
   EXPECT:     None (pass, no exceptions)
-2026-02-26 20:10:35,377                             DS18B20.recall_E2                      -    DEBUG:  28-0b2280337113 / My_7113 - EEPROM restored to scratchpad
-2026-02-26 20:10:35,378                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.recall_E2()                 returned: <None>
-2026-02-26 20:10:35,418                             DS18B20.get_alarm_temps                -    DEBUG:  28-0b2280337113 / My_7113 - Current alarm TL TH settings:  -55 125
-2026-02-26 20:10:35,418                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.get_alarm_temps()           returned: <-55 125>
-2026-02-26 20:10:35,458                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    12
-2026-02-26 20:10:35,458                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.get_resolution()            returned: <12>
-2026-02-26 20:10:35,459                        demo-DS18B20.func                           -    DEBUG:  
-2026-02-26 20:10:35,568                             DS18B20.get_alarm_temps                -    DEBUG:  28-0b2280337113 / My_7113 - Current alarm TL TH settings:  20 30
-2026-02-26 20:10:35,568                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.set_alarm_temps(20, 30)     returned: <20 30>
-2026-02-26 20:10:35,718                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    10
-2026-02-26 20:10:35,719                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.set_resolution(10)          returned: <10>
-2026-02-26 20:10:35,753                             DS18B20.copy_scratchpad                -    DEBUG:  28-0b2280337113 / My_7113 - scratchpad saved to EEPROM
-2026-02-26 20:10:35,753                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.copy_scratchpad()           returned: <None>
-2026-02-26 20:10:35,858                             DS18B20.get_alarm_temps                -    DEBUG:  28-0b2280337113 / My_7113 - Current alarm TL TH settings:  25 28
-2026-02-26 20:10:35,858                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.set_alarm_temps(25, 18)     returned: <25 28>
-2026-02-26 20:10:36,008                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    11
-2026-02-26 20:10:36,008                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.set_resolution(11)          returned: <11>
-2026-02-26 20:10:36,097                             DS18B20.recall_E2                      -    DEBUG:  28-0b2280337113 / My_7113 - EEPROM restored to scratchpad
-2026-02-26 20:10:36,098                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.recall_E2()                 returned: <None>
-2026-02-26 20:10:36,138                             DS18B20.get_alarm_temps                -    DEBUG:  28-0b2280337113 / My_7113 - Current alarm TL TH settings:  20 30
-2026-02-26 20:10:36,138                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.get_alarm_temps()           returned: <20 30>
-2026-02-26 20:10:36,178                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    10
-2026-02-26 20:10:36,178                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.get_resolution()            returned: <10>
-2026-02-26 20:10:36,179                        demo-DS18B20.func                           -    DEBUG:  
-2026-02-26 20:10:36,288                             DS18B20.get_alarm_temps                -    DEBUG:  28-0b2280337113 / My_7113 - Current alarm TL TH settings:  -55 125
-2026-02-26 20:10:36,288                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.set_alarm_temps(-55, 125)   returned: <-55 125>
-2026-02-26 20:10:36,438                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    12
-2026-02-26 20:10:36,438                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.set_resolution(12)          returned: <12>
-2026-02-26 20:10:36,473                             DS18B20.copy_scratchpad                -    DEBUG:  28-0b2280337113 / My_7113 - scratchpad saved to EEPROM
-2026-02-26 20:10:36,473                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.copy_scratchpad()           returned: <None>
-2026-02-26 20:10:36,557                             DS18B20.recall_E2                      -    DEBUG:  28-0b2280337113 / My_7113 - EEPROM restored to scratchpad
-2026-02-26 20:10:36,558                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.recall_E2()                 returned: <None>
-2026-02-26 20:10:36,598                             DS18B20.get_alarm_temps                -    DEBUG:  28-0b2280337113 / My_7113 - Current alarm TL TH settings:  -55 125
-2026-02-26 20:10:36,598                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.get_alarm_temps()           returned: <-55 125>
-2026-02-26 20:10:36,638                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    12
-2026-02-26 20:10:36,638                        demo-DS18B20.func                           -    DEBUG:  sensor_7113.get_resolution()            returned: <12>
-2026-02-26 20:10:36,639                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:56,239                             DS18B20.recall_E2                      -    DEBUG:  28-0b2280337113 / My_7113 - EEPROM restored to scratchpad
+2026-03-22 08:00:56,239                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.recall_E2()                 returned: <None>
+2026-03-22 08:00:56,279                             DS18B20.get_alarm_temps                -    DEBUG:  28-0b2280337113 / My_7113 - Current alarm TL TH settings:  -55 125
+2026-03-22 08:00:56,280                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.get_alarm_temps()           returned: <-55 125>
+2026-03-22 08:00:56,319                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    12
+2026-03-22 08:00:56,320                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.get_resolution()            returned: <12>
+2026-03-22 08:00:56,320                        DS18B20-demo.func                           -    DEBUG:  
+2026-03-22 08:00:56,429                             DS18B20.get_alarm_temps                -    DEBUG:  28-0b2280337113 / My_7113 - Current alarm TL TH settings:  20 30
+2026-03-22 08:00:56,430                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.set_alarm_temps(20, 30)     returned: <20 30>
+2026-03-22 08:00:56,579                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    10
+2026-03-22 08:00:56,580                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.set_resolution(10)          returned: <10>
+2026-03-22 08:00:56,614                             DS18B20.copy_scratchpad                -    DEBUG:  28-0b2280337113 / My_7113 - scratchpad saved to EEPROM
+2026-03-22 08:00:56,614                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.copy_scratchpad()           returned: <None>
+2026-03-22 08:00:56,719                             DS18B20.get_alarm_temps                -    DEBUG:  28-0b2280337113 / My_7113 - Current alarm TL TH settings:  25 28
+2026-03-22 08:00:56,720                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.set_alarm_temps(25, 18)     returned: <25 28>
+2026-03-22 08:00:56,869                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    11
+2026-03-22 08:00:56,870                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.set_resolution(11)          returned: <11>
+2026-03-22 08:00:56,959                             DS18B20.recall_E2                      -    DEBUG:  28-0b2280337113 / My_7113 - EEPROM restored to scratchpad
+2026-03-22 08:00:56,959                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.recall_E2()                 returned: <None>
+2026-03-22 08:00:56,999                             DS18B20.get_alarm_temps                -    DEBUG:  28-0b2280337113 / My_7113 - Current alarm TL TH settings:  20 30
+2026-03-22 08:00:57,000                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.get_alarm_temps()           returned: <20 30>
+2026-03-22 08:00:57,039                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    10
+2026-03-22 08:00:57,040                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.get_resolution()            returned: <10>
+2026-03-22 08:00:57,040                        DS18B20-demo.func                           -    DEBUG:  
+2026-03-22 08:00:57,149                             DS18B20.get_alarm_temps                -    DEBUG:  28-0b2280337113 / My_7113 - Current alarm TL TH settings:  -55 125
+2026-03-22 08:00:57,150                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.set_alarm_temps(-55, 125)   returned: <-55 125>
+2026-03-22 08:00:57,299                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    12
+2026-03-22 08:00:57,300                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.set_resolution(12)          returned: <12>
+2026-03-22 08:00:57,334                             DS18B20.copy_scratchpad                -    DEBUG:  28-0b2280337113 / My_7113 - scratchpad saved to EEPROM
+2026-03-22 08:00:57,334                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.copy_scratchpad()           returned: <None>
+2026-03-22 08:00:57,419                             DS18B20.recall_E2                      -    DEBUG:  28-0b2280337113 / My_7113 - EEPROM restored to scratchpad
+2026-03-22 08:00:57,419                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.recall_E2()                 returned: <None>
+2026-03-22 08:00:57,459                             DS18B20.get_alarm_temps                -    DEBUG:  28-0b2280337113 / My_7113 - Current alarm TL TH settings:  -55 125
+2026-03-22 08:00:57,460                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.get_alarm_temps()           returned: <-55 125>
+2026-03-22 08:00:57,499                             DS18B20.get_resolution                 -    DEBUG:  28-0b2280337113 / My_7113 - Current resolution setting:    12
+2026-03-22 08:00:57,500                        DS18B20-demo.func                           -    DEBUG:  sensor_7113.get_resolution()            returned: <12>
+2026-03-22 08:00:57,500                        DS18B20-demo.dotest                         -  WARNING:  
   RETURNED:   None
-2026-02-26 20:10:36,639                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:57,501                        DS18B20-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 13a - sensor not found
   GIVEN:      ('28-0b2280337000', 'My_7000'), {}
   EXPECT:     FileNotFoundError: [Errno 2] No such file or directory: '/sys/bus/w1/devices/28-0b2280337000'
-2026-02-26 20:10:36,640                        demo-DS18B20.dotest                         -    ERROR:  
+2026-03-22 08:00:57,502                        DS18B20-demo.dotest                         -    ERROR:  
   RAISED:     FileNotFoundError: [Errno 2] No such file or directory: '/sys/bus/w1/devices/28-0b2280337000'
-2026-02-26 20:10:36,640                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:57,502                        DS18B20-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 13b - Invalid device_name
   GIVEN:      (), {}
   EXPECT:     NameError: name 'x' is not defined
-2026-02-26 20:10:36,641                        demo-DS18B20.dotest                         -    ERROR:  
+2026-03-22 08:00:57,503                        DS18B20-demo.dotest                         -    ERROR:  
   RAISED:     NameError: name 'x' is not defined
-2026-02-26 20:10:36,641                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:57,503                        DS18B20-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 13c - Invalid temp in set_alarm_temps()
   GIVEN:      ('a', 'b'), {}
   EXPECT:     ValueError: alarm temps must be int or str values between -55 and 125.  Values are degrees C.
-2026-02-26 20:10:36,642                        demo-DS18B20.dotest                         -    ERROR:  
+2026-03-22 08:00:57,504                        DS18B20-demo.dotest                         -    ERROR:  
   RAISED:     ValueError: alarm temps must be int or str values between -55 and 125.  Values are degrees C.
-2026-02-26 20:10:36,642                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:57,504                        DS18B20-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 13d - Invalid temp in set_alarm_temps()
   GIVEN:      ('-56', 125), {}
   EXPECT:     ValueError: alarm temps must be int or str values between -55 and 125.  Values are degrees C.
-2026-02-26 20:10:36,642                        demo-DS18B20.dotest                         -    ERROR:  
+2026-03-22 08:00:57,505                        DS18B20-demo.dotest                         -    ERROR:  
   RAISED:     ValueError: alarm temps must be int or str values between -55 and 125.  Values are degrees C.
-2026-02-26 20:10:36,643                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:57,505                        DS18B20-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 13e - Invalid value in set_resolution()
   GIVEN:      (['George'],), {}
   EXPECT:     ValueError: resolution value must be int or str 9, 10, 11 or 12
-2026-02-26 20:10:36,643                        demo-DS18B20.dotest                         -    ERROR:  
+2026-03-22 08:00:57,506                        DS18B20-demo.dotest                         -    ERROR:  
   RAISED:     ValueError: resolution value must be int or str 9, 10, 11 or 12
-2026-02-26 20:10:36,644                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:57,506                        DS18B20-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 13f - Invalid value in set_resolution()
   GIVEN:      (13,), {}
   EXPECT:     ValueError: resolution value must be int or str 9, 10, 11 or 12
-2026-02-26 20:10:36,644                        demo-DS18B20.dotest                         -    ERROR:  
+2026-03-22 08:00:57,506                        DS18B20-demo.dotest                         -    ERROR:  
   RAISED:     ValueError: resolution value must be int or str 9, 10, 11 or 12
-2026-02-26 20:10:36,644                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:57,507                        DS18B20-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 13g - Invalid value in set_conv_time()
   GIVEN:      (-1,), {}
   EXPECT:     ValueError: conv_setting value must be int or str => 0
-2026-02-26 20:10:36,645                        demo-DS18B20.dotest                         -    ERROR:  
+2026-03-22 08:00:57,507                        DS18B20-demo.dotest                         -    ERROR:  
   RAISED:     ValueError: conv_setting value must be int or str => 0
-2026-02-26 20:10:36,645                        demo-DS18B20.dotest                         -  WARNING:  
+2026-03-22 08:00:57,508                        DS18B20-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 13h - Invalid value in set_conv_time()
   GIVEN:      ('George',), {}
   EXPECT:     ValueError: conv_setting value must be int or str => 0
-2026-02-26 20:10:36,646                        demo-DS18B20.dotest                         -    ERROR:  
+2026-03-22 08:00:57,509                        DS18B20-demo.dotest                         -    ERROR:  
   RAISED:     ValueError: conv_setting value must be int or str => 0

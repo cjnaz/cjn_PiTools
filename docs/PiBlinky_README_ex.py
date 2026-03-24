@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # PiBlinky_README_ex.py available in the docs directory in the github repo
 
-# Set up a piblinky instance
-from cjn_PiTools.PiBlinky import piblinky, CMD_EXIT, CMD_SAVE, CMD_RESTORE
+# Set up a PiBlinky instance
+from cjn_PiTools.PiBlinky import PiBlinky, CMD_EXIT, CMD_SAVE, CMD_RESTORE
 import queue
 import time
 
 BLU_LED_GPIO    = 4
 BLU_LED_q       = queue.Queue()
-BLU_LED_inst    = piblinky("BLU", 'GPIO', BLU_LED_GPIO, BLU_LED_q)
+BLU_LED_inst    = PiBlinky("BLU", 'GPIO', BLU_LED_GPIO, BLU_LED_q)
 BLU_LED_th      = BLU_LED_inst.start()
 
 print ("Produce the bit stream <1000> with a period of 50ms for each bit, repeated 3 times")

@@ -108,7 +108,6 @@ The `write_value` is written to the control register and saved in `channel_enabl
         if PCA9548_logger.isEnabledFor(logging.DEBUG):
             PCA9548_logger.debug (f"<{self.device_name}> New mask:     <0b{channel_enable_bit_map:0>8b}>, channels <{bit_map_to_channel_str(channel_enable_bit_map)}>")
 
-
         try:
             result = self.pi_i2c_bus_handle.i2c_write_byte(self.device_addr, channel_enable_bit_map)
             self.channel_enable_bit_map = channel_enable_bit_map
@@ -211,7 +210,7 @@ def cli():
 Mask values for set command
     0-7 selects that specific channel
     -1 sets the control regiser to 0b00000000 (no channels selected)
-    0xNN or 0bNNNNNNN sets the control register to that specific bit_mask
+    0xNN or 0bNNNNNNN sets the control register to this specific bit_mask (range 0x00 to 0xFF)
 """
 
     # import time
@@ -283,8 +282,11 @@ Mask values for set command
                 mask = int (mask, 16)
             elif args.Mask.startswith('0b'):
                 mask = int (mask, 2)
+            if isinstance(mask, int)  and  (mask < 0x00  or  mask > 0xFF):
+                raise ValueError ("Hex or binary value out of range 0x00 to 0xFF")
         except Exception as e:
-            logging.error (f"Illegal hex or binary value - Aborting\n  {type(e).__name__}: {e}")
+            logging.error (f"Illegal Mask value - received <{args.Mask}> - Aborting\n  {type(e).__name__}: {e}")
+            sys.exit(1)
         
         PCA9548_instance.write_control_reg(mask)
 

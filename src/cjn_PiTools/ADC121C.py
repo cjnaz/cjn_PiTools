@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""ADC121C* library for Raspberry Pi
+"""ADC121C* 12-bit ADC library for Raspberry Pi
 """
 
 #==========================================================
@@ -23,8 +23,8 @@ HIGHEST_CONVERSION_REG_PTR =    0x07
 
 ADC121_ADDRS =                  [0x50, 0x51, 0x52, 0x54, 0x55, 0x56, 0x58, 0x59, 0x5a]
 
-
 adc121c_logger =                logging.getLogger('cjn_PiTools.ADC121C')
+
 
 # ADC121C I2C operation:
 #     The first data byte of every write operation is stored in the address pointer register.
@@ -46,7 +46,7 @@ adc121c_logger =                logging.getLogger('cjn_PiTools.ADC121C')
 
 class ADC121C:
     """
-## Class ADC121C (device_name, device_addr, pi_i2c_bus_handle, Vref, config_byte=None, cycle_time=0b000, alert_hold=0, alert_flag_en=0, alert_pin_en=0, polarity=0 ) - ADC121Cxxx library for Raspberry Pi
+## Class ADC121C (device_name, device_addr, pi_i2c_bus_handle, Vref, config_byte=None, cycle_time=0b000, alert_hold=0, alert_flag_en=0, alert_pin_en=0, polarity=0) - ADC121Cxxx library for Raspberry Pi
 
 Create an ADC121C family device instance
 
@@ -133,28 +133,38 @@ calls to `write_config()`
 
     def __init__(self, device_name, device_addr, pi_i2c_bus_handle, Vref, config_byte=None,
                  cycle_time=0b000, alert_hold=0, alert_flag_en=0, alert_pin_en=0, polarity=0):
-                # default All disabled:  Auto conversion mode, Alert Hold, Alert Flag, Alert Pin
 
         self.device_name =          device_name
         self.device_addr =          device_addr
         self.pi_i2c_bus_handle =    pi_i2c_bus_handle
         self.Vref =                 Vref
-        self.cycle_time =           cycle_time       # TODO - save as defaults the field values when using config_byte
+        self.cycle_time =           cycle_time
         self.alert_hold =           alert_hold
         self.alert_flag_en =        alert_flag_en
         self.alert_pin_en =         alert_pin_en
         self.polarity =             polarity
-        if config_byte:
-            self.cycle_time, self.alert_hold, self.alert_flag_en, self.alert_pin_en, self.polarity = decode_config_byte(config_byte)
 
-
-        self.conv_rslt_reg_addressed = False
+        if not isinstance(device_name, str):
+            raise ValueError (f"device_name must be str - Received <{device_name}>")
 
         if self.device_addr not in ADC121_ADDRS:
             xx = ", ".join(f"0x{v:02x}" for v in ADC121_ADDRS)
             yy = f"0x{device_addr:0>2x}"  if isinstance(device_addr, int)  else device_addr
             raise ValueError (f"ADC121C device address must be one of <{xx}>.  Received <{yy}>")
-        ADC121C.write_config(self, config_byte, cycle_time, alert_hold, alert_flag_en, alert_pin_en, polarity)        # Use base class implementation when this class is inherited
+
+        if config_byte:
+            self.cycle_time, self.alert_hold, self.alert_flag_en, self.alert_pin_en, self.polarity = decode_config_byte(config_byte)
+
+        self.conv_rslt_reg_addressed = False    # Flag indicating that the conv_rslt_reg was last accessed, so skip setting the address pointer
+
+        # ADC121C.write_config(self, config_byte, cycle_time, alert_hold, alert_flag_en, alert_pin_en, polarity)        # Use base class implementation when this class is inherited
+        ADC121C.write_config(self,
+                             config_byte=   None,
+                             cycle_time=    self.cycle_time,
+                             alert_hold=    self.alert_hold,
+                             alert_flag_en= self.alert_flag_en,
+                             alert_pin_en=  self.alert_pin_en,
+                             polarity=      self.polarity)        # Use base class implementation when this class is inherited
 
         api = 'smbus'  if self.pi_i2c_bus_handle.api == 'smbus'  else 'pigpio'
         adc121c_logger.debug (f"<{self.device_name}> New ADC121C device defined at addr <0x{self.device_addr:0>2x}> using api <{api}> on i2c bus <{self.pi_i2c_bus_handle.i2c_bus_num}>")

@@ -1,4 +1,6 @@
-# piblinky - A threaded, multiple LED driver for Raspberry Pi
+# PiBlinky - A threaded, multiple LED driver for Raspberry Pi
+
+Skip to [API documentation](#links)
 
 Why?  To run an LED on a RaspberryPi is done simply by turning a GPIO pin on and off.  Often, that's just fine, but if you want more scheduling capability and features, then this driver may be what you're looking for.
 
@@ -17,46 +19,26 @@ For example, one of my apps flashes a yellow LED for 50ms once per loop of the m
 
 ## Command interface
 
-Commands to a LED piblinky instance are passed (as a list) thru a queue to the thread managing the given LED - one thread and queue per LED.  
-
-Command list structure:
-
-        cmd[0]: Bittime (int or float) - Period in milliseconds for each bit
-            EG, <500> is 0.5s per bit
-        cmd[1]: Bitstream (str) - First bit is on the left, 1=On, 0=Off
-            Spaces may be used in the bitstream for readability
-            The bitstream is checked to contain only '0' and '1'
-        cmd[2]: Repeat count (int) - Number of times to play the bitstream
-            -1 will repeat forever, until another command is queued
-            1 means play the bitstream once
-        cmd[3]: Options flag (optional enum)
-            piblinky.CMD_SAVE:     Save prior command for later restore, and play the new command
-            piblinky.CMD_RESTORE:  Restore prior command (fields 0-2 are ignored)
-                The restore stack is 1 deep.  Once saved, a command may be restored more than once.
-            piblinky.CMD_EXIT:     Play the bitstream once then exit the thread
-
-- A new command entered into the queue will interrupt/replace any currently being executed command.
-- On any error, piblinky logs a warning message and returns.  No exception is raised.
-- Debug level logging may be enabled to trace execution within a piblinky operation by adding `logging.getLogger('cjn_PiTools.PiBlinky').setLevel(logging.DEBUG)` in your tool script code.
+Commands to a PiBlinky instance are passed (as a list) thru a queue to the thread managing the given LED - one thread and queue per LED.  See the API documentation, below, for details of the command structure.
 
 <br/>
 
 ## Usage example
 
-The LED is connected from GPIO pin 4 to ground through an appropriate current limiting resistor. 
+The LED is connected from GPIO pin 4 to ground through an appropriate current limiting resistor. When the output is high the LED is on.
 
 ```
 #!/usr/bin/env python3
 # PiBlinky_README_ex.py available in the docs directory in the github repo
 
-# Set up a piblinky instance
-from cjn_PiTools.PiBlinky import piblinky, CMD_EXIT, CMD_SAVE, CMD_RESTORE
+# Set up a PiBlinky instance
+from cjn_PiTools.PiBlinky import PiBlinky, CMD_EXIT, CMD_SAVE, CMD_RESTORE
 import queue
 import time
 
 BLU_LED_GPIO    = 4
 BLU_LED_q       = queue.Queue()
-BLU_LED_inst    = piblinky("BLU", 'GPIO', BLU_LED_GPIO, BLU_LED_q)
+BLU_LED_inst    = PiBlinky("BLU", 'GPIO', BLU_LED_GPIO, BLU_LED_q)
 BLU_LED_th      = BLU_LED_inst.start()
 
 print ("Produce the bit stream <1000> with a period of 50ms for each bit, repeated 3 times")
@@ -83,34 +65,106 @@ time.sleep (3)
 # Terminate gracefully
 print ("Off solid (no blink)")
 BLU_LED_q.put ([0, "0", 1, CMD_EXIT])
-BLU_LED_th.join()```
+BLU_LED_th.join()
 ```
 
 <br>
 
-## demo-piblinky.py
+## PiBlinky-demo.py
 
-This demo runs three LEDs concurrently.  See the github repo tests directory for this demo program:
+PiBlinky-demo.py is ths validation testing script for PiBlinky.  Test '1a' runs three LEDs concurrently.  See the github repo tests directory for this demo program.
 
-```
-$ ./demo-piblinky.py -h
-usage: demo-piblinky.py [-h] [-t TEST] [--host HOST] [--port PORT] [-v]
+    /<path to tests dir>/PiBlinky-demo.py --test 1a
 
-Demo/test for PiBlinky
+<br>
 
-Produce / compare to golden results:
-    ./demo-piblinky.py -vv &> testrun.log
-  or
-    ./demo-piblinky.py --host GPIO -vv &> testrun.log
+## Enabling debug logging
 
-    Expected differences:
-        Log order can shift due to 3 independent threads
-1.0
+To enabled debug logging from this module's classes/functions, add this to your tool script code:
 
-optional arguments:
-  -h, --help            show this help message and exit
-  -t TEST, --test TEST  Test number to run (default 0 runs most all tests (those without untrapped errors))
-  --host HOST           Hostname for pigpio, or 'GPIO' for RPi.GPIO usage (Default <localhost>)
-  --port PORT           Port number for pigpio (Default <8888>)
-  -v, --verbose         Print status and activity messages
-```
+     logging.getLogger('cjn_PiTools.PiBlinky').setLevel(logging.DEBUG)
+
+
+<a id="links"></a>
+         
+<br>
+
+---
+
+# Links to classes, methods, and functions
+
+- [PiBlinky](#PiBlinky)
+
+
+
+<br/>
+
+<a id="PiBlinky"></a>
+
+---
+
+# Class PiBlinky (LED_name, api, gpio_num, queue, inverted=False) - A threaded, multiple LED driver for Raspberry Pi
+
+
+### Args
+`LED_name` (str)
+- User defined name for this LED instance, e.g., 'BLU'
+
+`api` (str or pigpio.pi instance handle)
+- 'GPIO' if using the RPi.GPIO api
+- As returned from `pigpio.pi()` if using the pigpio api
+- If not 'GPIO' then `api` is taken as a valid pigpio.pi handle - no error checking
+
+`gpio_num` (int)
+- GPIO channel number using "Broadcom SOC channel" numbering (e.g., int 22 refers to GPIO22 which is on header pin 15)
+- Checked to be a valid GPIO channel number for Raspberry Pi versions Model B+ and later (40 pin header, values 0 to 27)
+
+`queue` (queue handle)
+- As returned from `queue.Queue()`
+- No error checking
+
+`inverted` (int, default 0)
+- If 0 the GPIO channel will be driven to logic high when outputting a bit '1'
+- If 1 the GPIO channel will be driven to logic low when outputting a bit '1'
+
+
+### Class instance variables - as passed in at instantiation
+- `LED_name` (str)
+- `api` ('GPIO' or pigpio.pi instance handle)
+- `gpio_num` (int)
+- `queue` (queue handle)
+- `inverted` (int)
+
+
+### Returns
+- PiBlinky instance handle on success
+- Raises ValueError on args errors during instantiation, where checked
+
+
+### Behaviors and rules
+- Commands to a LED PiBlinky instance are passed (as a list) thru a queue to the thread managing the given 
+LED - one thread and queue per LED.  
+  - Command list structure:
+
+        cmd[0]: Bittime (int or float) - Period in milliseconds for each bit
+            EG, <500> is 0.5s per bit
+        cmd[1]: Bitstream (str) - First bit is on the left, 1=On, 0=Off
+            Spaces may be used in the bitstream for readability
+            The bitstream is checked to contain only '0' and '1'
+            If bitstream is an empty string then the LED is unchanged and bittime is skipped
+        cmd[2]: Play count (int) - Number of times to play the bitstream
+            -1 will repeat forever, until another command is queued
+            0 or 1 means play the bitstream once
+            2 = two times, etc
+        cmd[3]: Option flag (optional enum (int))
+            PiBlinky.CMD_SAVE:     Save prior command for later restore, and play the new command
+            PiBlinky.CMD_RESTORE:  Restore prior command (fields 0-2 are ignored)
+                The restore stack is 1 deep.  Once saved, a command may be restored more than once.
+            PiBlinky.CMD_EXIT:     Play the bitstream once then exit the thread
+
+  - A new command entered into the queue will interrupt/replace any command currently being executed.
+  - On any command error, PiBlinky logs a warning message and returns.  No exception is raised.
+
+- Debug logging may be enabled in the tool script code by setting this module's logging level:
+
+        logging.getLogger('cjn_PiTools.PiBlinky').setLevel(logging.DEBUG)

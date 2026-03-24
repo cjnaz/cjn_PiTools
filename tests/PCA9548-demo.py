@@ -4,18 +4,15 @@
 Produce / compare to golden results:
     ./PCA9548-demo.py > testrun.log
 
-    ./PCA9548-demo.py | diff PCA9548-golden.txt -
-    
-        Expected differences:
-            File timestamps and ages for newfile, george, mahesh
-            Ages for too old tests 2e, 2f, 4e, 4f, 6b1, 6b2, 6c
+    Expected differences:
+        None
 """
 
 #==========================================================
 #
 #  Chris Nelson, Copyright 2026
 #
-# 1.0 260212 - New
+# 1.0 260401 - New
 #
 #==========================================================
 
@@ -28,14 +25,12 @@ import re
 import pigpio
 
 from cjnfuncs.core              import set_toolname, setuplogging, logging, set_logging_level
-
 from cjn_PiTools.shared         import pi_i2c
 from cjn_PiTools.PCA9548        import PCA9548, build_bit_map, bit_map_to_channel_str
 
 
 PCA9548_RESBD = {'addr': 0x71, 'name': 'PCA9548_Res'}
 PCA9548_IRRBD = {'addr': 0x75, 'name': 'PCA9548_Irr'}
-
 
 
 set_toolname(TOOLNAME)
@@ -55,13 +50,14 @@ cli_args = parser.parse_args()
 
 logging.warning (f"\n\n---- Test Init ------------------------------------------------------")
 
+
 # Get i2c bus and device handles
 pio =                   pigpio.pi()
-i2c_bus_handle_pio =    pi_i2c(pio)
+i2c_bus_handle_pigpio = pi_i2c(pio)
 i2c_bus_handle_smbus =  pi_i2c('smbus')
 
-pca9548_resBd_handle_pigpio =   PCA9548(PCA9548_RESBD['name'], PCA9548_RESBD['addr'], i2c_bus_handle_pio)
-pca9548_irrBd_handle_pigpio =   PCA9548(PCA9548_IRRBD['name'], PCA9548_IRRBD['addr'], i2c_bus_handle_pio)
+pca9548_resBd_handle_pigpio =   PCA9548(PCA9548_RESBD['name'], PCA9548_RESBD['addr'], i2c_bus_handle_pigpio)
+pca9548_irrBd_handle_pigpio =   PCA9548(PCA9548_IRRBD['name'], PCA9548_IRRBD['addr'], i2c_bus_handle_pigpio)
 
 pca9548_resBd_handle_smbus =    PCA9548(PCA9548_RESBD['name'], PCA9548_RESBD['addr'], i2c_bus_handle_smbus)
 pca9548_irrBd_handle_smbus =    PCA9548(PCA9548_IRRBD['name'], PCA9548_IRRBD['addr'], i2c_bus_handle_smbus)
@@ -98,7 +94,6 @@ def check_tnum(tnum_in, include0='0'):
 #===============================================================================================
 if __name__ == '__main__':
 
-
     #-------------------------------------------------------------------------
     # Basic demo write/read PCA9548 control register
     if check_tnum('1a'):
@@ -118,10 +113,16 @@ if __name__ == '__main__':
     if check_tnum('1c'):
         def func():
             pca9548_resBd_handle_smbus.write_control_reg (0xaa)
-            pca9548_irrBd_handle_pigpio.read_control_reg()
+            logging.info (f"channel_enable_bit_map:  0b{pca9548_resBd_handle_smbus.channel_enable_bit_map:0>8b}")
+            pca9548_resBd_handle_smbus.read_control_reg()
+
             pca9548_resBd_handle_pigpio.write_control_reg (0xff)
-            pca9548_irrBd_handle_smbus.write_control_reg('5')
-            pca9548_irrBd_handle_pigpio.read_control_reg()
+            logging.info (f"channel_enable_bit_map:  0b{pca9548_resBd_handle_pigpio.channel_enable_bit_map:0>8b}")
+            pca9548_resBd_handle_pigpio.read_control_reg()
+
+            pca9548_resBd_handle_smbus.write_control_reg('5')
+            logging.info (f"channel_enable_bit_map:  0b{pca9548_resBd_handle_smbus.channel_enable_bit_map:0>8b}")
+            pca9548_resBd_handle_smbus.read_control_reg()
 
         dotest ("Mix it up across apis", "None, no exception", func)
 
@@ -191,13 +192,13 @@ if __name__ == '__main__':
     # Error conditions
     if check_tnum('13a'):
         def func():
-            bad_addr_handle =  PCA9548('PCA9548_Bad', 0x80, i2c_bus_handle_pio)
+            bad_addr_handle =  PCA9548('PCA9548_Bad', 0x80, i2c_bus_handle_pigpio)
 
         dotest ("Bad I2C address", "ValueError: PCA9548 device.addr must be 0x70 - 0x77, received <0x80>", func)
 
     if check_tnum('13b'):
         def func():
-            bad_name_handle =  PCA9548(['PCA9548_Bad'], 0x71, i2c_bus_handle_pio)
+            bad_name_handle =  PCA9548(['PCA9548_Bad'], 0x71, i2c_bus_handle_pigpio)
 
         dotest ("Bad device.name", "ValueError: PCA9548 device.name must be str, received <['PCA9548_Bad']>", func)
 
@@ -279,7 +280,7 @@ if __name__ == '__main__':
 
     logging.warning (f"\n\n---- Cleanup --------------------------------------------------------")
 
-    i2c_bus_handle_pio.close()
+    i2c_bus_handle_pigpio.close()
     pio.stop()
 
     i2c_bus_handle_smbus.close()
