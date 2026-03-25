@@ -1,4 +1,4 @@
-# HTU21D driver for Raspberry Pi
+# HTU21D Temperature/RH sensor library for Raspberry Pi
 
 Skip to [API documentation](#links)
 

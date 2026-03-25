@@ -4,49 +4,38 @@
 Produce / compare to golden results:
     ./shared-demo.py > testrun.log
 
-    ./shared-demo.py | diff shared-golden.txt -
-    
-        Expected differences:
-            File timestamps and ages for newfile, george, mahesh
-            Ages for too old tests 2e, 2f, 4e, 4f, 6b1, 6b2, 6c
+    Expected differences:
+        None
 """
 
 #==========================================================
 #
 #  Chris Nelson, Copyright 2026
 #
-# 1.0 260212 - New
+# 1.0 260401 - New
 #
 #==========================================================
 
 __version__ =   '1.0'
 TOOLNAME =      'shared_demo'
 
-PCA9548_RESBD = {'addr': 0x71, 'name': 'PCA9548_Res'}
-PCA9548_IRRBD = {'addr': 0x75, 'name': 'PCA9548_Irr'}
-
-# A minimum set of devices are defined to enable tests for this module
-
-
 import argparse
 import re
-# import time
-# import subprocess
-# from pathlib import Path
-# import shutil
 import pigpio
 
 from cjnfuncs.core              import set_toolname, setuplogging, logging, set_logging_level
 
-from cjn_PiTools.shared         import pi_i2c
-from cjn_PiTools.PCA9548        import PCA9548, build_bit_map, bit_map_to_channel_str
+from cjn_PiTools.shared         import pi_i2c, CtoF, FtoC, CtoK, KtoC, calculate_dew_point
+
+
+PCA9548_RESBD = {'addr': 0x71, 'name': 'PCA9548_Res'}
+PCA9548_IRRBD = {'addr': 0x75, 'name': 'PCA9548_Irr'}
 
 
 set_toolname(TOOLNAME)
 setuplogging(ConsoleLogFormat="{module:>35}.{funcName:30} - {levelname:>8}:  {message}")
 set_logging_level(logging.DEBUG)
 logging.getLogger('cjn_PiTools.shared').setLevel(logging.DEBUG)
-logging.getLogger('cjn_PiTools.PCA9548').setLevel(logging.DEBUG)
 
 
 parser = argparse.ArgumentParser(description=__doc__ + __version__, formatter_class=argparse.RawTextHelpFormatter)
@@ -65,12 +54,6 @@ pio =                   pigpio.pi()
 i2c_bus_handle_pigpio = pi_i2c(pio)
 i2c_bus_handle_smbus =  pi_i2c('smbus')
 
-# pca9548_resBd_handle_pigpio =      PCA9548(PCA9548_RESBD['name'], PCA9548_RESBD['addr'], i2c_bus_handle_pio)
-# pca9548_irrBd_handle_pigpio =      PCA9548(PCA9548_IRRBD['name'], PCA9548_IRRBD['addr'], i2c_bus_handle_pio)
-
-# pca9548_resBd_handle_smbus =    PCA9548(PCA9548_RESBD['name'], PCA9548_RESBD['addr'], i2c_bus_handle_smbus)
-# pca9548_irrBd_handle_smbus =    PCA9548(PCA9548_IRRBD['name'], PCA9548_IRRBD['addr'], i2c_bus_handle_smbus)
-
 
 def dotest (desc, expect, func, *args, **kwargs):
     logging.warning (f"\n\n==============================================================================================\n" +
@@ -79,7 +62,7 @@ def dotest (desc, expect, func, *args, **kwargs):
                      f"  EXPECT:     {expect}")
     try:
         result = func(*args, **kwargs)
-        logging.warning (f"  RETURNED:\n{result}")
+        logging.warning (f"\n  RETURNED:   {result}")
         return result
     except Exception as e:
         if cli_args.expand_exception:
@@ -102,7 +85,6 @@ def check_tnum(tnum_in, include0='0'):
 
 #===============================================================================================
 if __name__ == '__main__':
-
 
     #-------------------------------------------------------------------------
     # Tests for i2c_write_device
@@ -165,9 +147,9 @@ if __name__ == '__main__':
 
     if check_tnum('2b'):
         i2c_bus_handle_smbus.i2c_write_device (PCA9548_RESBD['addr'], [0x01])
-        i2c_bus_handle_smbus.i2c_write_device (PCA9548_IRRBD['addr'], [0x55])
+        i2c_bus_handle_smbus.i2c_write_device (PCA9548_IRRBD['addr'], [0x50])
 
-        dotest ("i2c_read_device - smbus api", "(1, [85]) (0x55)", i2c_bus_handle_smbus.i2c_read_device, 0x75, 1)
+        dotest ("i2c_read_device - smbus api", "(1, [80]) (0x50)", i2c_bus_handle_smbus.i2c_read_device, 0x75, 1)
 
 
     if check_tnum('2g'):
@@ -180,38 +162,90 @@ if __name__ == '__main__':
     if check_tnum('2h'):
         i2c_bus_handle_smbus.i2c_write_device (PCA9548_RESBD['addr'], [0x80])
 
-        dotest ("i2c_read_device target inaccessible - smbus api", "OSError: [Errno 121] Remote I/O error", i2c_bus_handle_smbus.i2c_read_device, 0x75, 1)
+        dotest ("i2c_read_device target inaccessible - smbus api", "OSError: [Errno 121] Remote I/O error",
+                i2c_bus_handle_smbus.i2c_read_device, 0x75, 1)
 
 
     #-------------------------------------------------------------------------
-    # Tests for i2c_read_byte
-    if check_tnum('5a'):
-        i2c_bus_handle_pigpio.i2c_write_device (PCA9548_RESBD['addr'], [0x55])
+    # Tests for i2c_write_byte & i2c_read_byte
 
-        dotest ("i2c_read_byte - pigpio api", "85 (0x55)",
-                i2c_bus_handle_pigpio.i2c_read_byte, PCA9548_IRRBD['addr'])
+    if check_tnum('5a'):
+        def func():
+            i2c_bus_handle_pigpio.i2c_write_byte (PCA9548_RESBD['addr'], 0xaa)
+            return i2c_bus_handle_pigpio.i2c_read_byte (PCA9548_RESBD['addr'])
+
+        dotest ("i2c_write_byte / i2c_read_byte - pigpio api", "170 (0xAA)", func)
 
 
     if check_tnum('5b'):
-        i2c_bus_handle_smbus.i2c_write_device (PCA9548_RESBD['addr'], [0x55])
+        def func():
+            i2c_bus_handle_smbus.i2c_write_byte (PCA9548_RESBD['addr'], 0xa5)
+            return i2c_bus_handle_smbus.i2c_read_byte (PCA9548_RESBD['addr'])
 
-        dotest ("i2c_read_byte - smbus api", "85 (0x55)",
-                i2c_bus_handle_smbus.i2c_read_byte, PCA9548_RESBD['addr'])
+        dotest ("i2c_write_byte / i2c_read_byte - smbus api", "165 (0xA5)", func)
 
 
     if check_tnum('5g'):
-        i2c_bus_handle_pigpio.i2c_write_device (PCA9548_RESBD['addr'], [0x80])
+        def func():
+            i2c_bus_handle_pigpio.i2c_write_byte (PCA9548_RESBD['addr'], 0x80)
+            return i2c_bus_handle_pigpio.i2c_read_byte (PCA9548_IRRBD['addr'])
 
-        dotest ("i2c_read_byte target inaccessible - pigpio api", "error: 'I2C read failed'",
-                i2c_bus_handle_pigpio.i2c_read_byte, PCA9548_IRRBD['addr'])
+        dotest ("i2c_read_byte target inaccessible - pigpio api", "error: 'I2C read failed'", func)
+
 
     if check_tnum('5h'):
-        i2c_bus_handle_smbus.i2c_write_device (PCA9548_RESBD['addr'], [0x80])
+        def func():
+            i2c_bus_handle_smbus.i2c_write_byte (PCA9548_RESBD['addr'], 0x80)
+            return i2c_bus_handle_smbus.i2c_read_byte (PCA9548_IRRBD['addr'])
 
-        dotest ("i2c_read_byte target inaccessible - smbus api", "OSError: [Errno 121] Remote I/O error",
-                i2c_bus_handle_smbus.i2c_read_byte, PCA9548_IRRBD['addr'])
+        dotest ("i2c_read_byte target inaccessible - smbus api", "OSError: [Errno 121] Remote I/O error", func)
 
 
+    #-------------------------------------------------------------------------
+    # Temperature functions
+
+    if check_tnum('8a'):
+        dotest ("CtoF", "77.0", CtoF, 25)
+
+
+    if check_tnum('8b'):
+        dotest ("FtoC", "62.22222222222222", FtoC, 144)
+
+
+    if check_tnum('8c'):
+        dotest ("CtoK", "298.15", CtoK, 25)
+
+
+    if check_tnum('8d'):
+        dotest ("KtoC", "26.350000000000023", KtoC, 299.5)
+
+
+    if check_tnum('8e'):
+        dotest ("calculate_dew_point return C", "13.851583599891661", calculate_dew_point, 25.0, 50.0)
+
+
+    if check_tnum('8f'):
+        def func():
+            return CtoF(calculate_dew_point(25, 50))
+        dotest ("calculate_dew_point, return F", "56.93285047980499", func)
+
+
+    if check_tnum('8m'):
+        dotest ("CtoF arg error str", "TypeError: can't multiply sequence by non-int of type 'float'", CtoF, '25')
+
+
+    if check_tnum('8n'):
+        dotest ("CtoF arg error list", "TypeError: can't multiply sequence by non-int of type 'float'", CtoF, [25])
+
+
+    if check_tnum('8o'):
+        dotest ("calculate_dew_point invalid tempC", "TypeError: can't multiply sequence by non-int of type 'float'",
+                calculate_dew_point, [25], 50)
+
+
+    if check_tnum('8p'):
+        dotest ("calculate_dew_point invalid RH", "TypeError: can't multiply sequence by non-int of type 'float'",
+                calculate_dew_point, 25, '50')
 
 
     # #-------------------------------------------------------------------------

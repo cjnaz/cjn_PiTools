@@ -4,6 +4,7 @@
     {'outfile':'../HTU21D.md',      'head':'./HTU21D_head.md',          'source':'../src/cjn_PiTools/HTU21D.py'},
     {'outfile':'../MCP23008.md',    'head':'./MCP23008_head.md',        'source':'../src/cjn_PiTools/MCP23008.py'},
     {'outfile':'../PCA9548.md',     'head':'./PCA9548_head.md',         'source':'../src/cjn_PiTools/PCA9548.py'},
-    {'outfile':'../PiBlinky.md',    'head':'./PiBlinky_head.md',        'source':'../src/cjn_PiTools/PiBlinky.py'},
+    {'outfile':'../SHT3x.md',       'head':'./SHT3x_head.md',           'source':'../src/cjn_PiTools/SHT3x.py'},
     {'outfile':'../shared.md',      'head':'./shared_head.md',          'source':'../src/cjn_PiTools/shared.py'},
+    {'outfile':'../PiBlinky.md',    'head':'./PiBlinky_head.md',        'source':'../src/cjn_PiTools/PiBlinky.py'},
 ]

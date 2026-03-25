@@ -1,6 +1,7 @@
 [project]
 name = 'cjn_PiTools'
-version = "1.1b10"
+version = "1.1rc1"
+    # 1.1rc1 - Complete
     # 1.1b10 - PiBlinkly complete, PCA9548 complete, MCP23008 complete
     # 1.1b9 - initW1buses complete, MCP23008 almost, renamed demo files
     # 1.1b8 - HTU21D complete
@@ -52,7 +53,6 @@ PiOLED =        'cjn_PiTools.PiOLED:cli'
 DS18B20 =       'cjn_PiTools.DS18B20:cli'
 initW1buses =   'cjn_PiTools.initW1buses:cli'
 PCA9548 =       'cjn_PiTools.PCA9548:cli'
-SHT3x =         'cjn_PiTools.SHT3x:cli'
 
 
 [project.urls]

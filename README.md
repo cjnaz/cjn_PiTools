@@ -11,18 +11,13 @@ Module | Description/Purpose
 [DS18B20](https://github.com/cjnaz/cjn_PiTools/blob/main/DS18B20.md)         | DS18B20 temperature sensor library using the w1_therm kernel driver
 [initW1buses](https://github.com/cjnaz/cjn_PiTools/blob/main/initW1buses.md) | Initialize the W1 buses and set write permission on found therm_bulk_read file(s)
 [ADC121C](https://github.com/cjnaz/cjn_PiTools/blob/main/ADC121C.md)         | ADC121C* 12-bit ADC library for Raspberry Pi
+[SHT3x](https://github.com/cjnaz/cjn_PiTools/blob/main/SHT3x.md)             | SHT3x Temperature/RH sensor library for Raspberry Pi
 [HTU21D](https://github.com/cjnaz/cjn_PiTools/blob/main/HTU21D.md)           | HTU21D Temperature/RH sensor library for Raspberry Pi
 [MCP23008](https://github.com/cjnaz/cjn_PiTools/blob/main/MCP23008.md)       | MCP23008 8-Bit I/O Expander library for Raspberry Pi
 [PCA9548](https://github.com/cjnaz/cjn_PiTools/blob/main/PCA9548.md)         | PCA9548A/TCA9548A I2C port expander library for Raspberry Pi
 [shared](https://github.com/cjnaz/cjn_PiTools/blob/main/shared.md)           | Classes and functions used across cjn_PiTools
 
-More to come!
-- Drivers for SHT3x and HTU21D temp/RH sensors
-- Driver for ADC121C027 ADC
-- Driver for MCP23008 IO expander
-- Driver for PCA9548s I2C expander
-
-In most cases, these drivers will work with both `RPi.GPIO` or `smbus2` (for local control) and `pigpio` for (local and remote control).
+These drivers work with both `RPi.GPIO` / `smbus2` (for local control) and `pigpio` for (local and remote control).
 
 Developed and tested on Raspbian GNU/Linux 11 (bullseye) and Python 3.9.2, and supported on all higher versions.
 

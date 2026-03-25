@@ -11,6 +11,7 @@
 import logging
 from .shared import I2C_ERROR
 
+
 # Configs / Constants
 CONVERSION_RSLT_REG_PTR =       0x00
 ALERT_STATUS_REG_PTR =          0X01
@@ -46,7 +47,7 @@ adc121c_logger =                logging.getLogger('cjn_PiTools.ADC121C')
 
 class ADC121C:
     """
-## Class ADC121C (device_name, device_addr, pi_i2c_bus_handle, Vref, config_byte=None, cycle_time=0b000, alert_hold=0, alert_flag_en=0, alert_pin_en=0, polarity=0) - ADC121Cxxx library for Raspberry Pi
+## Class ADC121C (device_name, device_addr, pi_i2c_bus_handle, Vref, config_byte=None, cycle_time=0b000, alert_hold=0, alert_flag_en=0, alert_pin_en=0, polarity=0) - ADC121C* 12-bit ADC library for Raspberry Pi
 
 Create an ADC121C family device instance
 

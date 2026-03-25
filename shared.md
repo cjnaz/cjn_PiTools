@@ -5,10 +5,32 @@ Skip to [API documentation](#links)
 This module contains a collection of classes and functions that are shared across the cjn_PiTools package.  These functions will remain stable and are supported for use in user code.
 
 - The `pi_i2c` class provides a wrapper on top of the smbus and pigpio APIs. These methods should support most any I2C bus transaction needed.  Note that there are redundancies in the underlying apis, so `pi_i2c` offers a trimmed down set of methods.
-  - The tool script will create one `pi_i2c` instance, which is an I2C bus handle for a specified bus number and which api to use.
+  - The tool script must create a `pi_i2c` instance, which is an I2C bus handle for a specified bus number and which api to use, e.g., 
 
-- Temperature related functions: CtoF(), FtoC(), and calculate_dew_point()
+        # Using smbus
+        smbus_i2c_bus_handle =    pi_i2c('smbus', i2c_bus_num=1)
 
+        or
+
+        # Using pigpio
+        pio = pigpio.pi()
+        pigpio_i2c_bus_handle =    pi_i2c(pio, i2c_bus_num=1)
+
+  - In the tool script cleanup/exit code close the `pi_i2c` instance, e.g.,
+
+        # Using smbus - close the smbus connection
+        smbus_i2c_bus_handle.close()
+
+        or
+
+        # Using pigpio - release the i2c instance handles and close the pigpio connection
+        pigpio_i2c_bus_handle.close()
+        pio.stop()
+
+
+- Temperature related functions: `CtoF()`, `FtoC()`, `CtoK()`, `KtoC()`, and `calculate_dew_point()`
+
+<br>
 
 ## Testing board configurations
 
@@ -59,6 +81,12 @@ Validation testing is done on a set of boards with the following configuration. 
 - [i2c_read_device](#i2c_read_device)
 - [i2c_write_byte](#i2c_write_byte)
 - [i2c_read_byte](#i2c_read_byte)
+- [close](#close)
+- [CtoF](#CtoF)
+- [FtoC](#FtoC)
+- [CtoK](#CtoK)
+- [KtoC](#KtoC)
+- [calculate_dew_point](#calculate_dew_point)
 
 
 
@@ -68,12 +96,12 @@ Validation testing is done on a set of boards with the following configuration. 
 
 ---
 
-# Class pi_i2c - Support both smbus and pigpio APIs for I2C
+# Class pi_i2c (api, i2c_bus_num=1) - Support both smbus and pigpio I2C APIs
 
 
 ### Args
 `api` (pigpio handle or str 'smbus')
-- pigpio handle is value returned from pigpio.pi()
+- A pigpio handle is returned from `pigpio.pi()`
 - If not 'smbus' then `api` is assumed to be a valid pigpio handle (not validity checked)
 
 `i2c_bus_num` (int 0 or 1, default 1)
@@ -91,24 +119,24 @@ Validation testing is done on a set of boards with the following configuration. 
 
 ---
 
-# i2c_write_device (addr, bytes_list) - Write a list of bytes to the target
+# i2c_write_device (addr, bytes_list) - Write a list of bytes to the target device
 
 ***pi_i2c class member function***
 
 
 ### Args
 `addr` (int)
-- i2c address of target - range 0x00 to 0x7F
+- i2c address of target device - range 0x00 to 0x7F
 - No validity checks - caller should confirm address validity
 
 `bytes_list` (list of bytes)
-- Data to be written to the device
+- Data to be written to the target device, e.g., `[0x05, 0xFF]`
 - Minimal data validity checking - some invalid data results in write failure
 
 
 ### Returns
 - On success, returns length of `bytes_list` (number of bytes written)
-- Raises ValueError if bytes_list is not a list or is an empty list.
+- Raises ValueError if `bytes_list` is not a list or is an empty list.
 - On fail, raises exception (actually raised by `api` call, e.g., I2C IO error, or invalid data in `bytes_list`)
 
 
@@ -117,7 +145,6 @@ Validation testing is done on a set of boards with the following configuration. 
   Note that this behavior is device-type specific.  The contents of `bytes_list` will simply be sent out after 
   the device at `addr` has been addressed for writing.
 - Uses pigpio i2c_write_device() and smbus write_i2c_block_data()
-- transaction sequence...
         
 <br/>
 
@@ -125,30 +152,29 @@ Validation testing is done on a set of boards with the following configuration. 
 
 ---
 
-# i2c_read_device (addr, read_byte_count) - Read a number of bytes from the target
+# i2c_read_device (addr, read_byte_count) - Read a number of bytes from the target device
 
 ***pi_i2c class member function***
 
 
 ### Args
 `addr` (int)
-- i2c address of target - range 0x00 to 0x7F
+- i2c address of target device - range 0x00 to 0x7F
 - No validity checks - caller should confirm address validity
 
 `read_byte_count` (int)
-- Number of bytes to read from the target
+- Number of bytes to read from the target device
 - No validity checking
 
 
 ### Returns
-- On success, returns tuple (actual read count, [data]).  Note that data is returned as a list of bytes.
+- On success, returns tuple (actual read count, [data]), e.g., `(3, [0x01, 0x02, 0x03])`
 - On fail, raises exception (actually raised by `api` call, e.g., I2C IO error, OSError, etc.).
 - If using the pigpio api, if the returned byte count is negative this error code is passed within a raised OSError exception.
 
 
 ### Behaviors and rules
-- Uses pigpio i2c_read_device() and smbus i2c_msg() / i2c_rdwr
-- transaction sequence...
+- Uses pigpio i2c_read_device() and smbus i2c_msg.read() / i2c_rdwr
         
 <br/>
 
@@ -156,19 +182,19 @@ Validation testing is done on a set of boards with the following configuration. 
 
 ---
 
-# i2c_write_byte (addr, byte_value) - Write one byte to the target
+# i2c_write_byte (addr, byte_value) - Write one byte to the target device
 
 ***pi_i2c class member function***
 
 
 ### Args
 `addr` (int)
-- i2c address of target - range 0x00 to 0x7F
+- i2c address of target device - range 0x00 to 0x7F
 - No validity checks - caller should confirm address validity
 
 `byte_value` (int)
-- Data to be written to the device
-- The value is check to be an int the range of 0x00 to 0xFF
+- Data to be written to the target device, e.g., `0x55`
+- The value is check to be an int in the range of 0x00 to 0xFF
 
 
 ### Returns
@@ -179,7 +205,6 @@ Validation testing is done on a set of boards with the following configuration. 
 
 ### Behaviors and rules
 - Uses pigpio i2c_write_byte() and smbus write_byte()
-- transaction sequence...
         
 <br/>
 
@@ -187,23 +212,127 @@ Validation testing is done on a set of boards with the following configuration. 
 
 ---
 
-# i2c_read_byte (addr) - Read one byte from the target
+# i2c_read_byte (addr) - Read one byte from the target device
 
 ***pi_i2c class member function***
 
 
 ### Args
 `addr` (int)
-- i2c address of target - range 0x00 to 0x7F
+- i2c address of target device - range 0x00 to 0x7F
 - No validity checks - caller should confirm address validity
 
 
 ### Returns
-- On success, returns one byte read from the target
+- On success, returns one byte read from the target device, e.g., `0xAA`
 - On fail, raises exception (actually raised by `api` call, e.g., I2C IO error, OSError, etc.).
 
 
 ### Behaviors and rules
 - Uses pigpio i2c_read_byte() and smbus read_byte()
-- transaction sequence...
         
+<br/>
+
+<a id="close"></a>
+
+---
+
+# close () - Close all connections associated with this pi_i2c handle
+
+***pi_i2c class member function***
+
+
+### Returns
+- Returns 0
+
+
+### Behaviors and rules
+- If using pigpio, the pigpio handle (`pio` in the above example) is owned by and must be stopped in the tool script code
+        
+<br/>
+
+<a id="CtoF"></a>
+
+---
+
+# CtoF (tempC) - Convert temperature value in Celsius to Fahrenheit
+
+### Arg
+`tempC` (float)
+- Temperature value in Celsius
+- Value not validity
+
+### Returns
+- Returns float temperature value in Fahrenheit
+    
+<br/>
+
+<a id="FtoC"></a>
+
+---
+
+# FtoC (tempF) - Convert temperature value in Fahrenheit to Celsius
+
+### Arg
+`tempF` (float)
+- Temperature value in Fahrenheit
+- Value not validity
+
+### Returns
+- Returns float temperature value in Celsius
+    
+<br/>
+
+<a id="CtoK"></a>
+
+---
+
+# CtoK (tempC) - Convert temperature value in Celsius to Kelvin
+
+### Arg
+`tempC` (float)
+- Temperature value in Celsius
+- Value not validity
+
+### Returns
+- Returns float temperature value in Kelvin
+    
+<br/>
+
+<a id="KtoC"></a>
+
+---
+
+# KtoC (tempK) - Convert temperature value in Kelvin to Celsius
+
+### Arg
+`tempK` (float)
+- Temperature value in Kelvin
+- Value not validity
+
+### Returns
+- Returns float temperature value in Celsius
+    
+<br/>
+
+<a id="calculate_dew_point"></a>
+
+---
+
+# calculate_dew_point (tempC, RH) - Calculate the dew point given tempC and relative humidity
+
+Uses the Mangus formula - [Wikipedia](https://en.wikipedia.org/wiki/Dew_point)
+
+### Arg
+`tempC` (float)
+- Temperature value in Celsius
+- Value not validity
+
+RH (float)
+- Relative humidity in percent
+- Value not validity
+
+### Returns
+- Returns dew point temperature value in Celsius.  Pass the returned temperature thru CtoF() if the dew
+point in Fahrenheit is needed, e.g., `dp_f = CtoF(calculate_dew_point(22.6, 31.2))`
+    

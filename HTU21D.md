@@ -1,4 +1,4 @@
-# HTU21D driver for Raspberry Pi
+# HTU21D Temperature/RH sensor library for Raspberry Pi
 
 Skip to [API documentation](#links)
 
@@ -108,6 +108,9 @@ Create an HTU21D device instance
 `pi_i2c_bus_handle` (cjn_PiTools.shared.pi_i2c instance)
 - Get a `pi_i2c` instance handle in the tools script code and pass it to this device instantiation
 
+`do_soft_reset` (bool, default True)
+- If True, issue a soft reset as part of instantiation
+
 
 ### Class instance variables - as passed in at instantiation
 - `device_name` (str)
@@ -115,12 +118,12 @@ Create an HTU21D device instance
 
 
 ### Returns
-- Handle to the HTU21D device on success
+- Handle to the HTU21D instance on success
 - Raises RuntimeError if the device fails soft reset
 
 
 ### Behaviors and rules
-- A soft_reset() is applied as part of instantiation
+- A `soft_reset()` is applied as part of instantiation
 - Debug logging may be enabled in the tool script code by setting this module's logging level:
 
         logging.getLogger('cjn_PiTools.HTU21D').setLevel(logging.DEBUG)
@@ -262,7 +265,7 @@ obtain the measured result after an appropriate delay. See the datasheet for mea
 
 ### Args
 `tempunits` (str, default 'C', case-independent)
-- Must be 'C', 'F' or 'K', else ValueError is raised
+- Must be 'C', 'F' or 'K'
 
 
 ### Returns
