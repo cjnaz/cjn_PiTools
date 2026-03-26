@@ -1,6 +1,7 @@
 [project]
 name = 'cjn_PiTools'
-version = "1.1rc1"
+version = "1.1rc2"
+    # 1.1rc2 - Checked in shared.py
     # 1.1rc1 - Complete
     # 1.1b10 - PiBlinkly complete, PCA9548 complete, MCP23008 complete
     # 1.1b9 - initW1buses complete, MCP23008 almost, renamed demo files

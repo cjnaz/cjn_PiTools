@@ -333,6 +333,7 @@ def CtoF(tempC):
 
 ### Returns
 - Returns float temperature value in Fahrenheit
+- Raises exception on invalid arg
     """
     return tempC*1.8 +32.0
 
