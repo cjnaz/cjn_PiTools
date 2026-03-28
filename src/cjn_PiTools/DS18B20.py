@@ -39,7 +39,7 @@ ds18b20_logger = logging.getLogger('cjn_PiTools.DS18B20')
 
 class DS18B20:
     """
-## Class DS18B20 (device_id, device_name='DS18B20') - DS18B20 library/driver for Raspberry Pi using the w1_therm kernel driver
+## Class DS18B20 (device_id, device_name='DS18B20') - DS18B20 temperature sensor library/driver for Raspberry Pi using the w1_therm kernel driver
 
 Create an DS18B20 device instance
 
@@ -63,7 +63,7 @@ Create an DS18B20 device instance
 - full pathlib path to the sensor directory
 
 `bus_master_path` (Path)
-- full pathlib path the w1 bus master for the sensor
+- full pathlib path to the w1 bus master for the sensor
 
 
 ### Behaviors and rules
@@ -87,49 +87,54 @@ Create an DS18B20 device instance
 
     def read_temperature(self, tempunits='C'):
         """
-## read_temperature (tempunits='C') - Return the temperature from w1_slave file, with CRC check
+## read_temperature (tempunits='C') - Return the temperature from the w1_slave file, with CRC check
 
 ***DS18B20 class member function***
 
+
 ### Args
 `tempunits` (str, default 'C')
-- Must be 'C', 'F' or 'K', else ValueError is raised
+- Must be 'C', 'F' or 'K' (case insensitive), else ValueError is raised
 
 
 ### Returns
-- (float) Read temperature in tempunits
+- (float) Temperature in tempunits
 - (int) -255:  CRC_ERROR
 - (int) -256:  READ_ERROR
-- Raises `ValueError` if tempunits is not valid
+- Raises `ValueError` if `tempunits` is not valid
         """
 
         try:
             w1_slave_text = (self.sensor_path / 'w1_slave').read_text()
                 # 8d 01 32 ce 7f ff 7f 10 03 : crc=03 YES
                 # 8d 01 32 ce 7f ff 7f 10 03 t=24812
-            ds18b20_logger.debug(f"{self.device_id} / {self.device_name} - w1_slave file content:\n{w1_slave_text[:-1]}")    # trim off trailing '\n'
+            ds18b20_logger.debug(f"<{self.device_id} / {self.device_name}> w1_slave file content:\n{w1_slave_text[:-1]}")    # trim off trailing '\n'
         except Exception as e:
-            ds18b20_logger.debug(f"{self.device_id} / {self.device_name} - w1_slave read failed.\n  {e}")
+            ds18b20_logger.debug(f"<{self.device_id} / {self.device_name}> w1_slave read failed.\n  {e}")
             return READ_ERROR
 
         if 'YES' not in w1_slave_text:
-            ds18b20_logger.debug(f"{self.device_id} / {self.device_name} - w1_slave read CRC failed")
+            ds18b20_logger.debug(f"<{self.device_id} / {self.device_name}> w1_slave read CRC failed")
             return CRC_ERROR
         
         try:
             temp = w1_slave_text.split('\n')[1].split('t=')[1]
             temp = float(temp) / 1000
         except Exception as e:
-            ds18b20_logger.debug(f"{self.device_id} / {self.device_name} - failed extracting temperature from w1_slave.\n  {e}")
+            ds18b20_logger.debug(f"<{self.device_id} / {self.device_name}> failed extracting temperature from w1_slave.\n  {e}")
             return READ_ERROR
 
-        if tempunits == 'F':
+        _tempunits = tempunits.lower()
+        if _tempunits == 'f':
             temp = CtoF(temp)
-        if tempunits == 'K':
+        elif _tempunits == 'k':
             temp = CtoK(temp)
-        
+        elif _tempunits == 'c':
+            pass
+        else:
+            raise ValueError (f"<{self.device_id} / {self.device_name}> tempunits must be 'C', 'F', or 'K' - received <{tempunits}>")
 
-        ds18b20_logger.debug (f"{self.device_id} / {self.device_name} - Temperature:  {temp:7.3f} {tempunits}")
+        ds18b20_logger.debug (f"<{self.device_id} / {self.device_name}> Temperature:  {temp:7.3f} {tempunits}")
         return temp
 
 
@@ -141,7 +146,7 @@ Create an DS18B20 device instance
 
     def bulk_convert_trigger(self):
         """
-## bulk_convert_trigger () - Trigger parallel temp conversions for all sensors on this sensor's bus.
+## bulk_convert_trigger () - Trigger parallel temp conversions for all sensors on this sensor's bus
 
 ***DS18B20 class member function***
 
@@ -149,7 +154,7 @@ Requires root privilege (sudo), or `chmod 666 /sys/bus/w1/devices/w1_bus_masterX
 Note that the chmod must be redone after each boot.  Install the `initW1buses.service` to run at boot to set 
 write permission on the therm_bulk_read file.
 
-Follow with calls to <sensor>.read_temperature2() for each sensor on the bus.
+Follow with calls to `<sensor>.read_temperature2()` for each sensor on the bus.
 
 ### Returns
 - (int) 1 on successful trigger.  Returns after the parallel conversion time of all sensors on the bus.
@@ -189,12 +194,12 @@ Follow with calls to <sensor>.read_temperature2() for each sensor on the bus.
 
     def bulk_convert_status(self):
         """
-## bulk_convert_status () - Return the status of bulk/parallel sensor conversions and reading on this sensor's bus.
+## bulk_convert_status () - Return the status of bulk/parallel sensor conversions and reading on this sensor's bus
 
 ***DS18B20 class member function***
 
 ### Returns
-- (int) 1 if any sensor on this sensor's bus has not yet be read with read_temperature2()
+- (int) 1 if any sensor on this sensor's bus has not yet been read with read_temperature2()
 - (int) 0 if all sensors on this sensor's bus have been read
 - (int) -1 if at least one sensor is still in conversion
         """
@@ -212,42 +217,49 @@ Follow with calls to <sensor>.read_temperature2() for each sensor on the bus.
 
     def read_temperature2(self, tempunits='C'):
         """
-## read_temperature2 (tempunits='C') - Return the temperature from temperature file.  Used with bulk_convert_trigger().
+## read_temperature2 (tempunits='C') - Return the temperature from temperature file - used with bulk_convert_trigger()
 
 ***DS18B20 class member function***
 
 If a bulk_convert_trigger() was previously executed, return the previously captured temperature, else take
-and return a new measurement.
+and return a new measurement.  No CRC check is possible.
+
 
 ### Args
 `tempunits` (str, default 'C')
-- Must be 'C', 'F' or 'K', else ValueError is raised
+- Must be 'C', 'F' or 'K' (case insensitive), else ValueError is raised
+
 
 ### Returns
-- (float) Read temperature in tempunits
+- (float) Temperature in tempunits
 - (int) -256:  READ_ERROR
-- Raises `ValueError` if tempunits is not valid
+- Raises `ValueError` if `tempunits` is not valid
         """
 
         try:
             temperature = (self.sensor_path / 'temperature').read_text()
-            ds18b20_logger.debug(f"{self.device_id} / {self.device_name} - temperature file content:  {temperature[:-1]}")
+            ds18b20_logger.debug(f"<{self.device_id} / {self.device_name}> temperature file content:  {temperature[:-1]}")
         except Exception as e:
-            ds18b20_logger.debug(f"{self.device_id} / {self.device_name} - temperature read failed.\n  {e}")
+            ds18b20_logger.debug(f"<{self.device_id} / {self.device_name}> temperature read failed.\n  {e}")
             return READ_ERROR
 
         try:
             temp = float(temperature) / 1000
         except Exception as e:
-            ds18b20_logger.debug(f"{self.device_id} / {self.device_name} - failed extracting temperature from temperature file.\n  {e}")
+            ds18b20_logger.debug(f"<{self.device_id} / {self.device_name}> failed extracting temperature from temperature file.\n  {e}")
             return READ_ERROR
 
-        if tempunits == 'F':
+        _tempunits = tempunits.lower()
+        if _tempunits == 'f':
             temp = CtoF(temp)
-        if tempunits == 'K':
+        elif _tempunits == 'k':
             temp = CtoK(temp)
+        elif _tempunits == 'c':
+            pass
+        else:
+            raise ValueError (f"<{self.device_id} / {self.device_name}> tempunits must be 'C', 'F', or 'K' - received <{tempunits}>")
 
-        ds18b20_logger.debug (f"{self.device_id} / {self.device_name} - Temperature:  {temp:7.3f} {tempunits}")
+        ds18b20_logger.debug (f"<{self.device_id} / {self.device_name}> Temperature:  {temp:7.3f} {tempunits}")
         return temp
 
 
@@ -259,7 +271,7 @@ and return a new measurement.
 
     def read_scratchpad(self):
         """
-## read_scratchpad () - Return the w1_slave file line 1.  Forces a new temperature conversion.
+## read_scratchpad () - Return the w1_slave file line 1 - forces a new temperature conversion
 
 ***DS18B20 class member function***
 
@@ -273,9 +285,9 @@ With debug logging, logs full w1_slave file, temperature (bytes 0 & 1), TH and T
             w1_slave_text = (self.sensor_path / 'w1_slave').read_text()
                 # 8d 01 32 ce 7f ff 7f 10 03 : crc=03 YES
                 # 8d 01 32 ce 7f ff 7f 10 03 t=24812
-            ds18b20_logger.debug (f"{self.device_id} / {self.device_name} - w1_slave file content:\n{w1_slave_text[:-1]}")
+            ds18b20_logger.debug (f"<{self.device_id} / {self.device_name}> w1_slave file content:\n{w1_slave_text[:-1]}")
         except:
-            ds18b20_logger.debug (f"{self.device_id} / {self.device_name} - w1_slave file read failed")
+            ds18b20_logger.debug (f"<{self.device_id} / {self.device_name}> w1_slave file read failed")
             return READ_ERROR
         
         line = w1_slave_text.split('\n')[0].split()
@@ -285,24 +297,23 @@ With debug logging, logs full w1_slave file, temperature (bytes 0 & 1), TH and T
         lsB = int(line[0], base=16)
         temp_bytes = ((msB & 0x07) << 8) + lsB
         tempC = (float(temp_bytes)/16-128)  if msB & 0x80  else (temp_bytes/16)
-        # ds18b20_logger.debug (f"{self.device_id} / {self.device_name} - temperature code:  {line[1]} {line[0]}  {tempC:7.3f} C,  {convert_T(tempC, 'F'):7.3f} F,  {convert_T(tempC, 'K'):7.3f} K")
-        ds18b20_logger.debug (f"{self.device_id} / {self.device_name} - temperature code:  {line[1]} {line[0]}  {tempC:7.3f} C,  {CtoF(tempC):7.3f} F,  {CtoK(tempC):7.3f} K")
+        ds18b20_logger.debug (f"<{self.device_id} / {self.device_name}> temperature code:  {line[1]} {line[0]}  {tempC:7.3f} C,  {CtoF(tempC):7.3f} F,  {CtoK(tempC):7.3f} K")
 
         # Decode TH and TL bytes 2 and 3
         TH_byte = int(line[2], base=16)
         TH = -(TL_byte & 0x7f)-128  if TH_byte & 0x80  else TH_byte
-        ds18b20_logger.debug (f"{self.device_id} / {self.device_name} - High alarm limit:  {line[2]}     {TH:3} C,      {CtoF(TH):7.3f} F,  {CtoK(TH):7.3f} K")
+        ds18b20_logger.debug (f"<{self.device_id} / {self.device_name}> High alarm limit:  {line[2]}     {TH:3} C,      {CtoF(TH):7.3f} F,  {CtoK(TH):7.3f} K")
         TL_byte = int(line[3], base=16)
         TL = (TL_byte & 0x7f)-128  if TL_byte & 0x80  else TL_byte
-        ds18b20_logger.debug (f"{self.device_id} / {self.device_name} - Low  alarm limit:  {line[3]}     {TL:3} C,      {CtoF(TL):7.3f} F,  {CtoK(TL):7.3f} K")
+        ds18b20_logger.debug (f"<{self.device_id} / {self.device_name}> Low  alarm limit:  {line[3]}     {TL:3} C,      {CtoF(TL):7.3f} F,  {CtoK(TL):7.3f} K")
 
         # Decode resolution code from config register
         resolution = (int(line[4], base=16) >> 5) + 9
-        ds18b20_logger.debug (f"{self.device_id} / {self.device_name} - Resolution:        {line[4]}      {resolution}")
+        ds18b20_logger.debug (f"<{self.device_id} / {self.device_name}> Resolution:        {line[4]}      {resolution}")
 
         # Log paths
-        ds18b20_logger.debug (f"{self.device_id} / {self.device_name} - Sensor root directory:     {self.sensor_path}")
-        ds18b20_logger.debug (f"{self.device_id} / {self.device_name} - Bus master root directory: {self.bus_master_path}")
+        ds18b20_logger.debug (f"<{self.device_id} / {self.device_name}> Sensor root directory:     {self.sensor_path}")
+        ds18b20_logger.debug (f"<{self.device_id} / {self.device_name}> Bus master root directory: {self.bus_master_path}")
 
         return line
 
@@ -323,7 +334,7 @@ With debug logging, logs full w1_slave file, temperature (bytes 0 & 1), TH and T
 - (int) Current resolution setting in the config register, eg 12
         """
         resolution = int(((self.sensor_path / 'resolution')).read_text()[:-1])
-        ds18b20_logger.debug (f"{self.device_id} / {self.device_name} - Current resolution setting:    {resolution}")
+        ds18b20_logger.debug (f"<{self.device_id} / {self.device_name}> Current resolution setting:    {resolution}")
         return resolution
     
 
@@ -335,7 +346,7 @@ With debug logging, logs full w1_slave file, temperature (bytes 0 & 1), TH and T
 
     def set_resolution(self, resolution):
         """
-## set_resolution (resolution) - Set the configuration register resolution field.  Requires root privilege (sudo).
+## set_resolution (resolution) - Set the configuration register resolution field - requires root privilege (sudo)
 
 ***DS18B20 class member function***
 
@@ -346,14 +357,14 @@ With debug logging, logs full w1_slave file, temperature (bytes 0 & 1), TH and T
 ### Returns
 - (int) New resolution setting, eg 12
 - Raises PermissionError if unable to write to the resolution file
-
+- Raises `ValueError` if `resolution` value is not valid
         """
         try:
             resolution = str(resolution)
         except:
-            raise ValueError ("resolution value must be int or str 9, 10, 11 or 12")
+            raise ValueError (f"<{self.device_id} / {self.device_name}> resolution value must be int or str 9, 10, 11 or 12 - received <{resolution}>")
         if resolution not in ['9', '10', '11', '12']:
-            raise ValueError ("resolution value must be int or str 9, 10, 11 or 12")
+            raise ValueError (f"<{self.device_id} / {self.device_name}> resolution value must be int or str 9, 10, 11 or 12 - received <{resolution}>")
         (self.sensor_path / 'resolution').write_text(resolution)
         return self.get_resolution()
 
@@ -376,7 +387,7 @@ With debug logging, logs full w1_slave file, temperature (bytes 0 & 1), TH and T
         """
 
         alarm_temps = ((self.sensor_path / 'alarms')).read_text()[:-1]
-        ds18b20_logger.debug (f"{self.device_id} / {self.device_name} - Current alarm TL TH settings:  {alarm_temps}")
+        ds18b20_logger.debug (f"<{self.device_id} / {self.device_name}> Current alarm TL TH settings:  {alarm_temps}")
         return alarm_temps
     
 
@@ -388,7 +399,7 @@ With debug logging, logs full w1_slave file, temperature (bytes 0 & 1), TH and T
 
     def set_alarm_temps(self, TL, TH):
         """
-## set_alarm_temps (TL, TH) - Set the alarm TL and TH registers.  Requires root privilege (sudo).
+## set_alarm_temps (TL, TH) - Set the alarm TL and TH registers - requires root privilege (sudo)
 
 ***DS18B20 class member function***
 
@@ -412,15 +423,15 @@ Values must be between -55C and +125C.  w1_therm sets TL to the lower of the two
         try:
             TL = int(TL)
         except:
-            raise ValueError (f"alarm temps must be int or str values between {ALARM_MIN} and {ALARM_MAX}.  Values are degrees C.")
+            raise ValueError (f"<{self.device_id} / {self.device_name}> alarm temps must be int or str values between {ALARM_MIN} C and {ALARM_MAX} C - received <{TL}, {TH}>")
         if TL < ALARM_MIN or TL > ALARM_MAX:
-            raise ValueError (f"alarm temps must be int or str values between {ALARM_MIN} and {ALARM_MAX}.  Values are degrees C.")
+            raise ValueError (f"<{self.device_id} / {self.device_name}> alarm temps must be int or str values between {ALARM_MIN} C and {ALARM_MAX} C - received <{TL}, {TH}>")
         try:
             TH = int(TH)
         except:
-            raise ValueError (f"alarm temps must be int or str values between {ALARM_MIN} and {ALARM_MAX}.  Values are degrees C.")
+            raise ValueError (f"<{self.device_id} / {self.device_name}> alarm temps must be int or str values between {ALARM_MIN} C and {ALARM_MAX} C - received <{TL}, {TH}>")
         if TH < ALARM_MIN or TH > ALARM_MAX:
-            raise ValueError (f"alarm temps must be int or str values between {ALARM_MIN} and {ALARM_MAX}.  Values are degrees C.")
+            raise ValueError (f"<{self.device_id} / {self.device_name}> alarm temps must be int or str values between {ALARM_MIN} C and {ALARM_MAX} C - received <{TL}, {TH}>")
         alarm_temps = f"{str(TL)} {str(TH)}"
         (self.sensor_path / 'alarms').write_text(alarm_temps)
         return self.get_alarm_temps()
@@ -442,7 +453,7 @@ Values must be between -55C and +125C.  w1_therm sets TL to the lower of the two
 - (int) Currently set conversion time in milliseconds, eg 750
         """
         conv_time = int(((self.sensor_path / 'conv_time')).read_text()[:-1])
-        ds18b20_logger.debug (f"{self.device_id} / {self.device_name} - Current conversion time:   {conv_time}")
+        ds18b20_logger.debug (f"<{self.device_id} / {self.device_name}> Current conversion time:   {conv_time}")
         return conv_time
 
 
@@ -454,7 +465,7 @@ Values must be between -55C and +125C.  w1_therm sets TL to the lower of the two
 
     def set_conv_time(self, conv_setting):
         """
-## set_conv_time (conv_setting) - Set the conversion time for temperature measurements.  Requires root privilege (sudo).
+## set_conv_time (conv_setting) - Set the conversion time for temperature measurements - requires root privilege (sudo)
 
 ***DS18B20 class member function***
 
@@ -469,13 +480,14 @@ Values must be between -55C and +125C.  w1_therm sets TL to the lower of the two
 ### Returns
 - (int) Currently set conversion time in milliseconds as a result of the `conv_setting` operation
 - Raises PermissionError if unable to write to the conf_time file
+- Raises `ValueError` if `conv_setting` value is not valid
         """
         try:
             conv_setting = int(conv_setting)
         except:
-            raise ValueError ("conv_setting value must be int or str => 0")
+            raise ValueError (f"<{self.device_id} / {self.device_name}> conv_setting value must be int or str => 0")
         if conv_setting < 0:
-            raise ValueError ("conv_setting value must be int or str => 0")
+            raise ValueError (f"<{self.device_id} / {self.device_name}> conv_setting value must be int or str => 0")
         (self.sensor_path / 'conv_time').write_text(str(conv_setting))
         return self.get_conv_time()
 
@@ -497,7 +509,7 @@ Values must be between -55C and +125C.  w1_therm sets TL to the lower of the two
 - (int) 1: Externally powered
         """
         ext_power = int(((self.sensor_path / 'ext_power')).read_text()[:-1])
-        ds18b20_logger.debug (f"{self.device_id} / {self.device_name} - External power status:     {ext_power}")
+        ds18b20_logger.debug (f"<{self.device_id} / {self.device_name}> External power status:     {ext_power}")
         return ext_power
 
 
@@ -509,7 +521,7 @@ Values must be between -55C and +125C.  w1_therm sets TL to the lower of the two
 
     def copy_scratchpad(self):
         """
-## copy_scratchpad () - write scratchpad TH, TL, and resolution to EEPROM.  Requires root privilege (sudo).
+## copy_scratchpad () - write scratchpad TH, TL, and resolution to EEPROM - requires root privilege (sudo)
 
 ***DS18B20 class member function***
 
@@ -518,7 +530,7 @@ Values must be between -55C and +125C.  w1_therm sets TL to the lower of the two
 - Raises PermissionError if unable to write to the eeprom_cmd file
         """
         (self.sensor_path / 'eeprom_cmd').write_text('save\n')
-        ds18b20_logger.debug (f"{self.device_id} / {self.device_name} - scratchpad saved to EEPROM")
+        ds18b20_logger.debug (f"<{self.device_id} / {self.device_name}> scratchpad saved to EEPROM")
     
 
 #=====================================================================================
@@ -529,7 +541,7 @@ Values must be between -55C and +125C.  w1_therm sets TL to the lower of the two
 
     def recall_E2(self):
         """
-## recall_E2 () - Restore EEPROM TH, TL, and resolution to scratchpad.  Requires root privilege (sudo).
+## recall_E2 () - Restore EEPROM TH, TL, and resolution to scratchpad - requires root privilege (sudo)
 
 ***DS18B20 class member function***
 
@@ -538,7 +550,7 @@ Values must be between -55C and +125C.  w1_therm sets TL to the lower of the two
 - Raises PermissionError if unable to write to the eeprom_cmd file
         """
         (self.sensor_path / 'eeprom_cmd').write_text('restore\n')
-        ds18b20_logger.debug (f"{self.device_id} / {self.device_name} - EEPROM restored to scratchpad")
+        ds18b20_logger.debug (f"<{self.device_id} / {self.device_name}> EEPROM restored to scratchpad")
 
 
 

@@ -2,7 +2,7 @@
 
 Skip to [API documentation](#links)
 
-This module provides a clean and complete API for HTU21D temperature/RH sensor.
+This module provides a clean and complete API for the HTU21D temperature/RH sensor
 
 Supports:
 - Reading temperature and RH values using either I2C bus hold mode (aka clock stretching) or no-hold mode
@@ -64,7 +64,7 @@ WARNING:root:Current temperature for sensor My_HTU21D:   78.057 F,  RH:   37.846
 
 To enabled debug logging from this module's classes/functions, add this to your tool script code:
 
-     logging.getLogger('cjn_PiTools.DS18B20').setLevel(logging.DEBUG)
+     logging.getLogger('cjn_PiTools.HTU21D').setLevel(logging.DEBUG)
 
 
 
@@ -96,14 +96,13 @@ To enabled debug logging from this module's classes/functions, add this to your 
 
 ---
 
-# Class HTU21D (device_name, pi_i2c_bus_handle) - HTU21D library for Raspberry Pi
+# Class HTU21D (device_name, pi_i2c_bus_handle, do_soft_reset=True) - HTU21D library for Raspberry Pi
 
 Create an HTU21D device instance
 
 ### Args
 `device_name` (str)
 - User defined name for this instance, e.g., 'My_HTU21D'
-- Not validated as valid string
 
 `pi_i2c_bus_handle` (cjn_PiTools.shared.pi_i2c instance)
 - Get a `pi_i2c` instance handle in the tools script code and pass it to this device instantiation
@@ -119,11 +118,11 @@ Create an HTU21D device instance
 
 ### Returns
 - Handle to the HTU21D instance on success
+- Raises ValueError if args checks fail
 - Raises RuntimeError if the device fails soft reset
 
 
 ### Behaviors and rules
-- A `soft_reset()` is applied as part of instantiation
 - Debug logging may be enabled in the tool script code by setting this module's logging level:
 
         logging.getLogger('cjn_PiTools.HTU21D').setLevel(logging.DEBUG)
@@ -269,7 +268,7 @@ obtain the measured result after an appropriate delay. See the datasheet for mea
 
 
 ### Returns
-- Temperature value in specified tempunits on success
+- Temperature value in specified `tempunits` on success
 - I2C_ERROR on I2C IO error
 - CRC_ERROR on CRC mismatch
 - OPEN_CIRCUIT_ERROR or CLOSED_CIRCUIT_ERROR is returned on device error

@@ -26,10 +26,11 @@ class PCA9548:
     """
 ## Class PCA9548 (device_name, device_addr, pi_i2c_bus_handle) - PCA9548 I2C port expander library for Raspberry Pi
 
+Create an PCA9548 device instance
+
 ### Args
 `device_name` (str)
 - User defined name for this instance, e.g., 'PCA9548'
-- Not validated as valid string
 
 `device_addr` (int)
 - I2C bus address for this instance, e.g., 0x70
@@ -49,6 +50,11 @@ class PCA9548:
 - Current mask of enabled channels (1=enabled) - value range 0x00 to 0xFF
 
 
+### Returns
+- Handle to the PCA9548 instance on success
+- Raises ValueError if args checks fail
+
+
 ### Behaviors and rules
 - Debug logging may be enabled in the tool script code by setting this module's logging level:
 
@@ -65,7 +71,7 @@ class PCA9548:
             raise ValueError (f"PCA9548 device.name must be str, received <{device_name}>")
 
         if self.device_addr not in PCA9548_ADDRS:
-            raise ValueError (f"PCA9548 device.addr must be 0x70 - 0x77, received <0x{device_addr:0>x}>")
+            raise ValueError (f"<{self.device_name}> PCA9548 device.addr must be 0x70 - 0x77, received <0x{device_addr:0>x}>")
 
         api = 'smbus'  if self.pi_i2c_bus_handle.api == 'smbus'  else 'pigpio'
         PCA9548_logger.debug (f"<{self.device_name}> New PCA9548 device defined at addr <0x{self.device_addr:0>2x}> using api <{api}> on i2c bus <{self.pi_i2c_bus_handle.i2c_bus_num}>")
@@ -103,10 +109,10 @@ The `write_value` is written to the control register and saved in `channel_enabl
 
         PCA9548_logger.debug (f"<{self.device_name}> ***** write_control_reg()")
 
-        channel_enable_bit_map = build_bit_map(write_value)
+        channel_enable_bit_map = self._build_bit_map(write_value)
 
         if PCA9548_logger.isEnabledFor(logging.DEBUG):
-            PCA9548_logger.debug (f"<{self.device_name}> New mask:     <0b{channel_enable_bit_map:0>8b}>, channels <{bit_map_to_channel_str(channel_enable_bit_map)}>")
+            PCA9548_logger.debug (f"<{self.device_name}> New mask:     <0b{channel_enable_bit_map:0>8b}>, channels <{self._bit_map_to_channel_str(channel_enable_bit_map)}>")
 
         try:
             result = self.pi_i2c_bus_handle.i2c_write_byte(self.device_addr, channel_enable_bit_map)
@@ -145,56 +151,56 @@ The `write_value` is written to the control register and saved in `channel_enabl
             return I2C_ERROR
 
         if PCA9548_logger.isEnabledFor(logging.DEBUG)  and  current_ch_enable_mask >= 0x00:  # TODO pigpio returns negative error codes.  Log and return I2C_ERROR
-            PCA9548_logger.debug (f"<{self.device_name}> Current mask: <0b{current_ch_enable_mask:0>8b}>, channels <{bit_map_to_channel_str(current_ch_enable_mask)}>")
+            PCA9548_logger.debug (f"<{self.device_name}> Current mask: <0b{current_ch_enable_mask:0>8b}>, channels <{self._bit_map_to_channel_str(current_ch_enable_mask)}>")
         return current_ch_enable_mask
 
 
 
-#=====================================================================================
-#=====================================================================================
-#  private functions
-#=====================================================================================
-#=====================================================================================
+    #=====================================================================================
+    #=====================================================================================
+    #  private functions
+    #=====================================================================================
+    #=====================================================================================
 
-def build_bit_map (channel_value):
-    """
-    Accepts channel_value
-        int 0x00 to 0xFF:  Set channels per bit mask
-        str -1:  Unset all channels (same as int 0x00)
-        str 0-7:  Set individual channel
+    def _build_bit_map (self, channel_value):
+        """
+        Accepts channel_value
+            int 0x00 to 0xFF:  Set channels per bit mask
+            str -1:  Unset all channels (same as int 0x00)
+            str 0-7:  Set individual channel
 
-    Returns int value in range 0x00 to 0xFF
-    Raises ValueError if channel_value cannot be converted to int between -1 to 7
-    """
+        Returns int value in range 0x00 to 0xFF
+        Raises ValueError if channel_value cannot be converted to int between -1 to 7
+        """
 
-    if isinstance(channel_value, int):
-        if channel_value < 0x00  or  channel_value > 0xFF:
-            raise ValueError (f"channel_value (int) must be int range 0x00 to 0xFF - received <{channel_value}> / <0x{channel_value:0>2x}>")
-        return channel_value
-    
-    if isinstance(channel_value, str):  # Raises ValueError if not a valid int
-        xx = int(channel_value)
-
-        if xx < -1  or  xx > 7:
-            raise ValueError (f"channel_value (str) must be int range -1 to 7 - received <{channel_value}>")
+        if isinstance(channel_value, int):
+            if channel_value < 0x00  or  channel_value > 0xFF:
+                raise ValueError (f"<{self.device_name}> channel_value (int) must be int range 0x00 to 0xFF - received <{channel_value}> / <0x{channel_value:0>2x}>")
+            return channel_value
         
-        if xx == -1:
-            return 0x00
-        else:
-            return 0x01 << int(xx)
-        
+        if isinstance(channel_value, str):  # Raises ValueError if not a valid int
+            xx = int(channel_value)
 
-def bit_map_to_channel_str(bit_mask):
-    """
-    returns str of enabled channels for logging
-    e.g., 0b00000101 returns '0 2'
-    """
-    ch_str = ''
-    bit_mask_str = f"{bit_mask:0>8b}"
-    for x in range(0, 8):
-        if bit_mask_str[7-x] == '1':
-            ch_str += str(x) + ' '
-    return ch_str[:-1]     # trim trailing space
+            if xx < -1  or  xx > 7:
+                raise ValueError (f"<{self.device_name}> channel_value (str) must be int range -1 to 7 - received <{channel_value}>")
+            
+            if xx == -1:
+                return 0x00
+            else:
+                return 0x01 << int(xx)
+            
+
+    def _bit_map_to_channel_str(self, bit_mask):
+        """
+        returns str of enabled channels for logging
+        e.g., 0b00000101 returns '0 2'
+        """
+        ch_str = ''
+        bit_mask_str = f"{bit_mask:0>8b}"
+        for x in range(0, 8):
+            if bit_mask_str[7-x] == '1':
+                ch_str += str(x) + ' '
+        return ch_str[:-1]     # trim trailing space
 
 
 

@@ -96,7 +96,9 @@ Validation testing is done on a set of boards with the following configuration. 
 
 ---
 
-# Class pi_i2c (api, i2c_bus_num=1) - Support both smbus and pigpio I2C APIs
+# Class pi_i2c (api, i2c_bus_num=1) - Get a pi_i2c handle for the specified I2C bus and api
+
+Supports both smbus and pigpio I2C APIs
 
 
 ### Args
@@ -111,7 +113,7 @@ Validation testing is done on a set of boards with the following configuration. 
 
 
 ### Returns
-- pi_i2c handle associated with I2C comm using the specified api and bus
+- pi_i2c handle for I2C communication using the specified api and bus
     
 <br/>
 
@@ -137,7 +139,7 @@ Validation testing is done on a set of boards with the following configuration. 
 ### Returns
 - On success, returns length of `bytes_list` (number of bytes written)
 - Raises ValueError if `bytes_list` is not a list or is an empty list.
-- On fail, raises exception (actually raised by `api` call, e.g., I2C IO error, or invalid data in `bytes_list`)
+- On fail, raises exception (actually raised by underlying `api` call, e.g., I2C IO error, or invalid data in `bytes_list`)
 
 
 ### Behaviors and rules
@@ -169,7 +171,7 @@ Validation testing is done on a set of boards with the following configuration. 
 
 ### Returns
 - On success, returns tuple (actual read count, [data]), e.g., `(3, [0x01, 0x02, 0x03])`
-- On fail, raises exception (actually raised by `api` call, e.g., I2C IO error, OSError, etc.).
+- On fail, raises exception (actually raised by underlying `api` call, e.g., I2C IO error, OSError, etc.).
 - If using the pigpio api, if the returned byte count is negative this error code is passed within a raised OSError exception.
 
 
@@ -200,7 +202,7 @@ Validation testing is done on a set of boards with the following configuration. 
 ### Returns
 - On success, returns 1 (meaning one byte written)
 - Raises ValueError if `byte_value` is not an int in the range of 0x00 to 0xFF
-- On fail, raises exception (actually raised by `api` call, e.g., I2C IO error, OSError, etc.).
+- On fail, raises exception (actually raised by underlying `api` call, e.g., I2C IO error, OSError, etc.).
 
 
 ### Behaviors and rules
@@ -225,7 +227,7 @@ Validation testing is done on a set of boards with the following configuration. 
 
 ### Returns
 - On success, returns one byte read from the target device, e.g., `0xAA`
-- On fail, raises exception (actually raised by `api` call, e.g., I2C IO error, OSError, etc.).
+- On fail, raises exception (actually raised by underlying `api` call, e.g., I2C IO error, OSError, etc.).
 
 
 ### Behaviors and rules
@@ -260,10 +262,11 @@ Validation testing is done on a set of boards with the following configuration. 
 ### Arg
 `tempC` (float)
 - Temperature value in Celsius
-- Value not validity
+- Value not validated
 
 ### Returns
 - Returns float temperature value in Fahrenheit
+- Raises exception on invalid arg
     
 <br/>
 
@@ -276,7 +279,7 @@ Validation testing is done on a set of boards with the following configuration. 
 ### Arg
 `tempF` (float)
 - Temperature value in Fahrenheit
-- Value not validity
+- Value not validated
 
 ### Returns
 - Returns float temperature value in Celsius
@@ -292,7 +295,7 @@ Validation testing is done on a set of boards with the following configuration. 
 ### Arg
 `tempC` (float)
 - Temperature value in Celsius
-- Value not validity
+- Value not validated
 
 ### Returns
 - Returns float temperature value in Kelvin
@@ -308,7 +311,7 @@ Validation testing is done on a set of boards with the following configuration. 
 ### Arg
 `tempK` (float)
 - Temperature value in Kelvin
-- Value not validity
+- Value not validated
 
 ### Returns
 - Returns float temperature value in Celsius
@@ -326,11 +329,11 @@ Uses the Mangus formula - [Wikipedia](https://en.wikipedia.org/wiki/Dew_point)
 ### Arg
 `tempC` (float)
 - Temperature value in Celsius
-- Value not validity
+- Value not validated
 
 RH (float)
 - Relative humidity in percent
-- Value not validity
+- Value not validated
 
 ### Returns
 - Returns dew point temperature value in Celsius.  Pass the returned temperature thru CtoF() if the dew

@@ -93,12 +93,12 @@ To enabled debug logging from this module's classes/functions, add this to your 
 **Key to understand:** The APIs in this library are not tied to the specific registers.  Rather, when using these APIs the target registers are called out by string names, e.g., 'IODIR' and 'OLAT'.
 
 The MCP23008 has 11 registers, listed below (see the datasheet for register details).  Without any customization, the default
-configuration applied to a device is (also as listed below):
+configuration applied to a device is:
 - All pins are configured as inputs with weak pullups turned off
 - No interrupt features are enabled
 
 
-- The defined registers and their default initialization values are:
+- The registers and their default initialization values are:
 
     Reg name | Default initialization value | Notes
     --- | --- | ---
@@ -116,16 +116,17 @@ configuration applied to a device is (also as listed below):
 
 Likely, you'll need changes to the default configuration.
 At instantiation you have the ability to override the default configuration settings by providing an `init_settings` dictionary.
-The format of the dictionary is `{reg_name1:value, reg_name2:value, ...}`, as shown in the above example.  The device is initialized as the last step in instantiation, and it may be set back to the initialized state at any time by calling `my_iochip.initialize()`
+The format of the dictionary is `{reg_name1:value, reg_name2:value, ...}`, as shown in the above example.  The device is initialized as the last step in instantiation, and it may be set back to the initialized state at any time by calling `my_iochip.initialize()`.
 
 <br>
 
 ## The primary APIs for doing IO
 
-`set_registers()` - Writing to any (or all) of the registers may be done with the `set_registers()` API. `set_registers()` takes a dictionary of `register:value` pairs just like `init_settings` in instantiation.  To set the output-enabled IO bits write to the OLAT register: `my_iochip.set_registers({'OLAT': 0b00001001})`.  Note that this API causes all eight bits of the target register(s) to be written.
-
-`set_bits()` - Individual bits in a register may be selectively set/cleared using the `set_bits()` API.  In this example the `mask` arg selects the upper two output pins to be set per the `bits` arg: `my_iochip.set_bits('OLAT', bits=0b0100, mask=0b1100)`. Not mask selected output pins are left unchanged.  `set_bits()` does not affect pins configured as inputs.
-
-`read_reg()` - To read pins configured as inputs, read the GPIO register using `read_reg()`, e.g., `my_iochip.read_reg('GPIO')`.  Decode the pins states in your code as needed.
-
 The APIs `set_registers()`, `set_bits()`, `read_reg()` work on any register.
+
+- `set_registers()` - Writing to any (or all) of the registers may be done with the `set_registers()` API. `set_registers()` takes a dictionary of `register:value` pairs just like `init_settings` in instantiation.  To set the output-enabled IO bits write to the OLAT register: `my_iochip.set_registers({'OLAT': 0b00001001})`.  Note that this API causes all eight bits of the target register(s) to be written.
+
+- `set_bits()` - Individual bits in a register may be selectively set/cleared using the `set_bits()` API.  In this example the `mask` arg selects the upper two output pins to be set per the `bits` arg: `my_iochip.set_bits('OLAT', bits=0b0100, mask=0b1100)`. Not mask selected output pins are left unchanged.  `set_bits()` does not affect pins configured as inputs.
+
+- `read_reg()` - To read pins configured as inputs, read the GPIO register using `read_reg()`, e.g., `my_iochip.read_reg('GPIO')`.  Decode the pins states in your code as needed.
+

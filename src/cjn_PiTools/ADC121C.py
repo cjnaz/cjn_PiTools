@@ -54,56 +54,64 @@ Create an ADC121C family device instance
 ### Args
 `device_name` (str)
 - User defined name for this instance, e.g., 'My_ADC121C'
-- Not validated as valid string
 
 `device_addr` (int)
 - I2C bus address for this instance, e.g., 0x50
+- Allowed addresses: [0x50, 0x51, 0x52, 0x54, 0x55, 0x56, 0x58, 0x59, 0x5a]
 
 `pi_i2c_bus_handle` (cjn_PiTools.shared.pi_i2c instance)
 - Get a `pi_i2c` instance handle in the tools script code and pass it to this device instantiation
 
 `Vref` (float)
 - ADC reference voltage
-- `read_conversion_result()` returned 12-bit code is scaled by this value to return the measured voltage
+- `read_conversion_result()`'s returned 12-bit code is scaled by this value to return the measured voltage
 
 `config_byte` (int, default None)
-- Used for explicit setting of the configuration register to a byte value during instantiation
-- Must be in range 0x00 to 0xFF
-- Bit 1 (Reserved) is always forced to `0`, per the specification
-- If `config_byte` is an int, the field values within the `config_byte` are used as the default values in later `write_config()` calls
-- `config_byte` takes precedent over the below individual field settings, if both are given at instantiation
+- If `config_byte` is an int:
+  - Explicitly set the configuration register to the `config_byte` value during instantiation
+  - Must be in range 0x00 to 0xFF
+  - Bit 1 (Reserved) is always forced to `0`, per the specification
+  - The field values within the `config_byte` saved to the respective class instance variables, and used as the default
+  values in later `write_config()` calls
+  - `config_byte` takes precedent over the following individual field settings, if both are given at instantiation
+- If `config_byte` is None then the following individual field settings are used
 
 `cycle_time` (int, default 0b000)
 - Value for the 3-bit Cycle Time field in the configuration register
 - Must be in range 0b000 to 0b111
 - Default 0b000 is Normal Mode (automatic conversion mode disabled)
-- This value (or the field bits within `config_byte` if specified) are used as the default value in later `write_config()` calls
+- This value (or the field bits within `config_byte`, if specified) is used as the default value in later `write_config()` calls
 
 `alert_hold` (int, default 0)
 - Value for the Alert Hold field in the configuration register
 - Must be 0 or 1
 - Default 0 is Alert Hold disabled - alerts will self-clear
-- This value (or the field bit within `config_byte` if specified) are used as the default value in later `write_config()` calls
+- This value (or the field bit within `config_byte`, if specified) is used as the default value in later `write_config()` calls
 
 `alert_flag_en` (int, default 0)
 - Value for the Alert Flag Enable field in the configuration register
 - Must be 0 or 1
 - Default 0 is Alert Flag disabled - disable alert status bit [D15] in the Conversion Result register
-- This value (or the field bit within `config_byte` if specified) are used as the default value in later `write_config()` calls
+- This value (or the field bit within `config_byte`, if specified) is used as the default value in later `write_config()` calls
 
 `alert_pin_en` (int, default 0)
 - Value for the Alert Pin Enable field in the configuration register
 - Must be 0 or 1
 - Default 0 is Alert Pin disabled - disable the ALERT output pin
-- This value (or the field bit within `config_byte` if specified) are used as the default value in later `write_config()` calls
+- This value (or the field bit within `config_byte`, if specified) is used as the default value in later `write_config()` calls
 - NOTE:  The Alert Pin function is not tested. (I'm using the ADC121C027 (no alert pin))
 
 `polarity` (int, default 0)
 - Value for the alert pin Polarity field in the configuration register
 - Must be 0 or 1
 - Default 0 - the ALERT pin is active low
-- This value (or the field bit within `config_byte` if specified) are used as the default value in later `write_config()` calls
+- This value (or the field bit within `config_byte`, if specified) is used as the default value in later `write_config()` calls
 - NOTE:  The Alert Pin function is not tested. (I'm using the ADC121C027 (no alert pin))
+
+
+### Returns
+- Handle to the ADC121C instance on success
+- Raises ValueError if args checks fail
 
 
 ### Class instance variables - as passed in at instantiation
@@ -122,11 +130,6 @@ Create an ADC121C family device instance
   - `cycle_time` defaults to 0b000 - Normal mode (automatic conversion mode disabled)
   - `alert_hold`, `alert_flag_en`, and `alert_pin_en` each default to 0 - Disabled
   - `polarity` defaults to 0 - the alert pin is active low if `alert_pin_en` = 1
-- If `config_byte` is an int the bit fields are parsed out and saved as their default values in the respective 
-class instance variables, above.
-- if `config_byte` is None then the individual field settings are used and saved as the default values in later 
-calls to `write_config()`
-- Settings via config_byte take precedent over settings via individual fields.
 - Debug logging may be enabled in the tool script code by setting this module's logging level:
 
         logging.getLogger('cjn_PiTools.ADC121C').setLevel(logging.DEBUG)
@@ -146,26 +149,27 @@ calls to `write_config()`
         self.polarity =             polarity
 
         if not isinstance(device_name, str):
-            raise ValueError (f"device_name must be str - Received <{device_name}>")
+            raise ValueError (f"ADC121C device_name must be str - received <{device_name}>")
 
         if self.device_addr not in ADC121_ADDRS:
             xx = ", ".join(f"0x{v:02x}" for v in ADC121_ADDRS)
             yy = f"0x{device_addr:0>2x}"  if isinstance(device_addr, int)  else device_addr
-            raise ValueError (f"ADC121C device address must be one of <{xx}>.  Received <{yy}>")
+            raise ValueError (f"<{self.device_name}> device address must be one of <{xx}> - received <{yy}>")
 
         if config_byte:
+            if  not isinstance(config_byte, int)  or  config_byte < 0x00  or  config_byte > 0xFF:
+                raise ValueError (f"<{self.device_name}> config_byte must be int in range 0x00 to 0xFF - received <{config_byte}>")
             self.cycle_time, self.alert_hold, self.alert_flag_en, self.alert_pin_en, self.polarity = decode_config_byte(config_byte)
 
         self.conv_rslt_reg_addressed = False    # Flag indicating that the conv_rslt_reg was last accessed, so skip setting the address pointer
 
-        # ADC121C.write_config(self, config_byte, cycle_time, alert_hold, alert_flag_en, alert_pin_en, polarity)        # Use base class implementation when this class is inherited
-        ADC121C.write_config(self,
+        ADC121C.write_config(self,                              # Use base class implementation when this class is inherited
                              config_byte=   None,
                              cycle_time=    self.cycle_time,
                              alert_hold=    self.alert_hold,
                              alert_flag_en= self.alert_flag_en,
                              alert_pin_en=  self.alert_pin_en,
-                             polarity=      self.polarity)        # Use base class implementation when this class is inherited
+                             polarity=      self.polarity)
 
         api = 'smbus'  if self.pi_i2c_bus_handle.api == 'smbus'  else 'pigpio'
         adc121c_logger.debug (f"<{self.device_name}> New ADC121C device defined at addr <0x{self.device_addr:0>2x}> using api <{api}> on i2c bus <{self.pi_i2c_bus_handle.i2c_bus_num}>")
@@ -272,9 +276,10 @@ to `read_conversion_result()`
 ### Returns
 - 0 on success
 - I2C_ERROR on I2C IO error
+- Raises ValueError if args checks fail
 """
         if clear_over not in [0, 1]  or  clear_under not in [0, 1]:
-            raise ValueError (f"clear_over and clear_under must be ints 0 or 1 - received <{clear_over}, {clear_under}>")
+            raise ValueError (f"<{self.device_name}> clear_over and clear_under must be ints 0 or 1 - received <{clear_over}, {clear_under}>")
 
         try:
             write_byte = clear_over << 1  |  clear_under
@@ -301,16 +306,17 @@ to `read_conversion_result()`
 ***ADC121C class member function***
 
 The config register may be written entirely using `config_byte` or by individual field settings,
-with their default values set at instantiation.
+with their default values set at instantiation
 
 
 ### Args
 `config_byte` (int, default None)
-- Used for explicit setting of the configuration register to a byte value
-- Must be in range 0x00 to 0xFF
-- Bit 1 (Reserved) is always forced to `0`, per the specification
-- If an int then the entire configuration register byte is written using this value, and the following args are ignored
-- If None then the configuration register is built from the following args, with their default values set at instantiation
+- If `config_byte` is an int:
+  - Explicitly set the configuration register to the `config_byte` value
+  - Must be in range 0x00 to 0xFF
+  - Bit 1 (Reserved) is always forced to `0`, per the specification
+  - The entire configuration register byte is written using this value, and the following args are ignored
+- If `config_byte` is None then the following individual field settings are used
 
 `cycle_time` (int, default None)
 - Value for the 3-bit Cycle Time field in the configuration register
@@ -346,7 +352,7 @@ with their default values set at instantiation.
 ### Returns
 - 0 on success
 - I2C_ERROR on I2C IO error
-- Raises `ValueError` if any args have illegal values
+- Raises ValueError if args checks fail
 
 
 ### Behaviors and rules
@@ -361,34 +367,34 @@ to construct the configuration byte.  For example:
 
         if config_byte:
             if not isinstance(config_byte, int)  or  config_byte < 0x00  or config_byte > 0xff:
-                raise ValueError (f"config_byte must be int between 0x00 and 0xff - received <{config_byte}>")
+                raise ValueError (f"<{self.device_name}> config_byte must be int between 0x00 and 0xff - received <{config_byte}>")
             config_reg_value = config_byte & 0b11111101     # Bit 1 must be 0
         else:
             config_reg_value = 0x00
 
             _cycle_time = cycle_time  if cycle_time is not None  else self.cycle_time
             if not isinstance(_cycle_time, int)  or  _cycle_time < 0b000  or _cycle_time > 0b111:
-                raise ValueError (f"cycle_time must be int between 0b000 and 0b111 - received <{_cycle_time}>")
+                raise ValueError (f"<{self.device_name}> cycle_time must be int between 0b000 and 0b111 - received <{_cycle_time}>")
             config_reg_value |= _cycle_time << 5
 
             _alert_hold = alert_hold  if alert_hold is not None  else self.alert_hold
             if _alert_hold not in [0, 1]:
-                raise ValueError (f"alert_hold must be int 0 or 1 - received <{_alert_hold}>")
+                raise ValueError (f"<{self.device_name}> alert_hold must be int 0 or 1 - received <{_alert_hold}>")
             config_reg_value |= _alert_hold << 4
 
             _alert_flag_en = alert_flag_en  if alert_flag_en is not None  else self.alert_flag_en
             if _alert_flag_en not in [0, 1]:
-                raise ValueError (f"alert_flag_en must be int 0 or 1 - received <{_alert_flag_en}>")
+                raise ValueError (f"<{self.device_name}> alert_flag_en must be int 0 or 1 - received <{_alert_flag_en}>")
             config_reg_value |= _alert_flag_en << 3
 
             _alert_pin_en = alert_pin_en  if alert_pin_en is not None  else self.alert_pin_en
             if _alert_pin_en not in [0, 1]:
-                raise ValueError (f"alert_pin_en must be int 0 or 1 - received <{_alert_pin_en}>")
+                raise ValueError (f"<{self.device_name}> alert_pin_en must be int 0 or 1 - received <{_alert_pin_en}>")
             config_reg_value |= _alert_pin_en << 2
 
             _polarity = polarity  if polarity is not None  else self.polarity
             if _polarity not in [0, 1]:
-                raise ValueError (f"polarity must be int 0 or 1 - received <{_polarity}>")
+                raise ValueError (f"<{self.device_name}> polarity must be int 0 or 1 - received <{_polarity}>")
             config_reg_value |= _polarity
 
         adc121c_logger.debug (f"<{self.device_name}> ***** write_config() <0b{config_reg_value:0>8b}>")
@@ -412,7 +418,7 @@ to construct the configuration byte.  For example:
 
     def read_config(self):
         """
-## read_config () - Return the content of the configuration register 
+## read_config () - Return the contents of the configuration register 
 
 ***ADC121C class member function***
 
@@ -424,7 +430,7 @@ to construct the configuration byte.  For example:
 
 
 ### Behaviors and rules
-- If debug logging is enabled then the configuration register value is decoded, e.g.,
+- If debug logging is enabled for this module then the configuration register value is decoded, e.g.,
 
         ADC121C.read_config     -    DEBUG:  <ADC_xx> configuration register <0b00111000> settings:
         cycle_time:     <0b001>
@@ -473,7 +479,7 @@ to construct the configuration byte.  For example:
 ***ADC121C class member function***
 
 
-### Args
+### Arg
 `vlow` (float or int)
 - Allowed range 0 to Vref (no 'V' units)
 
@@ -481,12 +487,12 @@ to construct the configuration byte.  For example:
 ### Returns
 - 0 on success
 - I2C_ERROR on I2C IO error
-- Raises ValueError if `vlow` is invalid
+- Raises ValueError if arg checks fail
 """
         # returns 0 on success, or I2C_ERROR
 
         if not isinstance(vlow, (int, float))  or  vlow < 0.0  or  vlow > self.Vref:
-            raise ValueError (f"vlow out of range 0.0V to VRef ({self.Vref:5.3f}) - received <{vlow}>")
+            raise ValueError (f"<{self.device_name}> vlow out of range 0.0V to VRef ({self.Vref:5.3f}) - received <{vlow}>")
         vlow_reg_value = int(vlow / self.Vref * 4096)
         msB = (vlow_reg_value & 0x0F00) >> 8
         lsB = (vlow_reg_value & 0x00FF)
@@ -546,7 +552,7 @@ to construct the configuration byte.  For example:
 ***ADC121C class member function***
 
 
-### Args
+### Arg
 `vhigh` (float or int)
 - Allowed range 0 to Vref (no 'V' units)
 
@@ -554,10 +560,10 @@ to construct the configuration byte.  For example:
 ### Returns
 - 0 on success
 - I2C_ERROR on I2C IO error
-- Raises ValueError if `vhigh` is invalid
+- Raises ValueError if arg checks fail
 """
         if not isinstance(vhigh, (int, float))  or  vhigh < 0.0  or  vhigh > self.Vref:
-            raise ValueError (f"vhigh out of range 0.0V to VRef ({self.Vref:5.3f}) - received <{vhigh}>")
+            raise ValueError (f"<{self.device_name}> vhigh out of range 0.0V to VRef ({self.Vref:5.3f}) - received <{vhigh}>")
         vhigh_reg_value = int((vhigh - 0.001) / self.Vref * 4096)   # Avoid vhigh=Vref resulting in 0x0000
         msB = (vhigh_reg_value & 0x0F00) >> 8
         lsB = (vhigh_reg_value & 0x00FF)
@@ -589,7 +595,6 @@ to construct the configuration byte.  For example:
 - Vhigh alert level voltage (float) on success
 - I2C_ERROR on I2C IO error
 """
-        # returns float vhigh limit value voltage
         adc121c_logger.debug (f"<{self.device_name}> ***** read_vhigh_alert_limit()")
 
         try:
@@ -618,7 +623,7 @@ to construct the configuration byte.  For example:
 ***ADC121C class member function***
 
 
-### Args
+### Arg
 `vhyst` (float or int)
 - Allowed range 0 to Vref (no 'V' units)
 
@@ -626,10 +631,10 @@ to construct the configuration byte.  For example:
 ### Returns
 - 0 on success
 - I2C_ERROR on I2C IO error
-- Raises ValueError if `vhyst` is invalid
+- Raises ValueError if arg checks fail
 """
         if not isinstance(vhyst, (int, float))  or  vhyst < 0.0  or  vhyst > self.Vref:
-            raise ValueError (f"vhyst out of range 0.0V to VRef ({self.Vref:5.3f}) - received <{vhyst}>")
+            raise ValueError (f"<{self.device_name}> vhyst out of range 0.0V to VRef ({self.Vref:5.3f}) - received <{vhyst}>")
         vhyst_reg_value = int(vhyst / self.Vref * 4096)
         msB = (vhyst_reg_value & 0x0F00) >> 8
         lsB = (vhyst_reg_value & 0x00FF)

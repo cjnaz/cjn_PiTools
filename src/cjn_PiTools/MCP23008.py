@@ -33,7 +33,7 @@ mcp23008_logger = logging.getLogger('cjn_PiTools.MCP23008')
 
 #=====================================================================================
 #=====================================================================================
-#  C l a s s   MCP23008
+#  C l a s s   M C P 2 3 0 0 8
 #=====================================================================================
 #=====================================================================================
 
@@ -46,7 +46,6 @@ Create an MCP23008 device instance.  The SPI-based MCP23S08 is not supported.
 ### Args
 `device_name` (str)
 - User defined name for this instance, e.g., 'My_MCP23008'
-- Not validated as valid string
 
 `device_addr` (int)
 - I2C bus address for this instance, e.g., 0x20
@@ -56,7 +55,7 @@ Create an MCP23008 device instance.  The SPI-based MCP23S08 is not supported.
 - Get a `pi_i2c` instance handle in the tools script code and pass it to this device instantiation
 
 `init_settings` (dict, default {})
-- Override default settings for initialization.  See Behaviors, below.
+- Override default initialization values.  See Behaviors, below.
 - The dictionary format is {'reg name1': init value1, 'reg name2': init value2, ... }
 - Values must be ints in range 0x00 to 0xFF
 - These specified values are used as the initialization values during device instantiation and later calls to `initialize()`
@@ -64,6 +63,7 @@ Create an MCP23008 device instance.  The SPI-based MCP23S08 is not supported.
 
 ### Returns
 - MCP23008 handle on success
+- Raises ValueError if args checks fail
 - Raises I2C_ERROR I2C IO error
 
 
@@ -76,7 +76,7 @@ Create an MCP23008 device instance.  The SPI-based MCP23S08 is not supported.
     - 'addr' is this register's address - used internally in this module
     - 'init' is the initialization value for this register
     - 'cached' is the cached (last written) value to this register
-  - The defined registers and their default initialization values are:
+  - The registers and their default initialization values are:
 
     Reg name | Default initialization value | Notes
     --- | --- | ---
@@ -182,7 +182,7 @@ on the default initialization values listed above.
 
 
 ### Behaviors and rules
-- All registers are reset the their initialization states as defined at instantiation (default values overlaid by
+- All registers are reset to their initialization states as defined at instantiation (default values overlaid by
 `init_settings`).  See the class header documentation.
 """
         mcp23008_logger.debug (f"<{self.device_name}> ***** initialize()")
@@ -263,7 +263,7 @@ values, and current read values, e.g.,
 
 ### Args
 `reg_dict` (dict)
-- The dictionary format is {'reg name1': value1, 'reg name2': value2, ... }
+- The dictionary format is {'reg name1': value1, 'reg name2': value2, ... } (same as `init_settings` in class instantiation)
 - Values must be ints in range 0x00 to 0xFF
 - These specified values are written to the respective registers and saved to the 'cached' fields in the 
 `registers` instance attribute
@@ -315,13 +315,13 @@ values, and current read values, e.g.,
 
     def set_bits(self, reg_name, bits, mask):
         """
-## set_bits (reg_name, bits, mask) - Sets `mask`-selected bits to the `bits` value of register `reg_name`
+## set_bits (reg_name, bits, mask) - Sets `mask`-selected bits of register `reg_name` to the `bits` value
 
 ***MCP23008 class member function***
 
 This method is useful for setting features/values on specific pins while leaving other pin unchanged.
 Examples:
-- Turn on or off interrupt modes on a specific input pin
+- Turn on or off interrupt modes on specific input pins
 - Set a specific output pin to a value
 
 
@@ -331,10 +331,12 @@ Examples:
 
 `bits` (int)
 - An integer value whose `mask`-selected bits will be applied to the register `reg_name`
+- Must be in the range of 0x00 to 0xFF
 
 `mask` (int)
 - The mask selecting which bits will be applied to the register `reg_name`
 - Logic 1 selects an active/applied bit position, while logic 0 masked bits are unchanged
+- Must be in the range of 0x00 to 0xFF
 
 
 ### Returns

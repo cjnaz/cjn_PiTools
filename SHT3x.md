@@ -2,7 +2,7 @@
 
 Skip to [API documentation](#links)
 
-This module provides a clean and complete API for SHT3x series of temperature/RH sensors, including SHT30, SHT31, and SHT35.
+This module provides a clean and complete API for the SHT3x series of temperature/RH sensors, including SHT30, SHT31, and SHT35.
 
 Supports:
 - Reading single-shot mode temperature and RH values using either I2C bus clock stretching mode or non-clock stretching mode (your code is responsible for measurement delays)
@@ -37,10 +37,9 @@ logging.getLogger('cjn_PiTools.SHT3x').setLevel(logging.DEBUG)
 i2c_bus_handle =    pi_i2c('smbus')
 my_sht3x =          SHT3x('My_SHT3x', 0x44, i2c_bus_handle)
 
-temp, rh = my_sht3x.single_shot()
+temp, rh =          my_sht3x.single_shot()
 logging.warning (f"Current temperature for sensor {my_sht3x.device_name}:  " + \
                  f"{temp:7.3f} C,  RH:  {rh:7.3f} %")
-               
 
 # Clean up
 i2c_bus_handle.close()
@@ -51,15 +50,17 @@ And running it:
 $ ./SHT3x_README_ex.py 
 DEBUG:cjn_PiTools.SHT3x:<My_SHT3x> ***** soft_reset()
 DEBUG:cjn_PiTools.SHT3x:<My_SHT3x> Status reg:  0x0000
+DEBUG:cjn_PiTools.SHT3x:<My_SHT3x> ***** clear_status_reg()
+DEBUG:cjn_PiTools.SHT3x:<My_SHT3x> Status reg:  0x0000
 DEBUG:cjn_PiTools.SHT3x:<My_SHT3x> New SHT3x device defined at addr <0x44> using api <smbus> on i2c bus <1>
-DEBUG:cjn_PiTools.SHT3x:<My_SHT3x> ***** single_shot()
+DEBUG:cjn_PiTools.SHT3x:<My_SHT3x> ***** single_shot()  <High_CS>
 DEBUG:cjn_PiTools.SHT3x:<My_SHT3x> ***** fetch_data()
 DEBUG:cjn_PiTools.SHT3x:<My_SHT3x> Temp/RH raw data:
-  temp data returned bytes: 0x64 0x7f 0x81,  calc CRC: <0x81>
-  RH   data returned bytes: 0x6d 0x8e 0xf1,  calc CRC: <0xf1>
-DEBUG:cjn_PiTools.SHT3x:<My_SHT3x> Calculated temp (C):      23.7
-DEBUG:cjn_PiTools.SHT3x:<My_SHT3x> Calculated RH:            42.8
-WARNING:root:Current temperature for sensor My_SHT3x:   23.700 C,  RH:   42.795 %
+  temp data returned bytes: 0x66 0xba 0xea,  calc CRC: <0xea>
+  RH   data returned bytes: 0x6c 0x07 0xf7,  calc CRC: <0xf7>
+DEBUG:cjn_PiTools.SHT3x:<My_SHT3x> Calculated temp (C):      25.2
+DEBUG:cjn_PiTools.SHT3x:<My_SHT3x> Calculated RH:            42.2
+WARNING:root:Current temperature for sensor My_SHT3x:   25.224 C,  RH:   42.199 %
 ```
 
 <br>
@@ -119,6 +120,7 @@ Create a SHT3x family device instance
 
 `do_reset` (bool, default True)
 - If True, call `soft_reset()` and `clear_status_reg()` as part of instantiation
+- If the device is not accessible at the time of instantiation then set `do_reset=False` and reset the device when available
 
 
 ### Class instance variables - as passed in at instantiation
@@ -129,7 +131,7 @@ Create a SHT3x family device instance
 ### Returns
 - Handle to the SHT3x instance on success
 - Raises ValueError if args checks fail
-- Raises RuntimeError if the device fails soft reset
+- Raises RuntimeError if the device fails soft reset or clearing the status register
 
 
 ### Behaviors and rules
@@ -145,7 +147,7 @@ can be received by the sensor." Normally, the time between consecutive API calls
 
 ---
 
-# soft_reset (reset_wait=1.5) - Issue a soft_reset
+# soft_reset (reset_wait=0.0015) - Issue a soft_reset
 
 ***SHT3x class member function***
 
@@ -178,12 +180,6 @@ have a reset pin.
 # single_shot (tempunits='C', repeatability='High', reading_wait=-1, fetch_data=True) - Issue a single shot temperature/RH measurement and read back the results
 
 ***SHT3x class member function***
-
-NOTE that this is a blocking operation for the duration of the internal temperature measurement conversion or 
-`reading_wait` time.
-
-The _trigger mode_ is the combination of the `repeatability` setting and the `reading_wait` setting (whether clock 
-stretching mode is enabled or not)
 
 
 ### Args
@@ -240,7 +236,7 @@ is blocking to the calling code.
 `repeatability` (str, default 'High')
 - Select repeatability setting 'High', 'Medium', or 'Low' per datasheet, with corresponding measurement time differences
 
-mps (int or float, default 2)
+`mps` (int or float, default 2)
 - Measurements per second.
 - Allowed values are 0.5, 1, 2, 4, and 10
 
@@ -248,13 +244,13 @@ mps (int or float, default 2)
 ### Returns
 - 0 on success
 - I2C_ERROR on I2C IO error
-- Raises ValueError if `repeatability` is invalid
+- Raises ValueError if `repeatability` or `mps` is invalid
 
 
 ### Behaviors and rules
 - Status bit 0x0020 indicates Periodic / free running measurement mode is active (undocumented)
 - Status bit 0x0040 indicates new measurement data is available (undocumented)
-- Attempting to fetch data more frequently than new data is available results in 
+- Attempting to fetch data more frequently than new data is available (based on the `mps` setting) results in 
 `fetch_data()` returning (I2C_ERROR, I2C_ERROR) and debug logging will show:
   - smbus api:  OSError: [Errno 121] Remote I/O error
   - pigpio api: OSError: i2c_read_device failed - error code <-83>
@@ -351,7 +347,7 @@ after the single shot measurement trigger has completed.
 
 ### Args
 `quiet` (bool, default False)
-- Set True by SHT3x class internal calls for debugging logging
+- Set True by SHT3x class internal calls for debug logging
 
 `force_CRC_fail` (bool, default False)
 - Used for validation
@@ -429,7 +425,7 @@ Other bits, including undocumented bits, are not cleared.
 
 
 ### Args
-'reg_select' (str)
+`reg_select` (str)
 - One of 'High_Set', 'High_Clear', 'Low_Clear', or 'Low_Set'
 
 `tempunits` (str, default 'C', case-independent)
@@ -478,8 +474,8 @@ Other bits, including undocumented bits, are not cleared.
 ### Returns
 - 0 on success
 - I2C_ERROR on I2C IO error
-- Raises ValueError if `reg_select` or `tempunits` is invalid, or temp or rh is out of range
+- Raises ValueError if `reg_select` or `tempunits` are invalid, or `temp` or `rh` are out of range
 
 
 ### Behaviors and rules
-- A CRC error on the write data to the alert registers causes a stuck I2C bus error, requiring a power cycle to recover.
+- A CRC error on the write data to the alert registers causes a stuck I2C bus, requiring a power cycle to recover.

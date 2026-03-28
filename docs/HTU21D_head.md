@@ -2,7 +2,7 @@
 
 Skip to [API documentation](#links)
 
-This module provides a clean and complete API for HTU21D temperature/RH sensor.
+This module provides a clean and complete API for the HTU21D temperature/RH sensor
 
 Supports:
 - Reading temperature and RH values using either I2C bus hold mode (aka clock stretching) or no-hold mode
@@ -64,6 +64,6 @@ WARNING:root:Current temperature for sensor My_HTU21D:   78.057 F,  RH:   37.846
 
 To enabled debug logging from this module's classes/functions, add this to your tool script code:
 
-     logging.getLogger('cjn_PiTools.DS18B20').setLevel(logging.DEBUG)
+     logging.getLogger('cjn_PiTools.HTU21D').setLevel(logging.DEBUG)
 
 

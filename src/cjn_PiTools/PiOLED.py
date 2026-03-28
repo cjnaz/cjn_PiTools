@@ -1,22 +1,5 @@
 #!/usr/bin/env python3
 """PiOLED display service and driver
-
-PiOLED utilizes the luma.oled package.  A notable limitation of luma.oled is that only 
-one process can send content to the display.  PiOLED solves this limitation by setting 
-up a client-sever configuration, where the server is started at boot and various clients 
-may send display messages to the server.  The server is started via systemd at boot using 
-the provided .service file.  Tool scripts communicate with the server using a shared 
-display file and ipc semaphores. 
-
-PiOLED also supports a command line interface:
-- `PiOLED message` displays a multi-line message on the display, supporting list and 
-  dictionary formats - see PiOLED.md for format info.  Example:
-
-    PiOLED message "[0, 0, 18, 'Wherever you go...'], {'x':10, 'y':20, 'size':20, 'text':'there you are.', 'font':'ProggyTiny.ttf'}"
-
-- `PiOLED blank`  clears the display
-- `PiOLED status` displays the state of the server process, and the ipc semaphores
-- `PiOLED unlock` releases the ipc semaphores, which are normally released by the server process
 """
 
 import importlib.metadata
@@ -27,7 +10,6 @@ __version__ = importlib.metadata.version(__package__ or __name__)
 #  Chris Nelson, Copyright 2024-2026
 #
 #==========================================================
-
 
 import time
 import datetime
@@ -89,7 +71,7 @@ pioled_file_lock =              resource_lock(PIOLED_FILE_LOCK)
 
 #=====================================================================================
 #=====================================================================================
-#   pioled_display_driver class
+#   c l i e n t - s i d e   p i o l e d _ d i s p l a y _ d r i v e r
 #=====================================================================================
 #=====================================================================================
 
@@ -285,6 +267,8 @@ class pioled_display_driver:
         return 0
 
 
+
+
 #=====================================================================================
 #=====================================================================================
 #   S E R V E R
@@ -293,17 +277,6 @@ class pioled_display_driver:
 
 def service():
     """ Display content of DISPLAY_FILE
-
-    Service mode provides a driver/service process that allows multiple processes to display
-    text content on the oled display.
-    Content is not additive - the entire display is written with new data.
-    Service mode should be started as a systemd service at system boot.
-
-    The DISPLAY_FILE encoding is lines of dictionaries, each defining a text line, eg:
-        {'x':0, 'y':0, 'size':18, 'text':'''Wherever you go...'''}
-        {'x': 10, 'y': 20, 'size': 20, 'text': 'there you are.', 'font': 'ProggyTiny.ttf'}
-
-    - The DISPLAY_FILE is left in place, to aid in debug.  
     """
 
     global pioled_disp        # Used in _oneliner() service_int_handler()
@@ -374,11 +347,13 @@ def service_int_handler(signal, frame):
 
 #=====================================================================================
 #=====================================================================================
-#   class pioled
+#   c l a s s   p i o l e d
 #=====================================================================================
 #=====================================================================================
 
 class pioled:
+    """ Interact with the luma.oled driver
+    """
     def __init__(self):
         global known_fonts
         # Import luma config and instantiate self.device
@@ -416,11 +391,13 @@ class pioled:
 
 #=====================================================================================
 #=====================================================================================
-#   class pioled_font_manager
+#   c l a s s   p i o l e d _ f o n t _ m a n a g e r
 #=====================================================================================
 #=====================================================================================
 
 class pioled_font_manager:
+    """ Create and provide unique combinations of fonts and sizes
+    """
     def __init__(self):
         self.known_fonts =  {}
         self.fonts_path =   Path (ir_files(core.tool.main_module)) / "fonts"
@@ -448,7 +425,7 @@ class pioled_font_manager:
 
 #=====================================================================================
 #=====================================================================================
-#   cli
+#   c l i
 #=====================================================================================
 #=====================================================================================
 

@@ -61,8 +61,7 @@ WRITE_ALERT_MODES = {
             'Low_Set':      [0x61, 0x00]  }
 
 MIN_READING_WAIT =  0.001                   # Minimal waiting time in single shot mode between meas trigger and fetch
-# READING_WAIT =      0.016                   # Temp and RH readings take up to 15.5ms (high repeatability)
-RESET_WAIT =        0.0015 #0.003           # Soft reset spec wait is 1.5ms
+RESET_WAIT =        0.0015                  # Soft reset spec wait is 1.5ms
 
 
 crc_calc_config = Configuration(
@@ -96,6 +95,7 @@ Create a SHT3x family device instance
 
 `do_reset` (bool, default True)
 - If True, call `soft_reset()` and `clear_status_reg()` as part of instantiation
+- If the device is not accessible at the time of instantiation then set `do_reset=False` and reset the device when available
 
 
 ### Class instance variables - as passed in at instantiation
@@ -106,7 +106,7 @@ Create a SHT3x family device instance
 ### Returns
 - Handle to the SHT3x instance on success
 - Raises ValueError if args checks fail
-- Raises RuntimeError if the device fails soft reset
+- Raises RuntimeError if the device fails soft reset or clearing the status register
 
 
 ### Behaviors and rules
@@ -126,7 +126,7 @@ can be received by the sensor." Normally, the time between consecutive API calls
             raise ValueError (f"SHT3x device_name must be a str.  Received <{device_name}>")
 
         if self.device_addr not in SHT3x_ADDRS:
-            raise ValueError (f"SHT3x device address must be 0x44 or 0x45.  Received <0x{device_addr:0>2x}>")
+            raise ValueError (f"<{self.device_name}> SHT3x device address must be 0x44 or 0x45.  Received <0x{device_addr:0>2x}>")
 
         if do_reset:
             if self.soft_reset() == I2C_ERROR:
@@ -147,7 +147,7 @@ can be received by the sensor." Normally, the time between consecutive API calls
 
     def soft_reset(self, reset_wait=RESET_WAIT):
         """
-## soft_reset (reset_wait=1.5) - Issue a soft_reset
+## soft_reset (reset_wait=0.0015) - Issue a soft_reset
 
 ***SHT3x class member function***
 
@@ -171,6 +171,7 @@ It is worth noting that the sensor reloads calibration data prior to every measu
 cannot be applied if the system controller (I2C interface) is stuck - a power cycle is required if your device version does not
 have a reset pin.
 """
+
         sht3x_logger.debug (f"<{self.device_name}> ***** soft_reset()")
         try:
             self.pi_i2c_bus_handle.i2c_write_device(self.device_addr, SOFT_RESET)
@@ -195,12 +196,6 @@ have a reset pin.
 ## single_shot (tempunits='C', repeatability='High', reading_wait=-1, fetch_data=True) - Issue a single shot temperature/RH measurement and read back the results
 
 ***SHT3x class member function***
-
-NOTE that this is a blocking operation for the duration of the internal temperature measurement conversion or 
-`reading_wait` time.
-
-The _trigger mode_ is the combination of the `repeatability` setting and the `reading_wait` setting (whether clock 
-stretching mode is enabled or not)
 
 
 ### Args
@@ -286,7 +281,7 @@ is blocking to the calling code.
 `repeatability` (str, default 'High')
 - Select repeatability setting 'High', 'Medium', or 'Low' per datasheet, with corresponding measurement time differences
 
-mps (int or float, default 2)
+`mps` (int or float, default 2)
 - Measurements per second.
 - Allowed values are 0.5, 1, 2, 4, and 10
 
@@ -294,13 +289,13 @@ mps (int or float, default 2)
 ### Returns
 - 0 on success
 - I2C_ERROR on I2C IO error
-- Raises ValueError if `repeatability` is invalid
+- Raises ValueError if `repeatability` or `mps` is invalid
 
 
 ### Behaviors and rules
 - Status bit 0x0020 indicates Periodic / free running measurement mode is active (undocumented)
 - Status bit 0x0040 indicates new measurement data is available (undocumented)
-- Attempting to fetch data more frequently than new data is available results in 
+- Attempting to fetch data more frequently than new data is available (based on the `mps` setting) results in 
 `fetch_data()` returning (I2C_ERROR, I2C_ERROR) and debug logging will show:
   - smbus api:  OSError: [Errno 121] Remote I/O error
   - pigpio api: OSError: i2c_read_device failed - error code <-83>
@@ -310,7 +305,7 @@ mps (int or float, default 2)
         try:
             bytes_code = PERIODIC_DA_MODES[repeatability + '_' + str(mps)]
         except:
-            raise ValueError (f"Invalid Periodic Data Acquisition mode selection - received repeatability <{repeatability}>, mps: <{mps}>")
+            raise ValueError (f"<{self.device_name}> Invalid Periodic Data Acquisition mode selection - received repeatability <{repeatability}>, mps: <{mps}>")
 
         try:
             self.pi_i2c_bus_handle.i2c_write_device(self.device_addr, bytes_code)
@@ -505,7 +500,7 @@ after the single shot measurement trigger has completed.
 
 ### Args
 `quiet` (bool, default False)
-- Set True by SHT3x class internal calls for debugging logging
+- Set True by SHT3x class internal calls for debug logging
 
 `force_CRC_fail` (bool, default False)
 - Used for validation
@@ -521,6 +516,7 @@ after the single shot measurement trigger has completed.
 - If `quiet=False` and module debug logging is enabled the status register bits are decoded and logged
 - Status register bit 4 (reset detected) does not seem to be set by a soft_reset(), contrary to the datasheet.
 """
+
         if not quiet:
             sht3x_logger.debug (f"<{self.device_name}> ***** read_status_reg()")
         try:
@@ -604,6 +600,7 @@ after the single shot measurement trigger has completed.
 - `clear_status_reg()` clears only the alert status bits 15, 11, and 10, and bit 4 (System reset detected).
 Other bits, including undocumented bits, are not cleared.
 """
+
         sht3x_logger.debug (f"<{self.device_name}> ***** clear_status_reg()")
         try:
             self.pi_i2c_bus_handle.i2c_write_device(self.device_addr, CLEAR_STATUS_REGISTER)
@@ -690,7 +687,7 @@ Other bits, including undocumented bits, are not cleared.
 
 
 ### Args
-'reg_select' (str)
+`reg_select` (str)
 - One of 'High_Set', 'High_Clear', 'Low_Clear', or 'Low_Set'
 
 `tempunits` (str, default 'C', case-independent)
@@ -710,7 +707,7 @@ Other bits, including undocumented bits, are not cleared.
         try:
             reg_code = READ_ALERT_MODES[reg_select]
         except:
-            raise ValueError (f"Invalid Alert Register selection - received <{reg_select}>")
+            raise ValueError (f"<{self.device_name}> Invalid Alert Register selection - received <{reg_select}>")
         sht3x_logger.debug (f"<{self.device_name}> ***** read_alert_reg() <{reg_select}>")
 
         try:
@@ -771,17 +768,17 @@ Other bits, including undocumented bits, are not cleared.
 ### Returns
 - 0 on success
 - I2C_ERROR on I2C IO error
-- Raises ValueError if `reg_select` or `tempunits` is invalid, or temp or rh is out of range
+- Raises ValueError if `reg_select` or `tempunits` are invalid, or `temp` or `rh` are out of range
 
 
 ### Behaviors and rules
-- A CRC error on the write data to the alert registers causes a stuck I2C bus error, requiring a power cycle to recover.
+- A CRC error on the write data to the alert registers causes a stuck I2C bus, requiring a power cycle to recover.
 """
 
         try:
             reg_code = WRITE_ALERT_MODES[reg_select]
         except:
-            raise ValueError (f"Invalid Alert Register selection - received <{reg_select}>")
+            raise ValueError (f"<{self.device_name}> Invalid Alert Register selection - received <{reg_select}>")
 
         if tempunits.lower() == 'c':
             tempC = temp
@@ -793,7 +790,7 @@ Other bits, including undocumented bits, are not cleared.
             raise ValueError (F"<{self.device_name}> tempunits must be 'C', 'F', or 'K' - received <{tempunits}>")
 
         if tempC < -40.0  or  tempC > 125.0:
-            raise ValueError (f"Invalid temperature value - Expecting -40C <= temp value <= 125C - received <{tempC}C>")
+            raise ValueError (f"<{self.device_name}> Invalid temperature value - Expecting -40C <= temp value <= 125C - received <{tempC}C>")
 
         if rh < 0.0  or  rh > 100.0:
             raise ValueError (f"Invalid RH value - Expecting 0.0 <= rh value <= 100.0 - received <{rh}>")
@@ -819,7 +816,7 @@ Other bits, including undocumented bits, are not cleared.
 
         return 0
 
-
+    #---------------------------------------------------------------------
     def _decode_alert_word (self, word, tempunits):
         # Upper 7 bits are the RH value MSBs
         # Lower 9 bits are the Temp value MSBs

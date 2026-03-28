@@ -28,9 +28,6 @@ from pathlib import Path
 import argparse
 import RPi.GPIO as GPIO
 
-import importlib.metadata
-__version__ = importlib.metadata.version(__package__ or __name__)
-
 from cjnfuncs.core          import set_toolname
 from cjnfuncs.deployfiles   import deploy_files
 
@@ -45,7 +42,7 @@ def cli():
     parser = argparse.ArgumentParser(description=__doc__ + __version__, formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument('-G', '--GPIO', type=int,
                         help="Optional GPIO pin number to be set to drive --HiLo before the delay time")
-    parser.add_argument('-S', '--HiLo', type=int, default=1,
+    parser.add_argument('-S', '--HiLo', type=int, default=1, choices=[0, 1],
                         help="Set the --GPIO pin drive state to 0 or 1 (default 1)")
     parser.add_argument('-d', '--delay', type=int, default=20,
                         help="Delay time in seconds before setting therm_bulk_read permission (default 20)")

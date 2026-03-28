@@ -30,12 +30,12 @@ from cjn_PiTools.ADC121C import ADC121C
 logging.basicConfig()
 logging.getLogger('cjn_PiTools.ADC121C').setLevel(logging.DEBUG)
 
-VA =                    4.2        # Supply and reference voltage
+VREF =                  4.2        # Supply and reference voltage
 
 pio_i2c_bus_handle =    pi_i2c('smbus')
-ADC121C_0x50 =          ADC121C('My_ADC121C', 0x50, pio_i2c_bus_handle, VA)
+ADC121C_0x50 =          ADC121C('My_ADC121C', 0x50, pio_i2c_bus_handle, VREF)
 
-print (f"<{ADC121C_0x50.device_name}> measured: <{ADC121C_0x50.read()}>")
+print (f"<{ADC121C_0x50.device_name}> measured: <{ADC121C_0x50.read_conversion_result()[1]}>")
 
 # Clean up
 pio_i2c_bus_handle.close()
@@ -44,10 +44,11 @@ pio_i2c_bus_handle.close()
 And running it:
 ```
 $ ./ADC121C_README_ex.py 
-DEBUG:cjn_PiTools.ADC121C:Initialize of <My_ADC121C> success
+DEBUG:cjn_PiTools.ADC121C:<My_ADC121C> ***** write_config() <0b00000000>
 DEBUG:cjn_PiTools.ADC121C:<My_ADC121C> New ADC121C device defined at addr <0x50> using api <smbus> on i2c bus <1>
-DEBUG:cjn_PiTools.ADC121C:Conversion result <My_ADC121C>:  (0x07 0xfd) = 2.097 V
-<My_ADC121C> measured: <2.096923828125>
+DEBUG:cjn_PiTools.ADC121C:<My_ADC121C> ***** read_conversion_result()
+DEBUG:cjn_PiTools.ADC121C:Conversion result <My_ADC121C>:  (0x08 0x03) = <2.103V>, Alert flag <0>
+<My_ADC121C> measured: <2.103076171875>
 ```
 
 <br>

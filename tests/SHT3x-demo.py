@@ -273,28 +273,28 @@ if __name__ == '__main__':
 
 
     if check_tnum('3ap'):
-        dotest ("Periodic DA mps=4;    fetch_data default 'F'", "~4/5 measurements pass", measXcount, 4, 7, sht3x_44_inst_pigpio)
+        dotest ("Periodic DA mps=4;    fetch_data default 'C'", "~4/5 measurements pass", measXcount, 4, 7, sht3x_44_inst_pigpio)
 
     if check_tnum('3as'):
-        dotest ("Periodic DA mps=4;    fetch_data default 'F'", "~4/5 measurements pass", measXcount, 4, 7, sht3x_44_inst_smbus)
+        dotest ("Periodic DA mps=4;    fetch_data default 'C'", "~4/5 measurements pass", measXcount, 4, 7, sht3x_44_inst_smbus)
 
     if check_tnum('3bp'):
-        dotest ("Periodic DA mps=0.5;  fetch_data default 'F'", "~1/10 measurements pass", measXcount, 0.5, 12, sht3x_44_inst_pigpio)
+        dotest ("Periodic DA mps=0.5;  fetch_data default 'C'", "~1/10 measurements pass", measXcount, 0.5, 12, sht3x_44_inst_pigpio)
 
     if check_tnum('3bs'):
-        dotest ("Periodic DA mps=0.5;  fetch_data default 'F'", "~1/10 measurements pass", measXcount, 0.5, 12, sht3x_44_inst_smbus)
+        dotest ("Periodic DA mps=0.5;  fetch_data default 'C'", "~1/10 measurements pass", measXcount, 0.5, 12, sht3x_44_inst_smbus)
 
     if check_tnum('3c'):
-        dotest ("Periodic DA mps=1;    fetch_data default 'F'", "~1/5 measurements pass", measXcount, 1, 7, sht3x_44_inst_pigpio)
+        dotest ("Periodic DA mps=1;    fetch_data default 'C'", "~1/5 measurements pass", measXcount, 1, 7, sht3x_44_inst_pigpio)
 
     if check_tnum('3d'):
-        dotest ("Periodic DA mps=2;    fetch_data default 'F'", "~1/3 measurements pass", measXcount, 2, 6, sht3x_44_inst_pigpio)
+        dotest ("Periodic DA mps=2;    fetch_data default 'C'", "~1/3 measurements pass", measXcount, 2, 6, sht3x_44_inst_pigpio)
 
     if check_tnum('3e'):
-        dotest ("Periodic DA mps=10;   fetch_data default 'F'", "All measurements pass", measXcount, 10, 12, sht3x_44_inst_pigpio)
+        dotest ("Periodic DA mps=10;   fetch_data default 'C'", "All measurements pass", measXcount, 10, 12, sht3x_44_inst_pigpio)
 
     if check_tnum('3f'):
-        dotest ("ART mode (mps=4);     fetch_data default 'F'", "~4/5 measurements pass", measXcount, 'ART', 7, sht3x_44_inst_pigpio)
+        dotest ("ART mode (mps=4);     fetch_data default 'C'", "~4/5 measurements pass", measXcount, 'ART', 7, sht3x_44_inst_pigpio)
 
 
 
@@ -530,7 +530,7 @@ if __name__ == '__main__':
             sht3x_44_inst_pigpio.soft_reset()
             return sht3x_44_inst_pigpio.single_shot()
 
-        dotest ("Single Shot pigpio api remote (run from testhost2), default F, High, 16ms", "Pass", func)
+        dotest ("Single Shot pigpio api remote (run from testhost2), default C, High, 16ms", "Pass", func)
 
         pio_i2c_bus_handle.close()
         remote_pio.stop()

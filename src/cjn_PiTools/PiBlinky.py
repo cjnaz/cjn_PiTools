@@ -28,6 +28,7 @@ class PiBlinky:
     """
 ## Class PiBlinky (LED_name, api, gpio_num, queue, inverted=False) - A threaded, multiple LED driver for Raspberry Pi
 
+Create an PiBlinky device instance
 
 ### Args
 `LED_name` (str)

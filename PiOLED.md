@@ -27,11 +27,10 @@ Coordination between tool scripts for which has display access is beyond the sco
 PiOLED has three distinct modes/functions:
 
 1. Your tool script imports the _pioled_display_driver_ class.  Using this class, the tool script creates a queue and starts a 
-background thread to service the queued messages.  This thread, in turn, writes each sequential message page to a display file and
-sets an IPC semaphore (see cjnfuncs.resourcelock) to notify the server of a new page to display.
+background thread to service the queued messages.  This thread, in turn, sets a _PiOLED_file_lock_ IPC semaphore, writes a message page to a display file and then
+sets a _PiOLED_go_flag_ IPC semaphore (see `cjnfuncs.resourcelock`) to notify the server of a new page to display.
 
-1. The _PiOLED display server_ is started at Raspberry Pi system boot.  The server monitors for the IPC semaphore and displays the message page
-found in the display file, then clears the semaphore.
+1. The _PiOLED display server_ is started at Raspberry Pi system boot.  The server monitors for the IPC semaphores and displays the message page found in the display file, then clears the semaphores.
 
 1. PiOLED also supports a _commmand line interface_, using the alias 'PiOLED', which can display a message page, blank the display, 
 check status of the server and semaphores, and clear the semaphores.
@@ -207,7 +206,7 @@ PiOLED also supports a command line interface:
 - `PiOLED blank`  clears the display
 - `PiOLED status` displays the state of the server process, and the ipc semaphores
 - `PiOLED unlock` releases the ipc semaphores, which are normally released by the server process
-1.0
+1.1
 
 positional arguments:
   {message,blank,status,unlock}
@@ -243,12 +242,15 @@ optional arguments:
 
 ## Lower level details
 - Two semaphores are used between a tool script and the PiOLED display server:
-  - `PiOLED_file_lock` is requested by the tool script (within pioled_display_driver) befor writing the new display page to the shared Display_file.
+  - `PiOLED_file_lock` is requested by the tool script (within pioled_display_driver) before writing the new display page to the shared Display_file.
   - `PiOLED_go_flag` is set by the tool script (within pioled_display_driver) to tell the PiOLED server to process the display file.
   - After being displayed, the display file is left in place (to aid debug/validation of your tool script code) and the server releases first the `PiOLED_file_lock` and then the `PiOLED_go_flag`.
 
-- When the tool script code instantiates the pioled_display_driver instance (`pioled = pioled_display_driver(pioled_q, display_file=DISPLAY_FILE)`), pioled_display_driver() attempts to confirm access to the PiOLED_file_lock and the display_file itself.  Access failures are non-fatal, and are logged to the tool script's log file, and likely, attempts to display OLED messages will also fail (logged using cjnfuncs.core.periodic_log once per hour to avoid flooding the log).  Once the access issues are resolved then display message may operate normally.  Check the tool script log file for warnings, and confirm write access to the display file and perhaps unlock the semaphores:
+- When the tool script code instantiates the pioled_display_driver instance (`pioled = pioled_display_driver(pioled_q, display_file=DISPLAY_FILE)`), `pioled_display_driver()` attempts to confirm access to the `PiOLED_file_lock` semaphore and the display_file itself.  Access failures are non-fatal, and are logged to the tool script's log file, and likely, attempts to display OLED messages will also fail (logged using `cjnfuncs.core.periodic_log` once per hour to avoid flooding the log).  Once the access issues are resolved then display message may operate normally.  Check the tool script log file for warnings, and confirm write access to the display file and perhaps unlock the semaphores:
 
+      PiOLED unlock
+
+      or
       resourcelock PiOLED_file_lock unget
       resourcelock PiOLED_go_flag unget
 
@@ -260,7 +262,7 @@ optional arguments:
 
 ## Debug logging
 
-Debug logging may be enabled for both the server and the client-side code into a combined stream to the console.  Logging to a file may also be done (see the tests/demo-pioled.py doc string).
+Debug logging may be enabled for both the server and the client-side code into a combined stream to the console.  Logging to a file may also be done (see the `tests/PiOLED-demo.py` doc string).
 
 1. Run the server with debug logging and output to the console:
 
@@ -274,37 +276,66 @@ Debug logging may be enabled for both the server and the client-side code into a
 
         logging.getLogger('cjnfuncs.resourcelock').setLevel(logging.DEBUG)
 
-Note that the server logs use a '*' separator, while the client-side code uses a '-' separator.  Some log lines may shift in sequence due to combining the streams of two separate processes.
+Note that the server logs use a '*' separator, while the client-side code uses a '-' separator.  Some log lines may shift in sequence due to combining the logging streams of two separate processes.
 
-Example output:
+This example shows server startup (before Test Init) and shutdown (Cleanup section), pioled_display_driver thread startup (Test Init section), and the sequence to display a message page (Test number 52 section):
 
-    $ ./demo-pioled.py -t 1b -vv
+```
+2026-03-26 21:47:36,811          PiOLED.cli                  *  WARNING:  ========== PiOLED (1.1), pid 9107 ==========
+2026-03-26 21:47:36,811          PiOLED.cli                  *  WARNING:  Config file </home/cjn/.config/PiOLED/PiOLED_server.cfg>, display_file: </mnt/RAMDRIVE/pioled_display.txt>
+         PiOLED.__init__             *    DEBUG:  self.device_args: <namespace(config=None, display='ssd1309', width=128, height=64, rotate=2, interface='spi', i2c_port=1, i2c_address='0x3C', spi_port=0, spi_device=1, spi_bus_speed=8000000, spi_mode=0, spi_transfer_size=4096, spi_cs_high=False, ftdi_device='ftdi://::/1', framebuffer_device='/dev/fd0', gpio=None, gpio_mode=None, gpio_data_command=6, gpio_chip_select=24, gpio_reset=5, gpio_backlight=18, gpio_reset_hold_time=0, gpio_reset_release_time=0, block_orientation=0, mode='RGB', framebuffer='diff_to_previous', num_segments=4, bgr=False, inverse=False, h_offset=0, v_offset=0, backlight_active='low', debug=False, transform='scale2x', scale=2, duration=0.01, loop=0, max_frames=None)>
+         PiOLED._oneliner            *    DEBUG:  <PiOLED service started>
+         PiOLED.get_font             *    DEBUG:  Created known_font <C&C Red Alert [INET].ttf_12>
+         PiOLED._oneliner            *    DEBUG:  <>
+         PiOLED.service              *    DEBUG:  Version: luma.oled 3.14.0 (luma.core 2.5.3)
+Display: ssd1309
+Interface: spi
+Dimensions: 128 x 64
 
-    ======================================================================================================
-    ***** Test number 1b: Demo single message via queue - dict format *****
-    ======================================================================================================
+   resourcelock.unget_lock           *    DEBUG:  <PiOLED_file_lock> Extraneous lock unget request ignored  <PiOLED service startup>
+   resourcelock.unget_lock           *    DEBUG:  <PiOLED_go_flag> Extraneous lock unget request ignored  <PiOLED service startup>
+    PiOLED-demo.<module>             -  WARNING:  
 
-          PiOLED.start                -    DEBUG:  pioled message_loop thread created using display_file </mnt/RAMDRIVE/pioled_display.txt>
-          PiOLED.message_loop         -    DEBUG:  Received message_set: <{'pages': [[{'x': 0, 'y': 0, 'size': 20, 'text': "Hello'"}]]}>
-          PiOLED.message_loop         -    DEBUG:  Timings:  page_time=1, inter_page_time=0.2, inter_message_set_time=2
-    resourcelock.get_lock             -    DEBUG:  <PiOLED_file_lock> lock request successful - Granted         <2026-01-30 08:25:47.663669 - message_page>
-          PiOLED.message_page         -    DEBUG:  Writing to display_file </mnt/RAMDRIVE/pioled_display.txt>:
-    {'x': 0, 'y': 0, 'size': 20, 'text': "Hello'"}
-    resourcelock.get_lock             -    DEBUG:  <PiOLED_go_flag> lock request successful - Granted         <2026-01-30 08:25:47.665945 - message_page>
-          PiOLED.service              *    DEBUG:  PiOLED Server received at 2026-01-30 08:25:47.675551
-    {'x': 0, 'y': 0, 'size': 20, 'text': "Hello'"}
+---- Test Init ------------------------------------------------------
+   resourcelock.get_lock             -    DEBUG:  <PiOLED_file_lock> lock request successful - Granted         <2026-03-26 21:48:06.584279 - pioled_display_driver startup file access check>
+   resourcelock.unget_lock           -    DEBUG:  <PiOLED_file_lock> lock released  <pioled_display_driver startup file access check>
+         PiOLED.start                -    DEBUG:  pioled message_loop thread created using display_file </mnt/RAMDRIVE/pioled_display.txt>
+    PiOLED-demo.print_test_header    -  WARNING:  
 
-    resourcelock.unget_lock           *    DEBUG:  <PiOLED_go_flag> lock force released  <service loop end>
-    resourcelock.unget_lock           *    DEBUG:  <PiOLED_file_lock> lock force released  <service loop end>
-          PiOLED.message_loop         -    DEBUG:  Received message_set: <{'cmd': -99, 'pages': [[{'x': 20, 'y': 20, 'size': 18, 'text': 'Exited'}]]}>
-    resourcelock.get_lock             -    DEBUG:  <PiOLED_file_lock> lock request successful - Granted         <2026-01-30 08:25:49.664563 - message_page>
-          PiOLED.message_page         -    DEBUG:  Writing to display_file </mnt/RAMDRIVE/pioled_display.txt>:
-    {'x': 20, 'y': 20, 'size': 18, 'text': 'Exited'}
-    resourcelock.get_lock             -    DEBUG:  <PiOLED_go_flag> lock request successful - Granted         <2026-01-30 08:25:49.666193 - message_page>
-          PiOLED.service              *    DEBUG:  PiOLED Server received at 2026-01-30 08:25:49.670671
-    {'x': 20, 'y': 20, 'size': 18, 'text': 'Exited'}
+======================================================================================================
+***** Test number 52: Demo single message via queue - dict format *****
 
-          PiOLED.message_loop         -    DEBUG:  pioled message_loop() exiting
-    resourcelock.unget_lock           *    DEBUG:  <PiOLED_go_flag> lock force released  <service loop end>
-    resourcelock.unget_lock           *    DEBUG:  <PiOLED_file_lock> lock force released  <service loop end>
+         PiOLED.message_loop         -    DEBUG:  Received message_set: <{'pages': [[{'x': 0, 'y': 0, 'size': 20, 'text': "Hello'"}, [100, 50, 12, '52']]]}>
+         PiOLED.message_loop         -    DEBUG:  Timings:  page_time=1, inter_page_time=0.2, inter_message_set_time=2
+   resourcelock.get_lock             -    DEBUG:  <PiOLED_file_lock> lock request successful - Granted         <2026-03-26 21:48:06.587322 - message_page>
+         PiOLED.message_page         -    DEBUG:  Writing to display_file </mnt/RAMDRIVE/pioled_display.txt>:
+{'x': 0, 'y': 0, 'size': 20, 'text': "Hello'"}
+{'x':100, 'y':50, 'size':12, 'text':'''52'''}
+   resourcelock.get_lock             -    DEBUG:  <PiOLED_go_flag> lock request successful - Granted         <2026-03-26 21:48:06.621710 - message_page>
+         PiOLED.service              *    DEBUG:  PiOLED Server received at 2026-03-26 21:48:06.623585
+{'x': 0, 'y': 0, 'size': 20, 'text': "Hello'"}
+{'x':100, 'y':50, 'size':12, 'text':'''52'''}
+         PiOLED.get_font             *    DEBUG:  Created known_font <C&C Red Alert [INET].ttf_20>
+   resourcelock.unget_lock           *    DEBUG:  <PiOLED_go_flag> lock force released  <service loop end>
+   resourcelock.unget_lock           *    DEBUG:  <PiOLED_file_lock> lock force released  <service loop end>
+         PiOLED.message_loop         -    DEBUG:  Received message_set: <{'cmd': -99, 'pages': [[{'x': 20, 'y': 20, 'size': 18, 'text': 'Exited'}, [100, 50, 12, '52']]]}>
+   resourcelock.get_lock             -    DEBUG:  <PiOLED_file_lock> lock request successful - Granted         <2026-03-26 21:48:08.589473 - message_page>
+         PiOLED.message_page         -    DEBUG:  Writing to display_file </mnt/RAMDRIVE/pioled_display.txt>:
+{'x': 20, 'y': 20, 'size': 18, 'text': 'Exited'}
+{'x':100, 'y':50, 'size':12, 'text':'''52'''}
+   resourcelock.get_lock             -    DEBUG:  <PiOLED_go_flag> lock request successful - Granted         <2026-03-26 21:48:08.609518 - message_page>
+         PiOLED.service              *    DEBUG:  PiOLED Server received at 2026-03-26 21:48:08.617539
+{'x': 20, 'y': 20, 'size': 18, 'text': 'Exited'}
+{'x':100, 'y':50, 'size':12, 'text':'''52'''}
+         PiOLED.message_loop         -    DEBUG:  pioled message_loop() exiting
+    PiOLED-demo.<module>             -  WARNING:  
 
+---- Cleanup --------------------------------------------------------
+         PiOLED.get_font             *    DEBUG:  Created known_font <C&C Red Alert [INET].ttf_18>
+   resourcelock.unget_lock           *    DEBUG:  <PiOLED_go_flag> lock force released  <service loop end>
+   resourcelock.unget_lock           *    DEBUG:  <PiOLED_file_lock> lock force released  <service loop end>
+         PiOLED.service_int_handler  *  WARNING:  Signal 2 received.  Exiting.
+         PiOLED._oneliner            *    DEBUG:  <PiOLED service exiting>
+   resourcelock.unget_lock           *    DEBUG:  <PiOLED_file_lock> Extraneous lock unget request ignored  <service_int_handler>
+   resourcelock.unget_lock           *    DEBUG:  <PiOLED_go_flag> Extraneous lock unget request ignored  <service_int_handler>
+```

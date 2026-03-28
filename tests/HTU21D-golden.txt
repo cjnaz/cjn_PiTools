@@ -7,10 +7,10 @@
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> New mask:     <0b01000000>, channels <6>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x71> data <0x40>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  New i2c_device_handle: <0> for addr <0x71>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  New i2c_device_handle: <0> for addr <0x71>
                              HTU21D.soft_reset                     -    DEBUG:  <HTU21D_pigpio> ***** soft_reset()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xfe>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  New i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  New i2c_device_handle: <1> for addr <0x40>
                              HTU21D.__init__                       -    DEBUG:  <HTU21D_pigpio> New HTU21D device defined at addr <0x40> using api <pigpio> on i2c bus <1>
                              HTU21D.soft_reset                     -    DEBUG:  <HTU21D_smbus> ***** soft_reset()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x40> data <0xfe>
@@ -23,27 +23,27 @@ Test 1a - read temp & RH data pigpio api, default C
   EXPECT:     24.858002929687494
                              HTU21D.soft_reset                     -    DEBUG:  <HTU21D_pigpio> ***** soft_reset()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xfe>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x69 0x8c 0x91
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (C):  <25.598034667968754>
-                        HTU21D-demo.func                           -     INFO:  Temperature measure total execution time: 46.337 ms
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6a 0xb8 0xbd
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (C):  <26.402416992187504>
+                        HTU21D-demo.func                           -     INFO:  Temperature measure total execution time: 46.245 ms
                              HTU21D.read_RH                        -    DEBUG:  <HTU21D_pigpio> ***** read_RH()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe5>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio> ***** fetch_RH()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x52 0x3e 0xe4
-                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio> - RH:                   <34.15350341796875>
-                        HTU21D-demo.func                           -     INFO:  RH measure total execution time: 15.802 ms
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x4e 0x4a 0x02
+                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio> - RH:                   <32.2232666015625>
+                        HTU21D-demo.func                           -     INFO:  RH measure total execution time: 15.762 ms
                         HTU21D-demo.dotest                         -  WARNING:  
-  RETURNED:   25.598034667968754
+  RETURNED:   26.402416992187504
                         HTU21D-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
@@ -56,18 +56,18 @@ Test 1b - read temp & RH data smbus api, tempunits F
                              shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x40> data <0xe3>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_smbus> ***** fetch_temperature()
                              shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x40> read_byte_count <3>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_smbus>  Raw bytes:  0x69 0x8c 0x91
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_smbus> - Temperature:    (f):  <78.07646240234376>
-                        HTU21D-demo.func                           -     INFO:  Temperature measure total execution time: 45.950 ms
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_smbus>  Raw bytes:  0x6a 0xc0 0xfc
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_smbus> - Temperature:    (f):  <79.56296093750001>
+                        HTU21D-demo.func                           -     INFO:  Temperature measure total execution time: 45.888 ms
                              HTU21D.read_RH                        -    DEBUG:  <HTU21D_smbus> ***** read_RH()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x40> data <0xe5>
                              HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_smbus> ***** fetch_RH()
                              shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x40> read_byte_count <3>
-                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_smbus>  Raw bytes:  0x52 0x4a 0xd8
-                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_smbus> - RH:                   <34.1763916015625>
-                        HTU21D-demo.func                           -     INFO:  RH measure total execution time: 15.340 ms
+                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_smbus>  Raw bytes:  0x4e 0x46 0x7f
+                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_smbus> - RH:                   <32.21563720703125>
+                        HTU21D-demo.func                           -     INFO:  RH measure total execution time: 15.330 ms
                         HTU21D-demo.dotest                         -  WARNING:  
-  RETURNED:   78.07646240234376
+  RETURNED:   79.56296093750001
                         HTU21D-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
@@ -76,55 +76,50 @@ Test 1c - No Hold mode read temp & RH data pigpio api, tempunits F
   EXPECT:     76.57065869140624
                              HTU21D.soft_reset                     -    DEBUG:  <HTU21D_pigpio> ***** soft_reset()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xfe>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.trigger_temperature_nohold     -    DEBUG:  <HTU21D_pigpio> ***** trigger_temperature_nohold()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xf3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> exception:
   OSError: i2c_read_device failed - error code <-83>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> exception:
   OSError: i2c_read_device failed - error code <-83>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> exception:
   OSError: i2c_read_device failed - error code <-83>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> exception:
-  OSError: i2c_read_device failed - error code <-83>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
-                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x69 0x98 0x16
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (F):  <78.1343779296875>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6a 0xbc 0x79
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (F):  <79.54365576171875>
                              HTU21D.trigger_RH_nohold              -    DEBUG:  <HTU21D_pigpio> ***** trigger_RH_nohold()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xf5>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio> ***** fetch_RH()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio> exception:
   OSError: i2c_read_device failed - error code <-83>
                              HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio> ***** fetch_RH()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio> exception:
   OSError: i2c_read_device failed - error code <-83>
                              HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio> ***** fetch_RH()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x52 0x2e 0xa7
-                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio> - RH:                   <34.12298583984375>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x4e 0x4a 0x02
+                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio> - RH:                   <32.2232666015625>
                         HTU21D-demo.dotest                         -  WARNING:  
-  RETURNED:   78.1343779296875
+  RETURNED:   79.54365576171875
                         HTU21D-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
@@ -153,8 +148,8 @@ Test 1d - No Hold mode read temp & RH data smbus api, tempunits K
   OSError: [Errno 121] Remote I/O error
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_smbus> ***** fetch_temperature()
                              shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x40> read_byte_count <3>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_smbus>  Raw bytes:  0x69 0x94 0x6b
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_smbus> - Temperature:    (K):  <298.7694848632812>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_smbus>  Raw bytes:  0x6a 0xc0 0xfc
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_smbus> - Temperature:    (K):  <299.57386718749996>
                              HTU21D.trigger_RH_nohold              -    DEBUG:  <HTU21D_smbus> ***** trigger_RH_nohold()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x40> data <0xf5>
                              HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_smbus> ***** fetch_RH()
@@ -171,10 +166,10 @@ Test 1d - No Hold mode read temp & RH data smbus api, tempunits K
   OSError: [Errno 121] Remote I/O error
                              HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_smbus> ***** fetch_RH()
                              shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x40> read_byte_count <3>
-                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_smbus>  Raw bytes:  0x52 0x46 0xa5
-                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_smbus> - RH:                   <34.16876220703125>
+                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_smbus>  Raw bytes:  0x4e 0x42 0xbb
+                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_smbus> - RH:                   <32.2080078125>
                         HTU21D-demo.dotest                         -  WARNING:  
-  RETURNED:   298.7694848632812
+  RETURNED:   299.57386718749996
                         HTU21D-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
@@ -183,12 +178,12 @@ Test 2a - read user register default (after soft_reset) pigpio api
   EXPECT:     2
                              HTU21D.soft_reset                     -    DEBUG:  <HTU21D_pigpio> ***** soft_reset()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xfe>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> ***** read_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x02
                              HTU21D.read_user_reg                  -     INFO:    Measurement resolution: <0b00 - RH 12 bits, Temp 14 bits>
                              HTU21D.read_user_reg                  -     INFO:    End of Battery:         <0>
@@ -204,22 +199,22 @@ Test 2b - write user register with various settings - pigpio api
   EXPECT:     None
                              HTU21D.soft_reset                     -    DEBUG:  <HTU21D_pigpio> ***** soft_reset()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xfe>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                         HTU21D-demo.func                           -     INFO:  
 Set resolution=0b01 8/12 - user reg: 0b00000011
                              HTU21D.write_user_reg                 -    DEBUG:  <HTU21D_pigpio> ***** write_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x02
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <[ 0xe6 0x03 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> ***** read_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x03
                              HTU21D.read_user_reg                  -     INFO:    Measurement resolution: <0b01 - RH  8 bits, Temp 12 bits>
                              HTU21D.read_user_reg                  -     INFO:    End of Battery:         <0>
@@ -230,17 +225,17 @@ Set resolution=0b01 8/12 - user reg: 0b00000011
 Set resolution=0b10 10/13, heater_enable=1 - user reg: 0b10000110
                              HTU21D.write_user_reg                 -    DEBUG:  <HTU21D_pigpio> ***** write_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x03
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <[ 0xe6 0x86 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> ***** read_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x86
                              HTU21D.read_user_reg                  -     INFO:    Measurement resolution: <0b10 - RH 10 bits, Temp 13 bits>
                              HTU21D.read_user_reg                  -     INFO:    End of Battery:         <0>
@@ -251,17 +246,17 @@ Set resolution=0b10 10/13, heater_enable=1 - user reg: 0b10000110
 No args, no changes - user reg: 0b10000110
                              HTU21D.write_user_reg                 -    DEBUG:  <HTU21D_pigpio> ***** write_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x86
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <[ 0xe6 0x86 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> ***** read_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x86
                              HTU21D.read_user_reg                  -     INFO:    Measurement resolution: <0b10 - RH 10 bits, Temp 13 bits>
                              HTU21D.read_user_reg                  -     INFO:    End of Battery:         <0>
@@ -272,17 +267,17 @@ No args, no changes - user reg: 0b10000110
 Set resolution=0b11 11/11, heater_enable=0, OTP_reload_disable=0 - user reg: 0b10000001
                              HTU21D.write_user_reg                 -    DEBUG:  <HTU21D_pigpio> ***** write_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x86
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <[ 0xe6 0x81 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> ***** read_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x81
                              HTU21D.read_user_reg                  -     INFO:    Measurement resolution: <0b11 - RH 11 bits, Temp 11 bits>
                              HTU21D.read_user_reg                  -     INFO:    End of Battery:         <0>
@@ -293,17 +288,17 @@ Set resolution=0b11 11/11, heater_enable=0, OTP_reload_disable=0 - user reg: 0b1
 Set heater_enable=1, OTP_reload_disable=0 - user reg: 0b10000101
                              HTU21D.write_user_reg                 -    DEBUG:  <HTU21D_pigpio> ***** write_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x81
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <[ 0xe6 0x85 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> ***** read_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x85
                              HTU21D.read_user_reg                  -     INFO:    Measurement resolution: <0b11 - RH 11 bits, Temp 11 bits>
                              HTU21D.read_user_reg                  -     INFO:    End of Battery:         <0>
@@ -314,12 +309,12 @@ Set heater_enable=1, OTP_reload_disable=0 - user reg: 0b10000101
 soft_reset()  12/14 - user reg: 0b00000010
                              HTU21D.soft_reset                     -    DEBUG:  <HTU21D_pigpio> ***** soft_reset()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xfe>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> ***** read_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x02
                              HTU21D.read_user_reg                  -     INFO:    Measurement resolution: <0b00 - RH 12 bits, Temp 14 bits>
                              HTU21D.read_user_reg                  -     INFO:    End of Battery:         <0>
@@ -336,31 +331,31 @@ Test 3 - Check return values = 0, pigpio api
   EXPECT:     None
                              HTU21D.soft_reset                     -    DEBUG:  <HTU21D_pigpio> ***** soft_reset()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xfe>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                         HTU21D-demo.func                           -     INFO:  soft_reset() returned:                  0
                              HTU21D.write_user_reg                 -    DEBUG:  <HTU21D_pigpio> ***** write_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x02
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <[ 0xe6 0x02 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                         HTU21D-demo.func                           -     INFO:  write_user_reg() returned:              0
                              HTU21D.trigger_temperature_nohold     -    DEBUG:  <HTU21D_pigpio> ***** trigger_temperature_nohold()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xf3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                         HTU21D-demo.func                           -     INFO:  trigger_temperature_nohold() returned:  0
                              HTU21D.soft_reset                     -    DEBUG:  <HTU21D_pigpio> ***** soft_reset()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xfe>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.trigger_RH_nohold              -    DEBUG:  <HTU21D_pigpio> ***** trigger_RH_nohold()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xf5>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                         HTU21D-demo.func                           -     INFO:  trigger_RH_nohold() returned:           0
                              HTU21D.soft_reset                     -    DEBUG:  <HTU21D_pigpio> ***** soft_reset()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xfe>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                         HTU21D-demo.dotest                         -  WARNING:  
   RETURNED:   None
                         HTU21D-demo.dotest                         -  WARNING:  
@@ -371,215 +366,215 @@ Test 4a - Demo heater on/off effect
   EXPECT:     None
                              HTU21D.soft_reset                     -    DEBUG:  <HTU21D_pigpio> ***** soft_reset()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xfe>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                         HTU21D-demo.func                           -     INFO:  soft_reset() returned:                  0
                              HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x69 0xa0 0x6a
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (C):  <25.651660156249996>
-                        HTU21D-demo.func                           -     INFO:  read_temperature() returned:            25.652
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6a 0xcc 0x81
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (C):  <26.456042480468746>
+                        HTU21D-demo.func                           -     INFO:  read_temperature() returned:            26.456
                         HTU21D-demo.func                           -     INFO:  Enable heater
                              HTU21D.write_user_reg                 -    DEBUG:  <HTU21D_pigpio> ***** write_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x02
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <[ 0xe6 0x06 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6a 0x90 0x82
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <26.295166015624993>
-                        HTU21D-demo.func                           -     INFO:  read_temperature() <0>:              26.295
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6b 0xb4 0x34
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <27.078098144531246>
+                        HTU21D-demo.func                           -     INFO:  read_temperature() <0>:              27.078
                              HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6a 0xe4 0xbe
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <26.52039306640625>
-                        HTU21D-demo.func                           -     INFO:  read_temperature() <1>:              26.520
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6c 0x04 0x25
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <27.292600097656255>
+                        HTU21D-demo.func                           -     INFO:  read_temperature() <1>:              27.293
                              HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6b 0x1c 0x71
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <26.670544433593754>
-                        HTU21D-demo.func                           -     INFO:  read_temperature() <2>:              26.671
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6c 0x40 0xdc
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <27.453476562499993>
+                        HTU21D-demo.func                           -     INFO:  read_temperature() <2>:              27.453
                              HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6b 0x54 0xf5
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <26.820695800781245>
-                        HTU21D-demo.func                           -     INFO:  read_temperature() <3>:              26.821
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6c 0x70 0x19
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <27.582177734375>
+                        HTU21D-demo.func                           -     INFO:  read_temperature() <3>:              27.582
                              HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6c 0x94 0x1c
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <27.67870361328125>
+                        HTU21D-demo.func                           -     INFO:  read_temperature() <4>:              27.679
+                             HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6c 0xb4 0x9a
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <27.76450439453125>
+                        HTU21D-demo.func                           -     INFO:  read_temperature() <5>:              27.765
+                             HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6c 0xcc 0xdb
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <27.828854980468755>
+                        HTU21D-demo.func                           -     INFO:  read_temperature() <6>:              27.829
+                             HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6c 0xe8 0x99
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <27.903930664062493>
+                        HTU21D-demo.func                           -     INFO:  read_temperature() <7>:              27.904
+                             HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6c 0xfc 0x1e
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <27.95755615234375>
+                        HTU21D-demo.func                           -     INFO:  read_temperature() <8>:              27.958
+                             HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6d 0x08 0xac
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <27.989731445312493>
+                        HTU21D-demo.func                           -     INFO:  read_temperature() <9>:              27.990
+                        HTU21D-demo.func                           -     INFO:  Disable heater
+                             HTU21D.write_user_reg                 -    DEBUG:  <HTU21D_pigpio> ***** write_user_reg()
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x06
+                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <[ 0xe6 0x02 ]>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6c 0x30 0x24
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <27.410576171875>
+                        HTU21D-demo.func                           -     INFO:  read_temperature() <0>:              27.411
+                             HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6b 0xec 0xf3
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <27.22824951171875>
+                        HTU21D-demo.func                           -     INFO:  read_temperature() <1>:              27.228
+                             HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6b 0xb8 0x49
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <27.088823242187495>
+                        HTU21D-demo.func                           -     INFO:  read_temperature() <2>:              27.089
+                             HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6b 0x98 0xcf
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <27.003022460937494>
+                        HTU21D-demo.func                           -     INFO:  read_temperature() <3>:              27.003
+                             HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
+                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6b 0x80 0x35
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <26.938671875000004>
                         HTU21D-demo.func                           -     INFO:  read_temperature() <4>:              26.939
                              HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6b 0x9c 0x0b
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <27.013747558593742>
-                        HTU21D-demo.func                           -     INFO:  read_temperature() <5>:              27.014
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6b 0x6c 0x89
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <26.88504638671875>
+                        HTU21D-demo.func                           -     INFO:  read_temperature() <5>:              26.885
                              HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6b 0xb8 0x49
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <27.088823242187495>
-                        HTU21D-demo.func                           -     INFO:  read_temperature() <6>:              27.089
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6b 0x5c 0x4c
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <26.84214599609374>
+                        HTU21D-demo.func                           -     INFO:  read_temperature() <6>:              26.842
                              HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6b 0xd4 0x8f
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <27.163898925781247>
-                        HTU21D-demo.func                           -     INFO:  read_temperature() <7>:              27.164
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6b 0x50 0x31
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <26.809970703124996>
+                        HTU21D-demo.func                           -     INFO:  read_temperature() <7>:              26.810
                              HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6b 0xe8 0x37
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <27.217524414062503>
-                        HTU21D-demo.func                           -     INFO:  read_temperature() <8>:              27.218
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6b 0x48 0xcb
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <26.7885205078125>
+                        HTU21D-demo.func                           -     INFO:  read_temperature() <8>:              26.789
                              HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6b 0xf4 0x09
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <27.249699707031247>
-                        HTU21D-demo.func                           -     INFO:  read_temperature() <9>:              27.250
-                        HTU21D-demo.func                           -     INFO:  Disable heater
-                             HTU21D.write_user_reg                 -    DEBUG:  <HTU21D_pigpio> ***** write_user_reg()
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x06
-                             shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <[ 0xe6 0x02 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
-                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6b 0x10 0x0c
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <26.638369140624995>
-                        HTU21D-demo.func                           -     INFO:  read_temperature() <0>:              26.638
-                             HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
-                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6a 0xcc 0x81
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <26.456042480468746>
-                        HTU21D-demo.func                           -     INFO:  read_temperature() <1>:              26.456
-                             HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
-                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6a 0x98 0x3b
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <26.316616210937504>
-                        HTU21D-demo.func                           -     INFO:  read_temperature() <2>:              26.317
-                             HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
-                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6a 0x74 0x87
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <26.220090332031255>
-                        HTU21D-demo.func                           -     INFO:  read_temperature() <3>:              26.220
-                             HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
-                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6a 0x50 0xc5
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <26.12356445312499>
-                        HTU21D-demo.func                           -     INFO:  read_temperature() <4>:              26.124
-                             HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
-                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6a 0x40 0x86
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <26.0806640625>
-                        HTU21D-demo.func                           -     INFO:  read_temperature() <5>:              26.081
-                             HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
-                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6a 0x2c 0x40
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <26.027038574218743>
-                        HTU21D-demo.func                           -     INFO:  read_temperature() <6>:              26.027
-                             HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
-                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6a 0x1c 0x85
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <25.98413818359375>
-                        HTU21D-demo.func                           -     INFO:  read_temperature() <7>:              25.984
-                             HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
-                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6a 0x14 0x3c
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <25.962687988281253>
-                        HTU21D-demo.func                           -     INFO:  read_temperature() <8>:              25.963
-                             HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
-                             shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
-                             shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6a 0x0c 0xc6
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <25.941237792968742>
-                        HTU21D-demo.func                           -     INFO:  read_temperature() <9>:              25.941
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6b 0x3c 0xf7
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (c):  <26.756345214843755>
+                        HTU21D-demo.func                           -     INFO:  read_temperature() <9>:              26.756
                         HTU21D-demo.dotest                         -  WARNING:  
   RETURNED:   None
                         HTU21D-demo.dotest                         -  WARNING:  
@@ -590,12 +585,12 @@ Test 4b - Heater enable is actually cleared by soft_reset(), pigpio api
   EXPECT:     None
                              HTU21D.soft_reset                     -    DEBUG:  <HTU21D_pigpio> ***** soft_reset()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xfe>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> ***** read_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x02
                              HTU21D.read_user_reg                  -     INFO:    Measurement resolution: <0b00 - RH 12 bits, Temp 14 bits>
                              HTU21D.read_user_reg                  -     INFO:    End of Battery:         <0>
@@ -603,17 +598,17 @@ Test 4b - Heater enable is actually cleared by soft_reset(), pigpio api
                              HTU21D.read_user_reg                  -     INFO:    OTP reload disabled:    <1>
                              HTU21D.write_user_reg                 -    DEBUG:  <HTU21D_pigpio> ***** write_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x02
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <[ 0xe6 0x06 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> ***** read_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x06
                              HTU21D.read_user_reg                  -     INFO:    Measurement resolution: <0b00 - RH 12 bits, Temp 14 bits>
                              HTU21D.read_user_reg                  -     INFO:    End of Battery:         <0>
@@ -621,12 +616,12 @@ Test 4b - Heater enable is actually cleared by soft_reset(), pigpio api
                              HTU21D.read_user_reg                  -     INFO:    OTP reload disabled:    <1>
                              HTU21D.soft_reset                     -    DEBUG:  <HTU21D_pigpio> ***** soft_reset()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xfe>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> ***** read_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x02
                              HTU21D.read_user_reg                  -     INFO:    Measurement resolution: <0b00 - RH 12 bits, Temp 14 bits>
                              HTU21D.read_user_reg                  -     INFO:    End of Battery:         <0>
@@ -642,41 +637,41 @@ Test 5a - Trigger no-hold operation causes all other operations to fail until co
   EXPECT:     None
                              HTU21D.soft_reset                     -    DEBUG:  <HTU21D_pigpio> ***** soft_reset()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xfe>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                         HTU21D-demo.func                           -     INFO:  soft_reset() returned:                  0
                              HTU21D.trigger_temperature_nohold     -    DEBUG:  <HTU21D_pigpio> ***** trigger_temperature_nohold()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xf3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                         HTU21D-demo.func                           -     INFO:  trigger_temperature_nohold() returned:  0
                         HTU21D-demo.func                           -     INFO:  
 All operation fails during triggered conversion
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> ***** read_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> exception:
   error: 'I2C write failed'
                         HTU21D-demo.func                           -     INFO:  read_user_reg() returned:               -256
                              HTU21D.write_user_reg                 -    DEBUG:  <HTU21D_pigpio> ***** write_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> exception:
   error: 'I2C write failed'
                         HTU21D-demo.func                           -     INFO:  write_user_reg() returned:              -256
                              HTU21D.trigger_temperature_nohold     -    DEBUG:  <HTU21D_pigpio> ***** trigger_temperature_nohold()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xf3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.trigger_temperature_nohold     -    DEBUG:  <HTU21D_pigpio> exception:
   error: 'I2C write failed'
                         HTU21D-demo.func                           -     INFO:  trigger_temperature_nohold() returned:  -256
                              HTU21D.trigger_RH_nohold              -    DEBUG:  <HTU21D_pigpio> ***** trigger_RH_nohold()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xf5>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.trigger_RH_nohold              -    DEBUG:  <HTU21D_pigpio> exception:
   error: 'I2C write failed'
                         HTU21D-demo.func                           -     INFO:  trigger_RH_nohold() returned:           -256
                              HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> exception:
   error: 'I2C write failed'
                         HTU21D-demo.func                           -     INFO:  read_temperature() returned:            -256
@@ -684,23 +679,23 @@ All operation fails during triggered conversion
 Delay for conversion completion - new trigger accepted
                              HTU21D.trigger_temperature_nohold     -    DEBUG:  <HTU21D_pigpio> ***** trigger_temperature_nohold()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xf3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                         HTU21D-demo.func                           -     INFO:  trigger_temperature_nohold() returned:  0
                         HTU21D-demo.func                           -     INFO:  
 soft_reset cancels conversion
                              HTU21D.soft_reset                     -    DEBUG:  <HTU21D_pigpio> ***** soft_reset()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xfe>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                         HTU21D-demo.func                           -     INFO:  soft_reset() returned:                  0
                              HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6a 0x0c 0xc6
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (C):  <25.941237792968742>
-                        HTU21D-demo.func                           -     INFO:  read_temperature() returned:            25.941237792968742
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6b 0x44 0xb6
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (C):  <26.77779541015625>
+                        HTU21D-demo.func                           -     INFO:  read_temperature() returned:            26.77779541015625
                         HTU21D-demo.dotest                         -  WARNING:  
   RETURNED:   None
                         HTU21D-demo.dotest                         -  WARNING:  
@@ -711,25 +706,25 @@ Test 6a - Resolution code 0b00 - Temp 14 bits, RH 12 bits
   EXPECT:     None
                              HTU21D.soft_reset                     -    DEBUG:  <HTU21D_pigpio> ***** soft_reset()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xfe>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6a 0x14 0x3c
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (C):  <25.962687988281253>
-                        HTU21D-demo.func                           -     INFO:  Temperature measure total execution time: 47.755 ms
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6b 0x40 0x72
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (C):  <26.767070312500003>
+                        HTU21D-demo.func                           -     INFO:  Temperature measure total execution time: 46.556 ms
                              HTU21D.read_RH                        -    DEBUG:  <HTU21D_pigpio> ***** read_RH()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe5>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio> ***** fetch_RH()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x50 0x06 0x41
-                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio> - RH:                   <33.07012939453125>
-                        HTU21D-demo.func                           -     INFO:  RH measure total execution time: 17.119 ms
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x4c 0x4e 0x1f
+                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio> - RH:                   <31.25433349609375>
+                        HTU21D-demo.func                           -     INFO:  RH measure total execution time: 16.004 ms
                         HTU21D-demo.dotest                         -  WARNING:  
   RETURNED:   None
                         HTU21D-demo.dotest                         -  WARNING:  
@@ -740,33 +735,33 @@ Test 6b - Resolution code 0b01 - Temp 12 bits, RH 8 bits
   EXPECT:     None
                              HTU21D.soft_reset                     -    DEBUG:  <HTU21D_pigpio> ***** soft_reset()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xfe>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.write_user_reg                 -    DEBUG:  <HTU21D_pigpio> ***** write_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x02
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <[ 0xe6 0x03 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6a 0x1c 0x85
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (C):  <25.98413818359375>
-                        HTU21D-demo.func                           -     INFO:  Temperature measure total execution time: 14.091 ms
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6b 0x3c 0xf7
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (C):  <26.756345214843755>
+                        HTU21D-demo.func                           -     INFO:  Temperature measure total execution time: 13.347 ms
                              HTU21D.read_RH                        -    DEBUG:  <HTU21D_pigpio> ***** read_RH()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe5>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio> ***** fetch_RH()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x50 0x12 0xc6
-                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio> - RH:                   <33.093017578125>
-                        HTU21D-demo.func                           -     INFO:  RH measure total execution time: 4.686 ms
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x4c 0x52 0x21
+                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio> - RH:                   <31.261962890625>
+                        HTU21D-demo.func                           -     INFO:  RH measure total execution time: 3.952 ms
                         HTU21D-demo.dotest                         -  WARNING:  
   RETURNED:   None
                         HTU21D-demo.dotest                         -  WARNING:  
@@ -777,33 +772,33 @@ Test 6c - Resolution code 0b10 - Temp 13 bits, RH 10 bits
   EXPECT:     None
                              HTU21D.soft_reset                     -    DEBUG:  <HTU21D_pigpio> ***** soft_reset()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xfe>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.write_user_reg                 -    DEBUG:  <HTU21D_pigpio> ***** write_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x02
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <[ 0xe6 0x82 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6a 0x1c 0x85
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (C):  <25.98413818359375>
-                        HTU21D-demo.func                           -     INFO:  Temperature measure total execution time: 25.137 ms
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6b 0x40 0x72
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (C):  <26.767070312500003>
+                        HTU21D-demo.func                           -     INFO:  Temperature measure total execution time: 24.392 ms
                              HTU21D.read_RH                        -    DEBUG:  <HTU21D_pigpio> ***** read_RH()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe5>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio> ***** fetch_RH()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x50 0x26 0xc7
-                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio> - RH:                   <33.13116455078125>
-                        HTU21D-demo.func                           -     INFO:  RH measure total execution time: 6.509 ms
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x4c 0x5a 0x98
+                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio> - RH:                   <31.2772216796875>
+                        HTU21D-demo.func                           -     INFO:  RH measure total execution time: 5.779 ms
                         HTU21D-demo.dotest                         -  WARNING:  
   RETURNED:   None
                         HTU21D-demo.dotest                         -  WARNING:  
@@ -814,39 +809,39 @@ Test 6d - Resolution code 0b11 - Temp 11 bits, RH 11 bits
   EXPECT:     None
                              HTU21D.soft_reset                     -    DEBUG:  <HTU21D_pigpio> ***** soft_reset()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xfe>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.write_user_reg                 -    DEBUG:  <HTU21D_pigpio> ***** write_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x02
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <[ 0xe6 0x83 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6a 0x10 0xf8
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (C):  <25.951962890625005>
-                        HTU21D-demo.func                           -     INFO:  Temperature measure total execution time: 8.585 ms
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6b 0x3c 0xf7
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> - Temperature:    (C):  <26.756345214843755>
+                        HTU21D-demo.func                           -     INFO:  Temperature measure total execution time: 7.859 ms
                              HTU21D.read_RH                        -    DEBUG:  <HTU21D_pigpio> ***** read_RH()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe5>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio> ***** fetch_RH()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x50 0x1e 0xbb
-                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio> - RH:                   <33.11590576171875>
-                        HTU21D-demo.func                           -     INFO:  RH measure total execution time: 9.844 ms
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x4c 0x62 0xe4
+                             HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio> - RH:                   <31.29248046875>
+                        HTU21D-demo.func                           -     INFO:  RH measure total execution time: 9.132 ms
                         HTU21D-demo.dotest                         -  WARNING:  
   RETURNED:   None
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> New mask:     <0b00100000>, channels <5>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x71> data <0x20>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
                         HTU21D-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
@@ -855,61 +850,61 @@ Test 13a - Device not accessible - all APIs return I2C_ERROR
   EXPECT:     None
                              HTU21D.soft_reset                     -    DEBUG:  <HTU21D_pigpio> ***** soft_reset()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xfe>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.soft_reset                     -    DEBUG:  <HTU21D_pigpio> exception:
   error: 'I2C write failed'
                         HTU21D-demo.func                           -     INFO:  soft_reset() returned:                  -256
                              HTU21D.trigger_temperature_nohold     -    DEBUG:  <HTU21D_pigpio> ***** trigger_temperature_nohold()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xf3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.trigger_temperature_nohold     -    DEBUG:  <HTU21D_pigpio> exception:
   error: 'I2C write failed'
                         HTU21D-demo.func                           -     INFO:  trigger_temperature_nohold() returned:  -256
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> ***** read_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> exception:
   error: 'I2C write failed'
                         HTU21D-demo.func                           -     INFO:  read_user_reg() returned:               -256
                              HTU21D.write_user_reg                 -    DEBUG:  <HTU21D_pigpio> ***** write_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> exception:
   error: 'I2C write failed'
                         HTU21D-demo.func                           -     INFO:  write_user_reg() returned:              -256
                              HTU21D.trigger_temperature_nohold     -    DEBUG:  <HTU21D_pigpio> ***** trigger_temperature_nohold()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xf3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.trigger_temperature_nohold     -    DEBUG:  <HTU21D_pigpio> exception:
   error: 'I2C write failed'
                         HTU21D-demo.func                           -     INFO:  trigger_temperature_nohold() returned:  -256
                              HTU21D.trigger_RH_nohold              -    DEBUG:  <HTU21D_pigpio> ***** trigger_RH_nohold()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xf5>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.trigger_RH_nohold              -    DEBUG:  <HTU21D_pigpio> exception:
   error: 'I2C write failed'
                         HTU21D-demo.func                           -     INFO:  trigger_RH_nohold() returned:           -256
                              HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> exception:
   error: 'I2C write failed'
                         HTU21D-demo.func                           -     INFO:  read_temperature() returned:            -256
                              HTU21D.read_RH                        -    DEBUG:  <HTU21D_pigpio> ***** read_RH()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe5>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_RH                        -    DEBUG:  <HTU21D_pigpio> exception:
   error: 'I2C write failed'
                         HTU21D-demo.func                           -     INFO:  read_RH() returned:                     -256
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> exception:
   OSError: i2c_read_device failed - error code <-83>
                         HTU21D-demo.func                           -     INFO:  fetch_temperature() returned:           -256
                              HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio> ***** fetch_RH()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_RH                       -    DEBUG:  <HTU21D_pigpio> exception:
   OSError: i2c_read_device failed - error code <-83>
                         HTU21D-demo.func                           -     INFO:  fetch_RH() returned:                    -256
@@ -918,7 +913,7 @@ Test 13a - Device not accessible - all APIs return I2C_ERROR
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> New mask:     <0b01000000>, channels <6>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x71> data <0x40>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
                         HTU21D-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
@@ -927,9 +922,9 @@ Test 13b - write_user_reg invalid resolution
   EXPECT:     ValueError: <HTU21D_pigpio> resolution value must be in range 0 to 3 - received <7>
                              HTU21D.write_user_reg                 -    DEBUG:  <HTU21D_pigpio> ***** write_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x83
                         HTU21D-demo.dotest                         -    ERROR:  
   RAISED:     ValueError: <HTU21D_pigpio> resolution value must be in range 0 to 3 - received <7>
@@ -941,9 +936,9 @@ Test 13c - write_user_reg invalid resolution
   EXPECT:     ValueError: <HTU21D_pigpio> resolution value must be in range 0 to 3 - received <[3]>
                              HTU21D.write_user_reg                 -    DEBUG:  <HTU21D_pigpio> ***** write_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x83
                         HTU21D-demo.dotest                         -    ERROR:  
   RAISED:     ValueError: <HTU21D_pigpio> resolution value must be in range 0 to 3 - received <[3]>
@@ -955,9 +950,9 @@ Test 13d - write_user_reg invalid heater enable
   EXPECT:     ValueError: <HTU21D_pigpio> heater_enable value must be in range 0 or 1 - received <a>
                              HTU21D.write_user_reg                 -    DEBUG:  <HTU21D_pigpio> ***** write_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x83
                         HTU21D-demo.dotest                         -    ERROR:  
   RAISED:     ValueError: <HTU21D_pigpio> heater_enable value must be in range 0 or 1 - received <a>
@@ -969,9 +964,9 @@ Test 13e - write_user_reg invalid OTP reload disable
   EXPECT:     ValueError: <HTU21D_pigpio> OTP_reload_disable value must be in range 0 or 1 - received <-1>
                              HTU21D.write_user_reg                 -    DEBUG:  <HTU21D_pigpio> ***** write_user_reg()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe7>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.read_user_reg                  -    DEBUG:  <HTU21D_pigpio> user_reg raw data:  0x83
                         HTU21D-demo.dotest                         -    ERROR:  
   RAISED:     ValueError: <HTU21D_pigpio> OTP_reload_disable value must be in range 0 or 1 - received <-1>
@@ -983,26 +978,26 @@ Test 13f - read_temperature with invalid tempunits
   EXPECT:     ValueError: <HTU21D_pigpio> tempunits must be 'C', 'F', or 'K' - received <q>
                              HTU21D.read_temperature               -    DEBUG:  <HTU21D_pigpio> ***** read_temperature()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xe3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio> ***** fetch_temperature()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x40> read_byte_count <3>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
-                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x69 0xf0 0x14
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             HTU21D.fetch_temperature              -    DEBUG:  <HTU21D_pigpio>  Raw bytes:  0x6b 0x38 0x33
                         HTU21D-demo.dotest                         -    ERROR:  
   RAISED:     ValueError: <HTU21D_pigpio> tempunits must be 'C', 'F', or 'K' - received <q>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> New mask:     <0b00100000>, channels <5>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x71> data <0x20>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
                         HTU21D-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 13g - Instantiate unavailable sensor
-  GIVEN:      ('Unavailable', <cjn_PiTools.shared.pi_i2c object at 0x7615c3d0>), {}
+  GIVEN:      ('Unavailable', <cjn_PiTools.shared.pi_i2c object at 0x761632f8>), {}
   EXPECT:     RuntimeError: <Unavailable> soft_reset during instantiation failed
                              HTU21D.soft_reset                     -    DEBUG:  <Unavailable> ***** soft_reset()
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x40> data <0xfe>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x40>
                              HTU21D.soft_reset                     -    DEBUG:  <Unavailable> exception:
   error: 'I2C write failed'
                         HTU21D-demo.dotest                         -    ERROR:  
@@ -1010,7 +1005,7 @@ Test 13g - Instantiate unavailable sensor
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> New mask:     <0b01000000>, channels <6>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x71> data <0x40>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
                         HTU21D-demo.<module>                       -  WARNING:  
 
 ---- Cleanup --------------------------------------------------------

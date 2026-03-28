@@ -480,6 +480,10 @@ if __name__ == '__main__':
         dotest ("Invalid config_byte in init", "ValueError: config_byte must be int between 0x00 and 0xff - received <4095>",
                 ADC121C, 'ADC121C_50', 0x50, i2c_bus_handle_pigpio, Vref=4.2, config_byte=0xFFF)
 
+    if check_tnum('13l'):
+        dotest ("Invalid name at instantiation", "ValueError: device_name must be str - Received <[5]>",
+                ADC121C, [5], 0x50, i2c_bus_handle_pigpio, Vref=4.2)
+
 
 
     #-------------------------------------------------------------------------

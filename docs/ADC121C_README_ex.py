@@ -8,12 +8,12 @@ from cjn_PiTools.ADC121C import ADC121C
 logging.basicConfig()
 logging.getLogger('cjn_PiTools.ADC121C').setLevel(logging.DEBUG)
 
-VA =                    4.2        # Supply and reference voltage
+VREF =                  4.2        # Supply and reference voltage
 
 pio_i2c_bus_handle =    pi_i2c('smbus')
-ADC121C_0x50 =          ADC121C('My_ADC121C', 0x50, pio_i2c_bus_handle, VA)
+ADC121C_0x50 =          ADC121C('My_ADC121C', 0x50, pio_i2c_bus_handle, VREF)
 
-print (f"<{ADC121C_0x50.device_name}> measured: <{ADC121C_0x50.read()}>")
+print (f"<{ADC121C_0x50.device_name}> measured: <{ADC121C_0x50.read_conversion_result()[1]}>")
 
 # Clean up
 pio_i2c_bus_handle.close()

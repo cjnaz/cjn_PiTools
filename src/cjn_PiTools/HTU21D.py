@@ -39,14 +39,13 @@ htu21d_logger = logging.getLogger('cjn_PiTools.HTU21D')
 
 class HTU21D:
     """
-## Class HTU21D (device_name, pi_i2c_bus_handle) - HTU21D library for Raspberry Pi
+## Class HTU21D (device_name, pi_i2c_bus_handle, do_soft_reset=True) - HTU21D library for Raspberry Pi
 
 Create an HTU21D device instance
 
 ### Args
 `device_name` (str)
 - User defined name for this instance, e.g., 'My_HTU21D'
-- Not validated as valid string
 
 `pi_i2c_bus_handle` (cjn_PiTools.shared.pi_i2c instance)
 - Get a `pi_i2c` instance handle in the tools script code and pass it to this device instantiation
@@ -62,11 +61,11 @@ Create an HTU21D device instance
 
 ### Returns
 - Handle to the HTU21D instance on success
+- Raises ValueError if args checks fail
 - Raises RuntimeError if the device fails soft reset
 
 
 ### Behaviors and rules
-- A `soft_reset()` is applied as part of instantiation
 - Debug logging may be enabled in the tool script code by setting this module's logging level:
 
         logging.getLogger('cjn_PiTools.HTU21D').setLevel(logging.DEBUG)
@@ -75,6 +74,13 @@ Create an HTU21D device instance
         self.device_name =          device_name
         self.device_addr =          HTU21D_ADDR
         self.pi_i2c_bus_handle =    pi_i2c_bus_handle
+
+        if not isinstance(self.device_name, str):
+            raise ValueError (f"HTU21D device_name must be a str.  Received <{device_name}>")
+
+        if not isinstance(do_soft_reset, bool):
+            raise ValueError (f"<{self.device_name}> do_soft_reset must be a bool.  Received <{do_soft_reset}>")
+
 
         if do_soft_reset:
             if self.soft_reset() == I2C_ERROR:
@@ -325,7 +331,7 @@ obtain the measured result after an appropriate delay. See the datasheet for mea
 
 
 ### Returns
-- Temperature value in specified tempunits on success
+- Temperature value in specified `tempunits` on success
 - I2C_ERROR on I2C IO error
 - CRC_ERROR on CRC mismatch
 - OPEN_CIRCUIT_ERROR or CLOSED_CIRCUIT_ERROR is returned on device error
@@ -352,7 +358,7 @@ code 0xFFFF returns CLOSED_CIRCUIT_ERROR.  These names should be imported from t
         htu21d_logger.debug (f"<{self.device_name}>  Raw bytes:  0x{bytes3[0]:0>2x} 0x{bytes3[1]:0>2x} 0x{bytes3[2]:0>2x}")
 
         if not self.crc8_check(bytes3):
-            htu21d_logger.debug ("<{self.device_name}> CRC error")
+            htu21d_logger.debug (f"<{self.device_name}> CRC error")
             return CRC_ERROR
 
         return_code = ((bytes3[0] <<8) | bytes3[1])
@@ -479,7 +485,7 @@ code 0xFFFF returns CLOSED_CIRCUIT_ERROR.  These names should be imported from t
         htu21d_logger.debug (f"<{self.device_name}>  Raw bytes:  0x{bytes3[0]:0>2x} 0x{bytes3[1]:0>2x} 0x{bytes3[2]:0>2x}")
 
         if not self.crc8_check(bytes3):
-            htu21d_logger.debug ("<{self.device_name}> CRC error")
+            htu21d_logger.debug (f"<{self.device_name}> CRC error")
             return CRC_ERROR
 
         return_code = ((bytes3[0] <<8) | bytes3[1])

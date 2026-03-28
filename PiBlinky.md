@@ -7,7 +7,7 @@ Why?  To run an LED on a RaspberryPi is done simply by turning a GPIO pin on and
 Features
 
 - Multiple concurrent LEDs supported, each with their own independent on/off sequences and timing.
-- A flashing sequence can be set once, rather than your main code having to turn the LED on and off repeatedly.
+- A flashing sequence can be set once, rather than your main code having to turn the LED on and off on a schedule.
 - Supports both RPi.GPIO and pigpio driver libraries.  pigpio supports running LEDs on remote systems.
 - LED flashing sequences are completely user defined, including the bit-sequence, bit-time, and number of times to repeat (or indefinitely).
 - Advanced features include saving the currently running sequence, then applying a new sequence, and later restoring the saved sequence.  Useful if two different operations need to share an LED.
@@ -105,6 +105,7 @@ To enabled debug logging from this module's classes/functions, add this to your 
 
 # Class PiBlinky (LED_name, api, gpio_num, queue, inverted=False) - A threaded, multiple LED driver for Raspberry Pi
 
+Create an PiBlinky device instance
 
 ### Args
 `LED_name` (str)

@@ -2,11 +2,11 @@
 
 Why?  On a fresh boot the kernel will scan for W1 devices on the buses defined in /`boot/config.txt`.  This leaves two problems:
   1. If the power to the W1 devices was not yet turned on at boot then no devices will be found, and
-  2. In the case of the D18B20 temp sensors, the `bulk_convert_trigger` function cannot be used because the `therm_bulk_read` file is write protected.
+  2. In the case of the DS18B20 temp sensors, the `bulk_convert_trigger` function cannot be used because the `therm_bulk_read` file is write protected.
 
 The initW1buses module addresses these two problems by:
   1. Optionally setting a specified GPIO pin to output mode, logic 0 or 1 (this may be used to enable a relay that powers up W1 devices), and
-  2. Enabling world-write permission on the `therm_bulk_read` file(s).
+  2. Setting world-write permission on the `therm_bulk_read` file(s).
 
 
 
@@ -15,8 +15,6 @@ The initW1buses module addresses these two problems by:
 ## Setup / Installation
 
 If (and only if) you wish to use the DS18B20 bulk read trigger capability then install `initW1buses.service`, as follows:
-
-1. After installing the cjn_PiTools package...
 
 1. Run the initial user setup:  `initW1buses --setup-user`.  This will extract `/home/<me>/.config/initW1buses/initW1buses.service` from the package distribution.
 

@@ -7,80 +7,80 @@
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> New mask:     <0b00000001>, channels <0>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x71> data <0x01>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  New i2c_device_handle: <0> for addr <0x71>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  New i2c_device_handle: <0> for addr <0x71>
                             PCA9548.__init__                       -    DEBUG:  <PCA9548_Irr> New PCA9548 device defined at addr <0x75> using api <pigpio> on i2c bus <1>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  New i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  New i2c_device_handle: <1> for addr <0x75>
                            MCP23008.initialize                     -    DEBUG:  <MCP23008_IO> ***** initialize()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x00 0xf0 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  New i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  New i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x01 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x02 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x03 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x04 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x05 0x20 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x06 0xf0 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x07 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x08 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x09 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x0a 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                            MCP23008.registers_dump                 -    DEBUG:  <MCP23008_IO> ***** registers_dump()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x01 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x02 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x03 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x04 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x05 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x06 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x07 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x08 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x09 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x0a ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x20> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                            MCP23008.__init__                       -    DEBUG:  <MCP23008_IO> initialized registers:
   IODIR   :  Init value: 0b11110000, Cached value: 0b11110000, Read value: 0b11110000
   IPOL    :  Init value: 0b00000000, Cached value: 0b00000000, Read value: 0b00000000
@@ -97,14 +97,14 @@
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00001000>, channels <3>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x08>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                             ADC121C.write_config                   -    DEBUG:  <ADC121C_50> ***** write_config() <0b00000000>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x50> data <[ 0x02 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  New i2c_device_handle: <3> for addr <0x50>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  New i2c_device_handle: <3> for addr <0x50>
                             ADC121C.__init__                       -    DEBUG:  <ADC121C_50> New ADC121C device defined at addr <0x50> using api <pigpio> on i2c bus <1>
                             ADC121C.write_config                   -    DEBUG:  <ADC121C_51> ***** write_config() <0b00000000>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x02 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  New i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  New i2c_device_handle: <4> for addr <0x51>
                             ADC121C.__init__                       -    DEBUG:  <ADC121C_51> New ADC121C device defined at addr <0x51> using api <pigpio> on i2c bus <1>
                             ADC121C.write_config                   -    DEBUG:  <ADC121C_50> ***** write_config() <0b00000000>
                              shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x50> data <[ 0x02 0x00 ]>
@@ -120,12 +120,12 @@ Test 1a - read_conversion_result pigpio api
   EXPECT:     (0, voltage value)
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_50> ***** read_conversion_result()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x50> data <[ 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <3> for addr <0x50>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <3> for addr <0x50>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x50> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <3> for addr <0x50>
-                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_50>:  (0x08 0x0a) = <2.110V>, Alert flag <0>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <3> for addr <0x50>
+                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_50>:  (0x08 0x15) = <2.122V>, Alert flag <0>
                        ADC121C-demo.dotest                         -  WARNING:  
-  RETURNED:   (0, 2.11025390625)
+  RETURNED:   (0, 2.1215332031250003)
                        ADC121C-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
@@ -135,9 +135,9 @@ Test 1b - read_conversion_result smbus api
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_50> ***** read_conversion_result()
                              shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x50> data <[ 0x00 ]>
                              shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x50> read_byte_count <2>
-                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_50>:  (0x07 0xca) = <2.045V>, Alert flag <0>
+                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_50>:  (0x07 0xf2) = <2.086V>, Alert flag <0>
                        ADC121C-demo.dotest                         -  WARNING:  
-  RETURNED:   (0, 2.0446289062500003)
+  RETURNED:   (0, 2.0856445312500003)
                        ADC121C-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
@@ -151,10 +151,10 @@ Test 1c - read_conversion_result without redundant write register select
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_50> ***** read_conversion_result()
                              shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x50> data <[ 0x00 ]>
                              shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x50> read_byte_count <2>
-                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_50>:  (0x07 0xe8) = <2.075V>, Alert flag <0>
+                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_50>:  (0x07 0xf7) = <2.091V>, Alert flag <0>
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_50> ***** read_conversion_result()
                              shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x50> read_byte_count <2>
-                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_50>:  (0x07 0xd0) = <2.051V>, Alert flag <0>
+                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_50>:  (0x07 0xfd) = <2.097V>, Alert flag <0>
                             ADC121C.read_alert_status              -    DEBUG:  <ADC121C_50> ***** read_alert_status()
                              shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x50> data <[ 0x01 ]>
                              shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x50> read_byte_count <1>
@@ -162,12 +162,12 @@ Test 1c - read_conversion_result without redundant write register select
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_50> ***** read_conversion_result()
                              shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x50> data <[ 0x00 ]>
                              shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x50> read_byte_count <2>
-                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_50>:  (0x08 0x14) = <2.121V>, Alert flag <0>
+                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_50>:  (0x07 0xfc) = <2.096V>, Alert flag <0>
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_50> ***** read_conversion_result()
                              shared.i2c_read_device                -    DEBUG:  Using api <smbus> read bus <1> addr <0x50> read_byte_count <2>
-                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_50>:  (0x07 0xf3) = <2.087V>, Alert flag <0>
+                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_50>:  (0x07 0xe7) = <2.074V>, Alert flag <0>
                        ADC121C-demo.dotest                         -  WARNING:  
-  RETURNED:   (0, 2.086669921875)
+  RETURNED:   (0, 2.074365234375)
                        ADC121C-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
@@ -176,39 +176,39 @@ Test 2a - demo low limit alert and recover
   EXPECT:     (0, voltage value)
                             ADC121C.write_vlow_alert_limit         -    DEBUG:  <ADC121C_51> ***** write_vlow_alert_limit() <1.500V>  <[ 0x05 0xb6 ]>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x03 0x05 0xb6 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_vlow_alert_limit          -    DEBUG:  <ADC121C_51> ***** read_vlow_alert_limit()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x03 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_vlow_alert_limit          -    DEBUG:  VLow limit <ADC121C_51>:  (0x05 0xb6) = <1.499V>
                             ADC121C.write_vhigh_alert_limit        -    DEBUG:  <ADC121C_51> ***** write_vhigh_alert_limit() <4.200V>  <[ 0x0f 0xff ]>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x04 0x0f 0xff ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_vhigh_alert_limit         -    DEBUG:  <ADC121C_51> ***** read_vhigh_alert_limit()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x04 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_vhigh_alert_limit         -    DEBUG:  VHigh limit <ADC121C_51>:  (0x0f 0xff) = <4.199V>
                             ADC121C.write_alert_hysteresis         -    DEBUG:  <ADC121C_51> ***** write_alert_hysteresis() <0.700V>  <[ 0x02 0xaa ]>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x05 0x02 0xaa ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_alert_hysteresis          -    DEBUG:  <ADC121C_51> ***** read_alert_hysteresis()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x05 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_alert_hysteresis          -    DEBUG:  vhyst value <ADC121C_51>:  (0x02 0xaa) = <0.699V>
                             ADC121C.write_config                   -    DEBUG:  <ADC121C_51> ***** write_config() <0b11101000>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x02 0xe8 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_config                    -    DEBUG:  <ADC121C_51> ***** read_config()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x02 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_config                    -    DEBUG:  <ADC121C_51> configuration register <0b11101000> settings:
   cycle_time:     <0b111>
   alert_hold:     <0>
@@ -217,132 +217,132 @@ Test 2a - demo low limit alert and recover
   polarity:       <0>
                             ADC121C.write_alert_status             -    DEBUG:  <ADC121C_51> ***** write_alert_status() <0b00000011>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x01 0x03 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_51> ***** read_conversion_result()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
-                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x07 0xfe) = <2.098V>, Alert flag <0>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x07 0xfd) = <2.097V>, Alert flag <0>
                             ADC121C.read_alert_status              -    DEBUG:  <ADC121C_51> ***** read_alert_status()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x01 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_alert_status              -    DEBUG:  over_range_alert: <0>, under_range_alert: <0>
                        ADC121C-demo.func                           -     INFO:  
 Enable pulldown.  VIN = ~1.4V.  Low alert.
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                            MCP23008.set_bits                       -    DEBUG:  <MCP23008_IO> ***** set_bits()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x0a 0x02 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00001000>, channels <3>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x08>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_51> ***** read_conversion_result()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
-                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x85 0x53) = <1.398V>, Alert flag <1>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x85 0x55) = <1.400V>, Alert flag <1>
                             ADC121C.read_alert_status              -    DEBUG:  <ADC121C_51> ***** read_alert_status()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x01 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_alert_status              -    DEBUG:  over_range_alert: <0>, under_range_alert: <1>
                        ADC121C-demo.func                           -     INFO:  
 Disable pulldown.  VIN = ~2.1V.  Still in low alert due to hysteresis 0.7V.
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                            MCP23008.set_bits                       -    DEBUG:  <MCP23008_IO> ***** set_bits()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x0a 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00001000>, channels <3>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x08>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_51> ***** read_conversion_result()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
-                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x87 0xfd) = <2.097V>, Alert flag <1>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x87 0xfe) = <2.098V>, Alert flag <1>
                             ADC121C.read_alert_status              -    DEBUG:  <ADC121C_51> ***** read_alert_status()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x01 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_alert_status              -    DEBUG:  over_range_alert: <0>, under_range_alert: <1>
                        ADC121C-demo.func                           -     INFO:  
 Enable pullup.  VIN = ~2.8V.  Low alert clears.
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                            MCP23008.set_bits                       -    DEBUG:  <MCP23008_IO> ***** set_bits()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x0a 0x04 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00001000>, channels <3>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x08>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_51> ***** read_conversion_result()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x0a 0xa9) = <2.798V>, Alert flag <0>
                             ADC121C.read_alert_status              -    DEBUG:  <ADC121C_51> ***** read_alert_status()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x01 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_alert_status              -    DEBUG:  over_range_alert: <0>, under_range_alert: <0>
                        ADC121C-demo.func                           -     INFO:  
 Disable pullup.  VIN = ~2.1V.  No alert.
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                            MCP23008.set_bits                       -    DEBUG:  <MCP23008_IO> ***** set_bits()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x0a 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00001000>, channels <3>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x08>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_51> ***** read_conversion_result()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
-                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x07 0xfe) = <2.098V>, Alert flag <0>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x07 0xfc) = <2.096V>, Alert flag <0>
                             ADC121C.read_alert_status              -    DEBUG:  <ADC121C_51> ***** read_alert_status()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x01 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_alert_status              -    DEBUG:  over_range_alert: <0>, under_range_alert: <0>
                        ADC121C-demo.func                           -     INFO:  
 Stop Auto Conversion
                             ADC121C.write_config                   -    DEBUG:  <ADC121C_51> ***** write_config() <0b00000000>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x02 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_51> ***** read_conversion_result()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
-                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x07 0xff) = <2.099V>, Alert flag <0>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x07 0xfc) = <2.096V>, Alert flag <0>
                        ADC121C-demo.dotest                         -  WARNING:  
-  RETURNED:   (0, 2.098974609375)
+  RETURNED:   (0, 2.0958984375000003)
                        ADC121C-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
@@ -351,39 +351,39 @@ Test 2b - demo high limit alert and recover
   EXPECT:     (0, voltage value)
                             ADC121C.write_vlow_alert_limit         -    DEBUG:  <ADC121C_51> ***** write_vlow_alert_limit() <0.000V>  <[ 0x00 0x00 ]>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x03 0x00 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_vlow_alert_limit          -    DEBUG:  <ADC121C_51> ***** read_vlow_alert_limit()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x03 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_vlow_alert_limit          -    DEBUG:  VLow limit <ADC121C_51>:  (0x00 0x00) = <0.000V>
                             ADC121C.write_vhigh_alert_limit        -    DEBUG:  <ADC121C_51> ***** write_vhigh_alert_limit() <2.700V>  <[ 0x0a 0x48 ]>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x04 0x0a 0x48 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_vhigh_alert_limit         -    DEBUG:  <ADC121C_51> ***** read_vhigh_alert_limit()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x04 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_vhigh_alert_limit         -    DEBUG:  VHigh limit <ADC121C_51>:  (0x0a 0x48) = <2.699V>
                             ADC121C.write_alert_hysteresis         -    DEBUG:  <ADC121C_51> ***** write_alert_hysteresis() <0.700V>  <[ 0x02 0xaa ]>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x05 0x02 0xaa ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_alert_hysteresis          -    DEBUG:  <ADC121C_51> ***** read_alert_hysteresis()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x05 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_alert_hysteresis          -    DEBUG:  vhyst value <ADC121C_51>:  (0x02 0xaa) = <0.699V>
                             ADC121C.write_config                   -    DEBUG:  <ADC121C_51> ***** write_config() <0b11101000>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x02 0xe8 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_config                    -    DEBUG:  <ADC121C_51> ***** read_config()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x02 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_config                    -    DEBUG:  <ADC121C_51> configuration register <0b11101000> settings:
   cycle_time:     <0b111>
   alert_hold:     <0>
@@ -392,132 +392,132 @@ Test 2b - demo high limit alert and recover
   polarity:       <0>
                             ADC121C.write_alert_status             -    DEBUG:  <ADC121C_51> ***** write_alert_status() <0b00000011>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x01 0x03 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_51> ***** read_conversion_result()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
-                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x07 0xff) = <2.099V>, Alert flag <0>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x07 0xfe) = <2.098V>, Alert flag <0>
                             ADC121C.read_alert_status              -    DEBUG:  <ADC121C_51> ***** read_alert_status()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x01 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_alert_status              -    DEBUG:  over_range_alert: <0>, under_range_alert: <0>
                        ADC121C-demo.func                           -     INFO:  
 Enable pullup.  VIN = ~2.8V.  High alert.
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                            MCP23008.set_bits                       -    DEBUG:  <MCP23008_IO> ***** set_bits()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x0a 0x04 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00001000>, channels <3>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x08>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_51> ***** read_conversion_result()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x8a 0xa7) = <2.796V>, Alert flag <1>
                             ADC121C.read_alert_status              -    DEBUG:  <ADC121C_51> ***** read_alert_status()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x01 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_alert_status              -    DEBUG:  over_range_alert: <1>, under_range_alert: <0>
                        ADC121C-demo.func                           -     INFO:  
 Disable pullup.  VIN = ~2.1V.  Still in high alert due to hysteresis 0.7V.
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                            MCP23008.set_bits                       -    DEBUG:  <MCP23008_IO> ***** set_bits()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x0a 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00001000>, channels <3>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x08>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_51> ***** read_conversion_result()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x87 0xfe) = <2.098V>, Alert flag <1>
                             ADC121C.read_alert_status              -    DEBUG:  <ADC121C_51> ***** read_alert_status()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x01 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_alert_status              -    DEBUG:  over_range_alert: <1>, under_range_alert: <0>
                        ADC121C-demo.func                           -     INFO:  
 Enable pulldown.  VIN = ~1.4V.  High alert clears.
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                            MCP23008.set_bits                       -    DEBUG:  <MCP23008_IO> ***** set_bits()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x0a 0x02 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00001000>, channels <3>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x08>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_51> ***** read_conversion_result()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
-                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x05 0x55) = <1.400V>, Alert flag <0>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x05 0x58) = <1.403V>, Alert flag <0>
                             ADC121C.read_alert_status              -    DEBUG:  <ADC121C_51> ***** read_alert_status()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x01 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_alert_status              -    DEBUG:  over_range_alert: <0>, under_range_alert: <0>
                        ADC121C-demo.func                           -     INFO:  
 Disable pulldown.  VIN = ~2.1V.  No alert.
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                            MCP23008.set_bits                       -    DEBUG:  <MCP23008_IO> ***** set_bits()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x0a 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00001000>, channels <3>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x08>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_51> ***** read_conversion_result()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
-                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x08 0x01) = <2.101V>, Alert flag <0>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x07 0xfd) = <2.097V>, Alert flag <0>
                             ADC121C.read_alert_status              -    DEBUG:  <ADC121C_51> ***** read_alert_status()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x01 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_alert_status              -    DEBUG:  over_range_alert: <0>, under_range_alert: <0>
                        ADC121C-demo.func                           -     INFO:  
 Stop Auto Conversion
                             ADC121C.write_config                   -    DEBUG:  <ADC121C_51> ***** write_config() <0b00000000>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x02 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_51> ***** read_conversion_result()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
-                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x08 0x0c) = <2.112V>, Alert flag <0>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x07 0xfe) = <2.098V>, Alert flag <0>
                        ADC121C-demo.dotest                         -  WARNING:  
-  RETURNED:   (0, 2.1123046875)
+  RETURNED:   (0, 2.09794921875)
                        ADC121C-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
@@ -526,21 +526,21 @@ Test 2c - demo high limit alert with Alert Hold
   EXPECT:     (0, voltage value)
                             ADC121C.write_vlow_alert_limit         -    DEBUG:  <ADC121C_51> ***** write_vlow_alert_limit() <1.500V>  <[ 0x05 0xb6 ]>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x03 0x05 0xb6 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.write_vhigh_alert_limit        -    DEBUG:  <ADC121C_51> ***** write_vhigh_alert_limit() <2.700V>  <[ 0x0a 0x48 ]>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x04 0x0a 0x48 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.write_alert_hysteresis         -    DEBUG:  <ADC121C_51> ***** write_alert_hysteresis() <0.100V>  <[ 0x00 0x61 ]>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x05 0x00 0x61 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.write_config                   -    DEBUG:  <ADC121C_51> ***** write_config() <0b11111000>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x02 0xf8 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_config                    -    DEBUG:  <ADC121C_51> ***** read_config()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x02 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_config                    -    DEBUG:  <ADC121C_51> configuration register <0b11111000> settings:
   cycle_time:     <0b111>
   alert_hold:     <1>
@@ -549,125 +549,125 @@ Test 2c - demo high limit alert with Alert Hold
   polarity:       <0>
                             ADC121C.write_alert_status             -    DEBUG:  <ADC121C_51> ***** write_alert_status() <0b00000011>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x01 0x03 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_51> ***** read_conversion_result()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
-                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x07 0xff) = <2.099V>, Alert flag <0>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x07 0xfc) = <2.096V>, Alert flag <0>
                             ADC121C.read_alert_status              -    DEBUG:  <ADC121C_51> ***** read_alert_status()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x01 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_alert_status              -    DEBUG:  over_range_alert: <0>, under_range_alert: <0>
                        ADC121C-demo.func                           -     INFO:  
 Enable pullup.  VIN = ~2.8V.  High alert.
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                            MCP23008.set_bits                       -    DEBUG:  <MCP23008_IO> ***** set_bits()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x0a 0x04 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00001000>, channels <3>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x08>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_51> ***** read_conversion_result()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x8a 0xa8) = <2.797V>, Alert flag <1>
                             ADC121C.read_alert_status              -    DEBUG:  <ADC121C_51> ***** read_alert_status()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x01 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_alert_status              -    DEBUG:  over_range_alert: <1>, under_range_alert: <0>
                        ADC121C-demo.func                           -     INFO:  
 Enable pulldown.  VIN = ~1.4V.  Low alert.
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                            MCP23008.set_bits                       -    DEBUG:  <MCP23008_IO> ***** set_bits()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x0a 0x02 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00001000>, channels <3>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x08>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_51> ***** read_conversion_result()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x85 0x55) = <1.400V>, Alert flag <1>
                             ADC121C.read_alert_status              -    DEBUG:  <ADC121C_51> ***** read_alert_status()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x01 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_alert_status              -    DEBUG:  over_range_alert: <1>, under_range_alert: <1>
                        ADC121C-demo.func                           -     INFO:  
  Disable pulldown.  VIN = ~2.1V.  Both alerts still set.
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                            MCP23008.set_bits                       -    DEBUG:  <MCP23008_IO> ***** set_bits()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x0a 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00001000>, channels <3>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x08>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_51> ***** read_conversion_result()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
-                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x88 0x05) = <2.105V>, Alert flag <1>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x87 0xfe) = <2.098V>, Alert flag <1>
                             ADC121C.read_alert_status              -    DEBUG:  <ADC121C_51> ***** read_alert_status()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x01 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_alert_status              -    DEBUG:  over_range_alert: <1>, under_range_alert: <1>
                             ADC121C.write_alert_status             -    DEBUG:  <ADC121C_51> ***** write_alert_status() <0b00000010>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x01 0x02 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_alert_status              -    DEBUG:  <ADC121C_51> ***** read_alert_status()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x01 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_alert_status              -    DEBUG:  over_range_alert: <0>, under_range_alert: <1>
                             ADC121C.write_alert_status             -    DEBUG:  <ADC121C_51> ***** write_alert_status() <0b00000001>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x01 0x01 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_alert_status              -    DEBUG:  <ADC121C_51> ***** read_alert_status()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x01 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_alert_status              -    DEBUG:  over_range_alert: <0>, under_range_alert: <0>
                        ADC121C-demo.func                           -     INFO:  
 Stop Auto Conversion
                             ADC121C.write_config                   -    DEBUG:  <ADC121C_51> ***** write_config() <0b00000000>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x02 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_51> ***** read_conversion_result()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
-                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x07 0xfe) = <2.098V>, Alert flag <0>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x07 0xfd) = <2.097V>, Alert flag <0>
                        ADC121C-demo.dotest                         -  WARNING:  
-  RETURNED:   (0, 2.09794921875)
+  RETURNED:   (0, 2.096923828125)
                        ADC121C-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
@@ -676,12 +676,12 @@ Test 3 - demo capture lowest and highest readings
   EXPECT:     None
                             ADC121C.write_config                   -    DEBUG:  <ADC121C_51> ***** write_config() <0b11100000>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x02 0xe0 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_config                    -    DEBUG:  <ADC121C_51> ***** read_config()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x02 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_config                    -    DEBUG:  <ADC121C_51> configuration register <0b11100000> settings:
   cycle_time:     <0b111>
   alert_hold:     <0>
@@ -690,178 +690,178 @@ Test 3 - demo capture lowest and highest readings
   polarity:       <0>
                             ADC121C.write_highest_conversion       -    DEBUG:  <ADC121C_51> ***** write_highest_conversion() <0.000V>  <[ 0x00 0x00 ]>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x07 0x00 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.write_lowest_conversion        -    DEBUG:  <ADC121C_51> ***** write_lowest_conversion() <4.200V>  <[ 0x0f 0xff ]>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x06 0x0f 0xff ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_highest_conversion        -    DEBUG:  <ADC121C_51> ***** read_highest_conversion()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x07 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
-                            ADC121C.read_highest_conversion        -    DEBUG:  vmax value <ADC121C_51>:  (0x07 0xfe) = <2.098V>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                            ADC121C.read_highest_conversion        -    DEBUG:  vmax value <ADC121C_51>:  (0x07 0xfd) = <2.097V>
                             ADC121C.read_lowest_conversion         -    DEBUG:  <ADC121C_51> ***** read_lowest_conversion()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x06 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_lowest_conversion         -    DEBUG:  vmin value <ADC121C_51>:  (0x07 0xfd) = <2.097V>
                        ADC121C-demo.func                           -     INFO:  
 Enable pulldown.  VIN = ~1.4V.
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                            MCP23008.set_bits                       -    DEBUG:  <MCP23008_IO> ***** set_bits()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x0a 0x02 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00001000>, channels <3>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x08>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                             ADC121C.read_highest_conversion        -    DEBUG:  <ADC121C_51> ***** read_highest_conversion()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x07 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
-                            ADC121C.read_highest_conversion        -    DEBUG:  vmax value <ADC121C_51>:  (0x08 0x01) = <2.101V>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                            ADC121C.read_highest_conversion        -    DEBUG:  vmax value <ADC121C_51>:  (0x07 0xfd) = <2.097V>
                             ADC121C.read_lowest_conversion         -    DEBUG:  <ADC121C_51> ***** read_lowest_conversion()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x06 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
-                            ADC121C.read_lowest_conversion         -    DEBUG:  vmin value <ADC121C_51>:  (0x05 0x50) = <1.395V>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                            ADC121C.read_lowest_conversion         -    DEBUG:  vmin value <ADC121C_51>:  (0x05 0x53) = <1.398V>
                        ADC121C-demo.func                           -     INFO:  
 Disable pulldown, Enable pullup.  VIN = ~2.8V.
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                            MCP23008.set_bits                       -    DEBUG:  <MCP23008_IO> ***** set_bits()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x0a 0x04 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00001000>, channels <3>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x08>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                             ADC121C.read_highest_conversion        -    DEBUG:  <ADC121C_51> ***** read_highest_conversion()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x07 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_highest_conversion        -    DEBUG:  vmax value <ADC121C_51>:  (0x0a 0xac) = <2.801V>
                             ADC121C.read_lowest_conversion         -    DEBUG:  <ADC121C_51> ***** read_lowest_conversion()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x06 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
-                            ADC121C.read_lowest_conversion         -    DEBUG:  vmin value <ADC121C_51>:  (0x05 0x50) = <1.395V>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                            ADC121C.read_lowest_conversion         -    DEBUG:  vmin value <ADC121C_51>:  (0x05 0x53) = <1.398V>
                        ADC121C-demo.func                           -     INFO:  
 Disable pullup.  VIN = ~2.1V.
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                            MCP23008.set_bits                       -    DEBUG:  <MCP23008_IO> ***** set_bits()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x0a 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00001000>, channels <3>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x08>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                             ADC121C.read_highest_conversion        -    DEBUG:  <ADC121C_51> ***** read_highest_conversion()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x07 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_highest_conversion        -    DEBUG:  vmax value <ADC121C_51>:  (0x0a 0xac) = <2.801V>
                             ADC121C.read_lowest_conversion         -    DEBUG:  <ADC121C_51> ***** read_lowest_conversion()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x06 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
-                            ADC121C.read_lowest_conversion         -    DEBUG:  vmin value <ADC121C_51>:  (0x05 0x50) = <1.395V>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                            ADC121C.read_lowest_conversion         -    DEBUG:  vmin value <ADC121C_51>:  (0x05 0x53) = <1.398V>
                        ADC121C-demo.func                           -     INFO:  
 Stop Auto Conversion
                             ADC121C.write_config                   -    DEBUG:  <ADC121C_51> ***** write_config() <0b00000000>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x02 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_highest_conversion        -    DEBUG:  <ADC121C_51> ***** read_highest_conversion()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x07 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_highest_conversion        -    DEBUG:  vmax value <ADC121C_51>:  (0x0a 0xac) = <2.801V>
                             ADC121C.read_lowest_conversion         -    DEBUG:  <ADC121C_51> ***** read_lowest_conversion()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x06 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
-                            ADC121C.read_lowest_conversion         -    DEBUG:  vmin value <ADC121C_51>:  (0x05 0x50) = <1.395V>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                            ADC121C.read_lowest_conversion         -    DEBUG:  vmin value <ADC121C_51>:  (0x00 0x00) = <0.000V>
                             ADC121C.write_highest_conversion       -    DEBUG:  <ADC121C_51> ***** write_highest_conversion() <0.000V>  <[ 0x00 0x00 ]>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x07 0x00 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.write_lowest_conversion        -    DEBUG:  <ADC121C_51> ***** write_lowest_conversion() <4.200V>  <[ 0x0f 0xff ]>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x06 0x0f 0xff ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_highest_conversion        -    DEBUG:  <ADC121C_51> ***** read_highest_conversion()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x07 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_highest_conversion        -    DEBUG:  vmax value <ADC121C_51>:  (0x00 0x00) = <0.000V>
                             ADC121C.read_lowest_conversion         -    DEBUG:  <ADC121C_51> ***** read_lowest_conversion()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x06 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_lowest_conversion         -    DEBUG:  vmin value <ADC121C_51>:  (0x0f 0xff) = <4.199V>
                        ADC121C-demo.func                           -     INFO:  
 Capture highest/lowest in Normal mode
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_51> ***** read_conversion_result()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
-                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x07 0xfd) = <2.097V>, Alert flag <0>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x08 0x02) = <2.102V>, Alert flag <0>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                            MCP23008.set_bits                       -    DEBUG:  <MCP23008_IO> ***** set_bits()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x0a 0x02 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00001000>, channels <3>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x08>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_51> ***** read_conversion_result()
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
-                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x05 0x6e) = <1.425V>, Alert flag <0>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                            ADC121C.read_conversion_result         -    DEBUG:  Conversion result <ADC121C_51>:  (0x05 0x6a) = <1.421V>, Alert flag <0>
                             ADC121C.read_highest_conversion        -    DEBUG:  <ADC121C_51> ***** read_highest_conversion()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x07 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
-                            ADC121C.read_highest_conversion        -    DEBUG:  vmax value <ADC121C_51>:  (0x07 0xfd) = <2.097V>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                            ADC121C.read_highest_conversion        -    DEBUG:  vmax value <ADC121C_51>:  (0x08 0x02) = <2.102V>
                             ADC121C.read_lowest_conversion         -    DEBUG:  <ADC121C_51> ***** read_lowest_conversion()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x06 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x51> read_byte_count <2>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
-                            ADC121C.read_lowest_conversion         -    DEBUG:  vmin value <ADC121C_51>:  (0x05 0x6e) = <1.425V>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                            ADC121C.read_lowest_conversion         -    DEBUG:  vmin value <ADC121C_51>:  (0x05 0x6a) = <1.421V>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                            MCP23008.set_bits                       -    DEBUG:  <MCP23008_IO> ***** set_bits()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x20> data <[ 0x0a 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <2> for addr <0x20>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00001000>, channels <3>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x08>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                        ADC121C-demo.dotest                         -  WARNING:  
   RETURNED:   None
                        ADC121C-demo.dotest                         -  WARNING:  
@@ -872,12 +872,12 @@ Test 4a - write_config with config_byte wins over individual settings and defaul
   EXPECT:     169 (0b10101001)
                             ADC121C.write_config                   -    DEBUG:  <ADC121C_50> ***** write_config() <0b10101001>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x50> data <[ 0x02 0xa9 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <3> for addr <0x50>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <3> for addr <0x50>
                             ADC121C.read_config                    -    DEBUG:  <ADC121C_50> ***** read_config()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x50> data <[ 0x02 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <3> for addr <0x50>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <3> for addr <0x50>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x50> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <3> for addr <0x50>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <3> for addr <0x50>
                             ADC121C.read_config                    -    DEBUG:  <ADC121C_50> configuration register <0b10101001> settings:
   cycle_time:     <0b101>
   alert_hold:     <0>
@@ -1049,18 +1049,18 @@ Test 4d - config instantiation default defaults
 
 ==============================================================================================
 Test 13a - Slave address out of range
-  GIVEN:      ('ADC121C_50', 96, <cjn_PiTools.shared.pi_i2c object at 0x7622fc40>), {'Vref': 4.2}
+  GIVEN:      ('ADC121C_50', 96, <cjn_PiTools.shared.pi_i2c object at 0x761ccd30>), {'Vref': 4.2}
   EXPECT:     ValueError: ADC121C device address must be one of <0x50, 0x51, 0x52, 0x54, 0x55, 0x56, 0x58, 0x59, 0x5a>.  Received <0x60>
                        ADC121C-demo.dotest                         -    ERROR:  
-  RAISED:     ValueError: ADC121C device address must be one of <0x50, 0x51, 0x52, 0x54, 0x55, 0x56, 0x58, 0x59, 0x5a>.  Received <0x60>
+  RAISED:     ValueError: <ADC121C_50> device address must be one of <0x50, 0x51, 0x52, 0x54, 0x55, 0x56, 0x58, 0x59, 0x5a> - received <0x60>
                        ADC121C-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 13b - Invalid slave address
-  GIVEN:      ('ADC121C_50', 'Hello', <cjn_PiTools.shared.pi_i2c object at 0x7622fc40>), {'Vref': 4.2}
+  GIVEN:      ('ADC121C_50', 'Hello', <cjn_PiTools.shared.pi_i2c object at 0x761ccd30>), {'Vref': 4.2}
   EXPECT:     ValueError: ADC121C device address must be one of <0x50, 0x51, 0x52, 0x54, 0x55, 0x56, 0x58, 0x59, 0x5a>.  Received <Hello>
                        ADC121C-demo.dotest                         -    ERROR:  
-  RAISED:     ValueError: ADC121C device address must be one of <0x50, 0x51, 0x52, 0x54, 0x55, 0x56, 0x58, 0x59, 0x5a>.  Received <Hello>
+  RAISED:     ValueError: <ADC121C_50> device address must be one of <0x50, 0x51, 0x52, 0x54, 0x55, 0x56, 0x58, 0x59, 0x5a> - received <Hello>
                        ADC121C-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
@@ -1069,12 +1069,12 @@ Test 13c - Device inaccessible during init
   EXPECT:     -256 (Later accesses return I2C_ERROR)
                             ADC121C.write_config                   -    DEBUG:  <ADC121C_5a> ***** write_config() <0b00000000>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x5a> data <[ 0x02 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  New i2c_device_handle: <5> for addr <0x5a>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  New i2c_device_handle: <5> for addr <0x5a>
                             ADC121C.write_config                   -    DEBUG:  <ADC121C_5a> exception:  error: 'I2C write failed'
                             ADC121C.__init__                       -    DEBUG:  <ADC121C_5a> New ADC121C device defined at addr <0x5a> using api <pigpio> on i2c bus <1>
                             ADC121C.read_config                    -    DEBUG:  <ADC121C_5a> ***** read_config()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x5a> data <[ 0x02 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <5> for addr <0x5a>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <5> for addr <0x5a>
                             ADC121C.read_config                    -    DEBUG:  <ADC121C_5a> exception:  error: 'I2C write failed'
                        ADC121C-demo.dotest                         -  WARNING:  
   RETURNED:   -256
@@ -1087,17 +1087,17 @@ Test 13d - Device inaccessible after successful init
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00010000>, channels <4>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x10>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_51> ***** read_conversion_result()
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x51> data <[ 0x00 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <4> for addr <0x51>
                             ADC121C.read_conversion_result         -    DEBUG:  <ADC121C_51> exception:  error: 'I2C write failed'
                        ADC121C-demo.dotest                         -  WARNING:  
   RETURNED:   (-256, -256)
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Irr> New mask:     <0b00001000>, channels <3>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <0x08>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                        ADC121C-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
@@ -1105,7 +1105,7 @@ Test 13e - Invalid value to write_alert_status
   GIVEN:      (), {'clear_over': 'a'}
   EXPECT:     ValueError: clear_over and clear_under must be ints 0 or 1 - received <a, 0>
                        ADC121C-demo.dotest                         -    ERROR:  
-  RAISED:     ValueError: clear_over and clear_under must be ints 0 or 1 - received <a, 0>
+  RAISED:     ValueError: <ADC121C_51> clear_over and clear_under must be ints 0 or 1 - received <a, 0>
                        ADC121C-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
@@ -1113,7 +1113,7 @@ Test 13f - Invalid cycle_time value to write_config
   GIVEN:      (), {'cycle_time': -1}
   EXPECT:     ValueError: cycle_time must be int between 0b000 and 0b111 - received <-1>
                        ADC121C-demo.dotest                         -    ERROR:  
-  RAISED:     ValueError: cycle_time must be int between 0b000 and 0b111 - received <-1>
+  RAISED:     ValueError: <ADC121C_51> cycle_time must be int between 0b000 and 0b111 - received <-1>
                        ADC121C-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
@@ -1121,7 +1121,7 @@ Test 13g - Invalid alert_hold value from init during later write_config during i
   GIVEN:      (), {}
   EXPECT:     ValueError: alert_hold must be int 0 or 1 - received <5>
                        ADC121C-demo.dotest                         -    ERROR:  
-  RAISED:     ValueError: alert_hold must be int 0 or 1 - received <5>
+  RAISED:     ValueError: <ADC121C_5a> alert_hold must be int 0 or 1 - received <5>
                        ADC121C-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
@@ -1129,7 +1129,7 @@ Test 13h - Out of range write_vlow_alert_limit
   GIVEN:      (5,), {}
   EXPECT:     ValueError: vlow out of range 0.0V to VRef (4.200) - received <5>
                        ADC121C-demo.dotest                         -    ERROR:  
-  RAISED:     ValueError: vlow out of range 0.0V to VRef (4.200) - received <5>
+  RAISED:     ValueError: <ADC121C_51> vlow out of range 0.0V to VRef (4.200) - received <5>
                        ADC121C-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
@@ -1137,7 +1137,7 @@ Test 13i - Invalid write_vlow_alert_limit
   GIVEN:      ('hello',), {}
   EXPECT:     ValueError: vlow out of range 0.0V to VRef (4.200) - received <hello>
                        ADC121C-demo.dotest                         -    ERROR:  
-  RAISED:     ValueError: vlow out of range 0.0V to VRef (4.200) - received <hello>
+  RAISED:     ValueError: <ADC121C_51> vlow out of range 0.0V to VRef (4.200) - received <hello>
                        ADC121C-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
@@ -1145,15 +1145,23 @@ Test 13j - Invalid config_byte to write_config
   GIVEN:      (1365,), {}
   EXPECT:     ValueError: config_byte must be int between 0x00 and 0xff - received <1365>
                        ADC121C-demo.dotest                         -    ERROR:  
-  RAISED:     ValueError: config_byte must be int between 0x00 and 0xff - received <1365>
+  RAISED:     ValueError: <ADC121C_51> config_byte must be int between 0x00 and 0xff - received <1365>
                        ADC121C-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
 Test 13k - Invalid config_byte in init
-  GIVEN:      ('ADC121C_50', 80, <cjn_PiTools.shared.pi_i2c object at 0x7622fc40>), {'Vref': 4.2, 'config_byte': 4095}
+  GIVEN:      ('ADC121C_50', 80, <cjn_PiTools.shared.pi_i2c object at 0x761ccd30>), {'Vref': 4.2, 'config_byte': 4095}
   EXPECT:     ValueError: config_byte must be int between 0x00 and 0xff - received <4095>
                        ADC121C-demo.dotest                         -    ERROR:  
-  RAISED:     ValueError: config_byte must be int between 0x00 and 0xff - received <4095>
+  RAISED:     ValueError: <ADC121C_50> config_byte must be int in range 0x00 to 0xFF - received <4095>
+                       ADC121C-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 13l - Invalid name at instantiation
+  GIVEN:      ([5], 80, <cjn_PiTools.shared.pi_i2c object at 0x761ccd30>), {'Vref': 4.2}
+  EXPECT:     ValueError: device_name must be str - Received <[5]>
+                       ADC121C-demo.dotest                         -    ERROR:  
+  RAISED:     ValueError: ADC121C device_name must be str - received <[5]>
                        ADC121C-demo.<module>                       -  WARNING:  
 
 ---- Cleanup --------------------------------------------------------

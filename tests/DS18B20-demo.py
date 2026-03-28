@@ -87,16 +87,16 @@ if __name__ == '__main__':
     #-------------------------------------------------------------------------
     # Basic demo read temp pass cases
     if check_tnum('1a'):
-        dotest ("sensor_7113.read_temperature, value in F", "Pass", sensor_7113.read_temperature, tempunits='F')
+        dotest ("sensor_7113.read_temperature, value in F", "Temperature F", sensor_7113.read_temperature, tempunits='f')
 
     if check_tnum('1b'):
-        dotest ("sensor_203c.read_temperature, value in C", "Pass", sensor_203c.read_temperature)
+        dotest ("sensor_203c.read_temperature, value in C", "Temperature C", sensor_203c.read_temperature)
 
     if check_tnum('1c'):
-        dotest ("sensor_203c.read_temperature2, value in K", "Pass", sensor_203c.read_temperature2, tempunits='K')
+        dotest ("sensor_203c.read_temperature2, value in K", "Temperature K", sensor_203c.read_temperature2, tempunits='k')
 
     if check_tnum('1d'):
-        dotest ("sensor_7113.read_scratchpad", "Pass", sensor_7113.read_scratchpad)
+        dotest ("sensor_7113.read_scratchpad", "Scratchpad list", sensor_7113.read_scratchpad)
 
 
     #-------------------------------------------------------------------------
@@ -107,7 +107,7 @@ if __name__ == '__main__':
             logging.debug (f"sensor_7113.bulk_convert_status() returned: <{sensor_7113.bulk_convert_status()}>")
             logging.debug (f"sensor_203c.read_temperature2() returned: <{sensor_203c.read_temperature2()}>")
             logging.debug (f"sensor_7113.bulk_convert_status() returned: <{sensor_7113.bulk_convert_status()}>")
-            logging.debug (f"sensor_7113.read_temperature2() returned: <{sensor_7113.read_temperature2()}>")
+            logging.debug (f"sensor_7113.read_temperature2() returned: <{sensor_7113.read_temperature2(tempunits='c')}>")
             logging.debug (f"sensor_7113.bulk_convert_status() returned: <{sensor_7113.bulk_convert_status()}>")
 
         dotest ("bulk_convert_trigger sequence", "None (pass, no exceptions)", func)
@@ -238,28 +238,33 @@ if __name__ == '__main__':
                 
 
     if check_tnum('13c'):
-        dotest ("Invalid temp in set_alarm_temps()", "ValueError: alarm temps must be int or str values between -55 and 125.  Values are degrees C.",
+        dotest ("Invalid temp in set_alarm_temps()", "ValueError: <28-0b2280337113 / My_7113> alarm temps must be int or str values between -55 C and 125 C - received <a, b>",
                 sensor_7113.set_alarm_temps, 'a', 'b')
 
     if check_tnum('13d'):
-        dotest ("Invalid temp in set_alarm_temps()", "ValueError: alarm temps must be int or str values between -55 and 125.  Values are degrees C.",
+        dotest ("Invalid temp in set_alarm_temps()", "ValueError: <28-0b2280337113 / My_7113> alarm temps must be int or str values between -55 C and 125 C - received <-56, 125>",
                 sensor_7113.set_alarm_temps, '-56', 125)
 
     if check_tnum('13e'):
-        dotest ("Invalid value in set_resolution()", "ValueError: resolution value must be int or str 9, 10, 11 or 12",
+        dotest ("Invalid value in set_resolution()", "ValueError: <28-0b2280337113 / My_7113> resolution value must be int or str 9, 10, 11 or 12 - received <['George']>",
                 sensor_7113.set_resolution, ['George'])
 
     if check_tnum('13f'):
-        dotest ("Invalid value in set_resolution()", "ValueError: resolution value must be int or str 9, 10, 11 or 12",
+        dotest ("Invalid value in set_resolution()", "ValueError: <28-0b2280337113 / My_7113> resolution value must be int or str 9, 10, 11 or 12 - received <13>",
                 sensor_7113.set_resolution, 13)
 
     if check_tnum('13g'):
-        dotest ("Invalid value in set_conv_time()", "ValueError: conv_setting value must be int or str => 0",
+        dotest ("Invalid value in set_conv_time()", "ValueError: <28-0b2280337113 / My_7113> conv_setting value must be int or str => 0",
                 sensor_7113.set_conv_time, -1)
 
     if check_tnum('13h'):
-        dotest ("Invalid value in set_conv_time()", "ValueError: conv_setting value must be int or str => 0",
+        dotest ("Invalid value in set_conv_time()", "ValueError: <28-0b2280337113 / My_7113> conv_setting value must be int or str => 0",
                 sensor_7113.set_conv_time, 'George')
+
+    if check_tnum('13i'):
+        dotest ("Invalid tempunits in read_temperature()", "ValueError: <28-0b2280337113 / My_7113> tempunits must be 'C', 'F', or 'K' - received <M>",
+                sensor_7113.read_temperature, tempunits='M')
+
 
 
     # #-------------------------------------------------------------------------

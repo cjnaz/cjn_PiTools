@@ -10,7 +10,7 @@ Test 1a - i2c_write_device write 1 byte - pigpio api
   GIVEN:      (113, [85]), {}
   EXPECT:     1
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x71> data <[ 0x55 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  New i2c_device_handle: <0> for addr <0x71>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  New i2c_device_handle: <0> for addr <0x71>
                         shared-demo.dotest                         -  WARNING:  
   RETURNED:   1
                         shared-demo.dotest                         -  WARNING:  
@@ -45,7 +45,7 @@ Test 1e - i2c_write_device invalid bytes_list - pigpio api
   GIVEN:      (113, ['help']), {}
   EXPECT:     TypeError: 'str' object cannot be interpreted as an integer
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x71> data <['help']>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
                         shared-demo.dotest                         -    ERROR:  
   RAISED:     TypeError: 'str' object cannot be interpreted as an integer
                         shared-demo.dotest                         -  WARNING:  
@@ -64,9 +64,9 @@ Test 1g - i2c_write_device target inaccessible - pigpio api
   GIVEN:      (), {}
   EXPECT:     error: 'I2C write failed'
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x71> data <[ 0x80 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <[ 0x55 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  New i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  New i2c_device_handle: <1> for addr <0x75>
                         shared-demo.dotest                         -    ERROR:  
   RAISED:     error: 'I2C write failed'
                         shared-demo.dotest                         -  WARNING:  
@@ -80,9 +80,9 @@ Test 1h - i2c_write_device target inaccessible - smbus api
                         shared-demo.dotest                         -    ERROR:  
   RAISED:     OSError: [Errno 121] Remote I/O error
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x71> data <[ 0x01 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
                              shared.i2c_write_device               -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x75> data <[ 0x55 ]>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                         shared-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
@@ -90,7 +90,7 @@ Test 2a - i2c_read_device - pigpio api
   GIVEN:      (117, 1), {}
   EXPECT:     (1, [85]) (0x55)
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x75> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                         shared-demo.dotest                         -  WARNING:  
   RETURNED:   (1, [85])
                              shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x71> data <[ 0x01 ]>
@@ -112,7 +112,7 @@ Test 2g - i2c_read_device target inaccessible - pigpio api
   GIVEN:      (117, 1), {}
   EXPECT:     OSError: i2c_read_device failed - error code <-83>
                              shared.i2c_read_device                -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read bus <1> addr <0x75> read_byte_count <1>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                         shared-demo.dotest                         -    ERROR:  
   RAISED:     OSError: i2c_read_device failed - error code <-83>
                              shared.i2c_write_device               -    DEBUG:  Using api <smbus> write bus <1> addr <0x71> data <[ 0x80 ]>
@@ -132,9 +132,9 @@ Test 5a - i2c_write_byte / i2c_read_byte - pigpio api
   GIVEN:      (), {}
   EXPECT:     170 (0xAA)
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x71> data <0xaa>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
                              shared.i2c_read_byte                  -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read 1 byte from bus <1> addr <0x71>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
                              shared.i2c_read_byte                  -    DEBUG:  i2c_read_byte from addr <0x71>:  <0xaa>
                         shared-demo.dotest                         -  WARNING:  
   RETURNED:   170
@@ -156,9 +156,9 @@ Test 5g - i2c_read_byte target inaccessible - pigpio api
   GIVEN:      (), {}
   EXPECT:     error: 'I2C read failed'
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x71> data <0x80>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
                              shared.i2c_read_byte                  -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read 1 byte from bus <1> addr <0x75>
-                             shared.get_pigpio_i2c_device_handle   -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
+                             shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <1> for addr <0x75>
                         shared-demo.dotest                         -    ERROR:  
   RAISED:     error: 'I2C read failed'
                         shared-demo.dotest                         -  WARNING:  

@@ -907,6 +907,20 @@ if __name__ == '__main__':
         pioled_th.join()
 
 
+    if check_tnum('52', include0=False):
+        pioled_q, pioled, pioled_th = do_setup()
+
+        print_test_header ("Demo single message via queue - dict format")
+
+        m1 = [{'x':0, 'y':0, 'size':20, 'text':"Hello'"}, [100, 50, 12, tnum]]
+        msg_set = [m1]
+        pioled_q.put ({'pages':msg_set})
+        time.sleep (2)
+
+        pioled_q.put ({'cmd':PIOLED_TH_EXIT, 'pages':[[{'x':20, 'y':20, 'size':18, 'text':"Exited"}, [100, 50, 12, tnum]]]})
+        pioled_th.join()
+
+
     logging.warning (f"\n\n---- Cleanup --------------------------------------------------------")
 
 

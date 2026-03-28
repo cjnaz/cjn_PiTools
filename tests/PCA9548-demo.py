@@ -26,7 +26,7 @@ import pigpio
 
 from cjnfuncs.core              import set_toolname, setuplogging, logging, set_logging_level
 from cjn_PiTools.shared         import pi_i2c
-from cjn_PiTools.PCA9548        import PCA9548, build_bit_map, bit_map_to_channel_str
+from cjn_PiTools.PCA9548        import PCA9548
 
 
 PCA9548_RESBD = {'addr': 0x71, 'name': 'PCA9548_Res'}
@@ -70,7 +70,7 @@ def dotest (desc, expect, func, *args, **kwargs):
                      f"  EXPECT:     {expect}")
     try:
         result = func(*args, **kwargs)
-        logging.warning (f"  RETURNED:\n{result}")
+        logging.warning (f"\n  RETURNED:   {result}")
         return result
     except Exception as e:
         if cli_args.expand_exception:
@@ -131,60 +131,60 @@ if __name__ == '__main__':
     # Exercise build_bit_map()
     if check_tnum('2a'):
         def func():
-            return build_bit_map (0)
+            return pca9548_resBd_handle_smbus._build_bit_map (0)
 
         dotest ("int value 0", "0", func)
 
     if check_tnum('2b'):
         def func():
-            return build_bit_map (0x55)
+            return pca9548_resBd_handle_smbus._build_bit_map (0x55)
 
         dotest ("int value 0x55", "85 (0x55)", func)
 
     if check_tnum('2c'):
         def func():
-            return build_bit_map ('0')
+            return pca9548_resBd_handle_smbus._build_bit_map ('0')
 
         dotest ("str '0'", "1 - channel 0 enabled", func)
 
     if check_tnum('2d'):
         def func():
-            return build_bit_map ('7')
+            return pca9548_resBd_handle_smbus._build_bit_map ('7')
 
         dotest ("str '7'", "128 (decimal) - channel 7 enabled", func)
 
     if check_tnum('2e'):
         def func():
-            return build_bit_map ('-1')
+            return pca9548_resBd_handle_smbus._build_bit_map ('-1')
 
         dotest ("str -1", "0 - No channel enabled", func)
 
     if check_tnum('2f'):
         def func():
-            return build_bit_map ('Hello')
+            return pca9548_resBd_handle_smbus._build_bit_map ('Hello')
 
         dotest ("str 'Hello'", "ValueError: invalid literal for int() with base 10: 'Hello'", func)
 
     if check_tnum('2g'):
         def func():
-            return build_bit_map ('9')
+            return pca9548_resBd_handle_smbus._build_bit_map ('9')
 
-        dotest ("str '9'", "ValueError: channel_value (str) must be int range -1 to 7 - received <9>", func)
+        dotest ("str '9'", "ValueError: <PCA9548_Res> channel_value (str) must be int range -1 to 7 - received <9>", func)
 
 
     #-------------------------------------------------------------------------
     # Exercise bit_map_to_channel_str()
     if check_tnum('3a'):
-        dotest ("bit_map 1", "'0'", bit_map_to_channel_str, 1)
+        dotest ("bit_map 1", "0 (str)", pca9548_resBd_handle_smbus._bit_map_to_channel_str, 1)
 
     if check_tnum('3b'):
-        dotest ("bit_map 0x55", "'0, 2, 4, 6'", bit_map_to_channel_str, 0x55)
+        dotest ("bit_map 0x55", "0 2 4 6 (str)", pca9548_resBd_handle_smbus._bit_map_to_channel_str, 0x55)
 
     if check_tnum('3c'):
-        dotest ("bit_map 0xff", "'0, 1, 2, 3, 4, 5, 6, 7'", bit_map_to_channel_str, 0xff)
+        dotest ("bit_map 0xff", "0 1 2 3 4 5 6 7 (str)", pca9548_resBd_handle_smbus._bit_map_to_channel_str, 0xff)
 
     if check_tnum('3d'):
-        dotest ("bit_map 0", "''", bit_map_to_channel_str, 0)
+        dotest ("bit_map 0", "'' (empty str)", pca9548_resBd_handle_smbus._bit_map_to_channel_str, 0)
 
 
 
@@ -194,7 +194,7 @@ if __name__ == '__main__':
         def func():
             bad_addr_handle =  PCA9548('PCA9548_Bad', 0x80, i2c_bus_handle_pigpio)
 
-        dotest ("Bad I2C address", "ValueError: PCA9548 device.addr must be 0x70 - 0x77, received <0x80>", func)
+        dotest ("Bad I2C address", "ValueError: <PCA9548_Bad> PCA9548 device.addr must be 0x70 - 0x77, received <0x80>", func)
 
     if check_tnum('13b'):
         def func():
@@ -206,7 +206,7 @@ if __name__ == '__main__':
         def func():
             pca9548_resBd_handle_pigpio.write_control_reg (0x1ff)
 
-        dotest ("Int bit-map out of range", "ValueError: channel_value (int) must be int range 0x00 to 0xFF - received <511> / <0x1ff>", func)
+        dotest ("Int bit-map out of range", "ValueError: <PCA9548_Res> channel_value (int) must be int range 0x00 to 0xFF - received <511> / <0x1ff>", func)
 
     if check_tnum('13d'):
         def func():
@@ -218,13 +218,13 @@ if __name__ == '__main__':
         def func():
             pca9548_resBd_handle_pigpio.write_control_reg ('-2')
 
-        dotest ("String channel select out of range", "ValueError: channel_value (str) must be int range -1 to 7 - received <-2>", func)
+        dotest ("String channel select out of range", "ValueError: <PCA9548_Res> channel_value (str) must be int range -1 to 7 - received <-2>", func)
 
     if check_tnum('13f'):
         def func():
             pca9548_resBd_handle_pigpio.write_control_reg ('8')
 
-        dotest ("String channel select out of range", "ValueError: channel_value (str) must be int range -1 to 7 - received <8>", func)
+        dotest ("String channel select out of range", "ValueError: <PCA9548_Res> channel_value (str) must be int range -1 to 7 - received <8>", func)
 
     if check_tnum('13g'):
         def func():

@@ -1,12 +1,12 @@
-# DS18B20 high-featured library/driver for Raspberry Pi using the w1_therm kernel driver
+# DS18B20 temperature sensor library/driver for Raspberry Pi using the w1_therm kernel driver
 
 Skip to [API documentation](#links)
 
-This module provides a clean and mostly complete (*) API for DS18B20 temperature sensors 
+This module provides a clean and mostly complete (*) API for the DS18B20 temperature sensor 
 using the w1_therm kernel driver.  Also provided is a command line interface for interactive dev/debug.
 
 Supports:
-- Reading temperatures
+- Reading temperature
 - Bulk parallel conversion of temperatures for all sensors on the bus
 - Resolution setting and Alarm thresholds setting in scratchpad
 - Setting and measuring actual conversion (temperature measurement) time
@@ -28,7 +28,7 @@ Do read the [fine datasheet](https://www.analog.com/media/en/technical-documenta
 
 ## Setup / Installation
 
-If you wish to use the `bulk_convert_trigger ()` api (without root privilege) it is necessary to setup/install the W1 bus initialization module [initW1buses](https://github.com/cjnaz/cjn_PiTools/initW1buses.md).  Alternately, run your tool script with root privilege.
+If you wish to use the `bulk_convert_trigger ()` api (without root privilege) it is necessary to setup/install the W1 bus initialization module [initW1buses](https://github.com/cjnaz/cjn_PiTools/blob/main/initW1buses.md).  Alternately, run your tool script with root privilege.
 
 
 <br>
@@ -71,9 +71,9 @@ To enabled debug logging from this module's classes/functions, add this to your 
 
 <br>
 
-## Command Line Interface and Demo
+## Command Line Interface
 
-Once installed a cli tool is available.  The cli tool provides some useful debug and configuration features (such as setting and permanently saving 
+Once installed, a cli tool is available.  The cli tool provides some useful debug and configuration features (such as setting and permanently saving 
 the resolution setting), and also a few demonstration cases (such as triggering a bulk/parallel conversion on multiple sensors and reading back their values).
 
 ```
