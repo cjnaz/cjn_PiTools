@@ -1,20 +1,8 @@
 [project]
 name = 'cjn_PiTools'
-version = "1.1"
+version = "1.1.1"
+    # 1.1.1 - pyproject.toml cleanup, Added to keywords
     # 1.1 - Final cleanup, release
-    # 1.1rc3 - Final cleanup
-    # 1.1rc2 - Checked in shared.py
-    # 1.1rc1 - Complete
-    # 1.1b10 - PiBlinkly complete, PCA9548 complete, MCP23008 complete
-    # 1.1b9 - initW1buses complete, MCP23008 almost, renamed demo files
-    # 1.1b8 - HTU21D complete
-    # 1.1b7 - ADC121C complete, HTU21D partial
-    # 1.1b6 - ADC121C feature complete & tests added (docs in progress), DS18B20 doc, shared doc
-    # 1.1b5 - Refine some of shared methods, PCA9548, SHT3x tuned up, testing added.  HTU21D added.
-    # 1.1b4 - Added ADC121C, MCP23008.  Functional, limited testing, no doc work
-    # 1.1b3 - SHT3x feature complete
-    # 1.1b2 - SHT3x tests, shared/SHT3x failure handling
-    # 1.1b1 - SHT3x, pca9548, shared working for pigpio & smbus
     # 1.0.1 - PiOLED startup display file access check debug
     # 1.0 - New.  Bundled PiBlinky, PiOLED, initW1buses, and DS18B20 modules
 description = "cjn's library of Raspberry Pi functions, drivers, tools, ..."
@@ -31,9 +19,14 @@ dependencies = [
     'RPi.GPIO',
     ]
 keywords = ['cjnaz', 'cjnfuncs', 'Raspberry', 'Raspberry Pi', 'RPi', 
-    'DS18B20', 
-    'luma.oled', 'OLED',
+    'luma', 'luma.oled', 'OLED',
     'LED', 'blinky',
+    'DS18B20', 'w1_therm',
+    'ADC', 'ADC121C', 'ADC101C', 'ADC081C',
+    'HTU21D',
+    'MCP23008',
+    'PCA9548', 'TCA9548', 'PCA9548A', 'TCA9548A', 
+    'SHT3', 'SHT30', 'SHT31', 'SHT35'
     ]
 classifiers = [                 # https://pypi.org/classifiers/
     "Topic :: Software Development :: Libraries :: Python Modules",
