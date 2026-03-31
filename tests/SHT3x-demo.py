@@ -5,8 +5,9 @@ Produce / compare to golden results:
     ./SHT3x-demo.py > testrun.log
 
     Expected differences:
+        The status register may show undocumented status bit(s) set (e.g., 0x0040)
         Measured temp/rh values
-        SHT3x pigpio handle addresses
+        cjn_PiTools.SHT3x handle addresses
         For the PeriodicDA tests the alignment of passing/failing fetch_data results will shift
 """
 

@@ -1,20 +1,20 @@
 # shared library for cjn_PiTools
 
-Skip to [API documentation](#links)
+Skip to the [API documentation](#links)
 
 This module contains a collection of classes and functions that are shared across the cjn_PiTools package.  These functions will remain stable and are supported for use in user code.
 
 - The `pi_i2c` class provides a wrapper on top of the smbus and pigpio APIs. These methods should support most any I2C bus transaction needed.  Note that there are redundancies in the underlying apis, so `pi_i2c` offers a trimmed down set of methods.
-  - The tool script must create a `pi_i2c` instance, which is an I2C bus handle for a specified bus number and which api to use, e.g., 
+  - The tool script must create a `pi_i2c` instance, which is an I2C bus handle for a specified bus number (i2c_bus_num=1 is the default) and which api to use, e.g., 
 
         # Using smbus
-        smbus_i2c_bus_handle =    pi_i2c('smbus', i2c_bus_num=1)
+        smbus_i2c_bus_handle =  pi_i2c('smbus', i2c_bus_num=1)
 
         or
 
         # Using pigpio
         pio = pigpio.pi()
-        pigpio_i2c_bus_handle =    pi_i2c(pio, i2c_bus_num=1)
+        pigpio_i2c_bus_handle = pi_i2c(pio, i2c_bus_num=1)
 
   - In the tool script cleanup/exit code close the `pi_i2c` instance, e.g.,
 
@@ -32,7 +32,7 @@ This module contains a collection of classes and functions that are shared acros
 
 <br>
 
-## Testing board configurations
+## Testing boards configuration
 
 Validation testing is done on a set of boards with the following configuration.  Consider this an FYI.
 

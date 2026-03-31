@@ -11,7 +11,7 @@ Notable features (and limitations):
 
 ### My usage, as an example
 
-I have a handful of tools that I run on Raspberry Pis...  Garden Watering System, Temperature Monitor for freezers, Power Monitor (tracks power backup battery status and power outage notifications), PoolSolar (thermostat pump control), and a 'PiControl' tool that acts as system administration interface.  My main circuit board (I2C Switch Bd) has a connector for the SPI port and three buttons for selecting which tool sends messages to the shared OLED display.  Here's a picture of my development/debug setup with a Pi Zero 2W (pardon the defective display, the blown out fuzzy text (picture artifact), and dust & clutter):
+I have a handful of tools that I run on Raspberry Pis...  Garden Watering System, Temperature Monitor for freezers, Power Monitor (tracks backup battery status and power outage notifications), PoolSolar (thermostat pump control), and a 'PiControl' tool that acts as the system administration interface.  My main circuit board (I2C Switch Bd) has a connector for the SPI port and three buttons for selecting which tool sends messages to the shared OLED display.  Here's a picture of my development/debug setup with a Pi Zero 2W (pardon the defective display, the blown out fuzzy text (picture artifact), and dust & clutter):
 
 ![pic](https://github.com/cjnaz/cjn_PiTools/blob/main/docs/Development_board_with_OLED.jpg)
 
@@ -122,7 +122,7 @@ Key | Purpose | Default
 (no 'cmd') | Just display the 'pages' data
 PIOLED_SAVE | Save the previous message_set for later restoration, and apply the new message_set content.
 PIOLED_RESTORE | Restore the previously saved message_set.  All the other keys for the new message_set (that has 'cmd':PIOLED_RESTORE) are ignored.
-PIOLED_PAUSE | Terminate any looping from the previous message_set and display _only the first page_ in the 'pages' list (or blank the display if no 'pages' passed).
+PIOLED_PAUSE | Terminate any looping from the previous message_set and display _only the first page_ in the new 'pages' list (or blank the display if no 'pages' passed).
 PIOLED_TH_EXIT | After displaying the _only the first page_ in the 'pages' list, then exit the pioled_th thread.  Do this for a clean exit at the end of your code.
 
 <br>
@@ -161,9 +161,9 @@ Font files provided with cjn_PiTools:
 
 ### Page timing controls
 
-When pioled_display_driver is instantiated the default timings may be specified.  Also, the timing may be specified on each individual queued message_set.
+When `pioled_display_driver` is instantiated the default timings may be specified.  Also, the timings may be specified on each individual queued message_set.
 
-Order of precedent:
+Order of precedence:
 1. A value specified on the queued message_set is the highest precedent, and overrides any value specified on the pioled_display_driver instantiation, or the Default value.
 2. A value specified on the pioled_display_driver instantiation overrides the Default value.
 3. The Default value is used.
@@ -185,19 +185,9 @@ Note that if there is only one page it is displayed without blanking, and the 'c
 
 ```
 $ PiOLED -h
-usage: PiOLED [-h] [--service] [--config-file CONFIG_FILE] [--log-console] [--val-logfile VAL_LOGFILE] [--verbose] [--setup-user] [--version]
-              [{message,blank,status,unlock}] [Message]
+usage: PiOLED [-h] [--service] [--config-file CONFIG_FILE] [--log-console] [--val-logfile VAL_LOGFILE] [--verbose] [--setup-user] [--version] [{message,blank,status,unlock}] [Message]
 
-PiOLED display service and driver
-
-PiOLED utilizes the luma.oled package.  A notable limitation of luma.oled is that only 
-one process can send content to the display.  PiOLED solves this limitation by setting 
-up a client-sever configuration, where the server is started at boot and various clients 
-may send display messages to the server.  The server is started via systemd at boot using 
-the provided .service file.  Tool scripts communicate with the server using a shared 
-display file and ipc semaphores. 
-
-PiOLED also supports a command line interface:
+PiOLED's interactive commands:
 - `PiOLED message` displays a multi-line message on the display, supporting list and 
   dictionary formats - see PiOLED.md for format info.  Example:
 

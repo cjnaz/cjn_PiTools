@@ -1,12 +1,13 @@
 # PCA9548 I2C port expander library for Raspberry Pi
 
-Skip to [API documentation](#links)
+Skip to the [API documentation](#links)
 
 This module provides a clean and complete API for the PCA9548A/TCA9548A 8-Channel I2C Switch (aka I2C port expander).
 It also provides a command line interface for interactive dev/debug.
 
 Supports:
 - Reading and writing the PCA9548 control register via API and CLI
+- Detailed debug-level visibility on operations
 - Both smbus and pigpio (local and remote) interfaces/APIs
 
 Tested on Python 3.9.2.
@@ -39,12 +40,12 @@ PCA9548_0x71.write_control_reg(0x55)
 print (f"<{PCA9548_0x71.device_name}> Control register: <0b{PCA9548_0x71.read_control_reg():0>8b}>")
 
 
-# Disable all channels
+# Disable all channels using str '-1'
 PCA9548_0x71.write_control_reg('-1')
-# or
+# or write the control register with all 0s
 PCA9548_0x71.write_control_reg(0x00)
 
-# Select specific channel 0-7
+# Enable one specific channel 0-7 using str
 PCA9548_0x71.write_control_reg('3')
 
 # Clean up
@@ -82,6 +83,10 @@ To enabled debug logging from this module's classes/functions, add this to your 
 ## Command Line Interface
 
 Once installed a CLI tool is available.
+NOTE that the set `Mask` value operates a bit differently between the API and CLI.
+- For the CLI, `Mask` is always received as a str, and if it is between '0' to '7' then it is taken as an individual channel enable
+- To apply a byte value to the control register the `Mask` value must use binary or hex notation (start with '0b' or '0x')
+- '-1' to clear the control register is a special case
 
 ```
 $ PCA9548 -h
@@ -90,8 +95,8 @@ usage: PCA9548 [-h] [-n NAME] [-A {smbus,pigpio}] [-H HOST] [-p PORT] [-v] [-V] 
 PCA9548 set/get channel setting for Raspberry Pi
 
 Mask values for set command
-    0-7 selects that specific channel
-    -1 sets the control regiser to 0b00000000 (no channels selected)
+    0-7 enables that specific channel
+    -1 sets the control register to 0b00000000 (no channels enabled)
     0xNN or 0bNNNNNNN sets the control register to this specific bit_mask (range 0x00 to 0xFF)
 1.1
 

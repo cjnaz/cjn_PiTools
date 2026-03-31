@@ -26,7 +26,7 @@ class PCA9548:
     """
 ## Class PCA9548 (device_name, device_addr, pi_i2c_bus_handle) - PCA9548 I2C port expander library for Raspberry Pi
 
-Create an PCA9548 device instance
+Create a PCA9548 device instance
 
 ### Args
 `device_name` (str)
@@ -34,6 +34,7 @@ Create an PCA9548 device instance
 
 `device_addr` (int)
 - I2C bus address for this instance, e.g., 0x70
+- Must be in the range of 0x70 to 0x77
 
 `pi_i2c_bus_handle` (cjn_PiTools.shared.pi_i2c instance)
 - Get an instance handle in the tools script code and pass it to this device instantiation
@@ -56,6 +57,7 @@ Create an PCA9548 device instance
 
 
 ### Behaviors and rules
+- The device is not initialized, and need not be accessible, at instantiation (the control register is not set).
 - Debug logging may be enabled in the tool script code by setting this module's logging level:
 
         logging.getLogger('cjn_PiTools.PCA9548').setLevel(logging.DEBUG)
@@ -85,7 +87,7 @@ Create an PCA9548 device instance
 
     def write_control_reg (self, write_value):
         """
-## write_control_reg (write_value) - Set the control register channel selection to a new enable mask value
+## write_control_reg (write_value) - Set the control register channel enable mask to the new write_value
 
 ***PCA9548 class member function***
 
@@ -98,7 +100,7 @@ The `write_value` is written to the control register and saved in `channel_enabl
   - If int value:  Used directly as the channel enable mask
   - If str '-1':  Sets the channel enable mask to 0x00 (no channels enabled)
   - If str '0' to '7': Enables the individual channel, and disables all others, e.g., '2' resolves to 0b00000100
-- Resolved value is also saved to the instance variable `channel_enable_bit_map`
+- The resolved value is also saved to the instance variable `channel_enable_bit_map`
 
 
 ### Returns
@@ -214,8 +216,8 @@ def cli():
     """PCA9548 set/get channel setting for Raspberry Pi
 
 Mask values for set command
-    0-7 selects that specific channel
-    -1 sets the control regiser to 0b00000000 (no channels selected)
+    0-7 enables that specific channel
+    -1 sets the control register to 0b00000000 (no channels enabled)
     0xNN or 0bNNNNNNN sets the control register to this specific bit_mask (range 0x00 to 0xFF)
 """
 

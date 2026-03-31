@@ -92,7 +92,7 @@ Supports both smbus and pigpio I2C APIs
 ### Args
 `addr` (int)
 - i2c address of target device - range 0x00 to 0x7F
-- No validity checks - caller should confirm address validity
+- No validity checks - the caller should confirm address validity
 
 `bytes_list` (list of bytes)
 - Data to be written to the target device, e.g., `[0x05, 0xFF]`
@@ -100,7 +100,7 @@ Supports both smbus and pigpio I2C APIs
 
 
 ### Returns
-- On success, returns length of `bytes_list` (number of bytes written)
+- On success, returns number of bytes written (length of `bytes_list`)
 - Raises ValueError if `bytes_list` is not a list or is an empty list.
 - On fail, raises exception (actually raised by underlying `api` call, e.g., I2C IO error, or invalid data in `bytes_list`)
 
@@ -284,7 +284,8 @@ Supports both smbus and pigpio I2C APIs
 
 
 ### Behaviors and rules
-- If using pigpio, the pigpio handle (`pio` in the above example) is owned by and must be stopped in the tool script code
+- If using pigpio, the pigpio handle (`pio = pigpio.pi()` in the above example) is owned by and must be stopped in the tool script code.
+The pi_i2c.close() method only closes the allocated i2c device handles within the pigpio connection.
         """
 
         if self.api == 'smbus':
@@ -335,7 +336,6 @@ def CtoF(tempC):
 
 ### Returns
 - Returns float temperature value in Fahrenheit
-- Raises exception on invalid arg
     """
     return tempC*1.8 +32.0
 

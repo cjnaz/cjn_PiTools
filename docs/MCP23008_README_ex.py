@@ -19,9 +19,9 @@ IOCHIP_CONFIG = {
 i2c_bus_handle =    pi_i2c('smbus')
 my_iochip =         MCP23008('My_IOchip', 0x20, i2c_bus_handle, init_settings=IOCHIP_CONFIG)
 
-logging.info (f"<{my_iochip.device_name}> After initialization:                   <0b{my_iochip.read_reg('GPIO'):0>8b}>")
+logging.info (f"<{my_iochip.device_name}> GPIO after initialization:                   <0b{my_iochip.read_reg('GPIO'):0>8b}>")
 my_iochip.set_bits('OLAT', bits=0b0100, mask=0b1100)
-logging.info (f"<{my_iochip.device_name}> After upper 2 output bits were flipped: <0b{my_iochip.read_reg('GPIO'):0>8b}>")
+logging.info (f"<{my_iochip.device_name}> GPIO after upper 2 output bits were flipped: <0b{my_iochip.read_reg('GPIO'):0>8b}>")
 logging.info (my_iochip.registers_dump())
 
 

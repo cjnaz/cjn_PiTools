@@ -1,6 +1,7 @@
 [project]
 name = 'cjn_PiTools'
-version = "1.1rc"
+version = "1.1"
+    # 1.1 - Final cleanup, release
     # 1.1rc3 - Final cleanup
     # 1.1rc2 - Checked in shared.py
     # 1.1rc1 - Complete

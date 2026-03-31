@@ -1,6 +1,6 @@
 # PiBlinky - A threaded, multiple LED driver for Raspberry Pi
 
-Skip to [API documentation](#links)
+Skip to the [API documentation](#links)
 
 Why?  To run an LED on a RaspberryPi is done simply by turning a GPIO pin on and off.  Often, that's just fine, but if you want more scheduling capability and features, then this driver may be what you're looking for.
 
@@ -9,7 +9,7 @@ Features
 - Multiple concurrent LEDs supported, each with their own independent on/off sequences and timing.
 - A flashing sequence can be set once, rather than your main code having to turn the LED on and off on a schedule.
 - Supports both RPi.GPIO and pigpio driver libraries.  pigpio supports running LEDs on remote systems.
-- LED flashing sequences are completely user defined, including the bit-sequence, bit-time, and number of times to repeat (or indefinitely).
+- LED flashing sequences are completely user defined, including the bit-sequence, bit-time, and number of times to play the sequence (or indefinitely).
 - Advanced features include saving the currently running sequence, then applying a new sequence, and later restoring the saved sequence.  Useful if two different operations need to share an LED.
 - Setup and usage in your code is simple.  No external dependencies, other than the RPi.GPIO or pigpio driver.
 
@@ -41,7 +41,7 @@ BLU_LED_q       = queue.Queue()
 BLU_LED_inst    = PiBlinky("BLU", 'GPIO', BLU_LED_GPIO, BLU_LED_q)
 BLU_LED_th      = BLU_LED_inst.start()
 
-print ("Produce the bit stream <1000> with a period of 50ms for each bit, repeated 3 times")
+print ("Produce the bit stream <1000> with a period of 50ms for each bit, played 3 times")
 BLU_LED_q.put ([50, "1000", 3])                 # Conclude with the LED off.
 time.sleep (2)
 
@@ -50,7 +50,7 @@ print ("1s x2 blinks (2 blinks with on and off times = 500ms)")
 BLU_LED_q.put ([500, "10", 2])
 time.sleep (3)
 
-print ("A 50ms blink over 400ms, repeated 2 times, while saving above 1s blinks")
+print ("A 50ms blink over 400ms, played 2 times, while saving above 1s blinks")
 BLU_LED_q.put ([50, "1000 0000", 2, CMD_SAVE])
 time.sleep (3)
 
@@ -72,7 +72,7 @@ BLU_LED_th.join()
 
 ## PiBlinky-demo.py
 
-PiBlinky-demo.py is ths validation testing script for PiBlinky.  Test '1a' runs three LEDs concurrently.  See the github repo tests directory for this demo program.
+PiBlinky-demo.py is the validation testing script for PiBlinky.  Test '1a' runs three LEDs concurrently.  See the github repo tests directory for this demo program.
 
     /<path to tests dir>/PiBlinky-demo.py --test 1a
 

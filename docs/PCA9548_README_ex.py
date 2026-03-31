@@ -17,12 +17,12 @@ PCA9548_0x71.write_control_reg(0x55)
 print (f"<{PCA9548_0x71.device_name}> Control register: <0b{PCA9548_0x71.read_control_reg():0>8b}>")
 
 
-# Disable all channels
+# Disable all channels using str '-1'
 PCA9548_0x71.write_control_reg('-1')
-# or
+# or write the control register with all 0s
 PCA9548_0x71.write_control_reg(0x00)
 
-# Select specific channel 0-7
+# Enable one specific channel 0-7 using str
 PCA9548_0x71.write_control_reg('3')
 
 # Clean up

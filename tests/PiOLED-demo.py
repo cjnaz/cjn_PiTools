@@ -2,6 +2,7 @@
 """Demo/test for PiOLED multi-message display system
 
 Produce / compare to golden results:
+        sudo systemctl stop PiOLED_server.service  (if currently running)
         cd to test directory
         rm testrun.log
         PiOLED --service --val-logfile ./testrun.log -vv &

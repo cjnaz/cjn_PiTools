@@ -1,6 +1,6 @@
 # HTU21D Temperature/RH sensor library for Raspberry Pi
 
-Skip to [API documentation](#links)
+Skip to the [API documentation](#links)
 
 This module provides a clean and complete API for the HTU21D temperature/RH sensor
 
@@ -8,6 +8,7 @@ Supports:
 - Reading temperature and RH values using either I2C bus hold mode (aka clock stretching) or no-hold mode
 - Writing and reading the User Register (aka the config/status register)
 - Asserting a soft_reset
+- Detailed debug-level visibility on operations
 - Both smbus and pigpio (local and remote) interfaces/APIs
 
 Tested on Python 3.9.2

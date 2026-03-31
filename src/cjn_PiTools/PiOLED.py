@@ -430,13 +430,24 @@ class pioled_font_manager:
 #=====================================================================================
 
 def cli():
+    """
+PiOLED's interactive commands:
+- `PiOLED message` displays a multi-line message on the display, supporting list and 
+  dictionary formats - see PiOLED.md for format info.  Example:
+
+    PiOLED message "[0, 0, 18, 'Wherever you go...'], {'x':10, 'y':20, 'size':20, 'text':'there you are.', 'font':'ProggyTiny.ttf'}"
+
+- `PiOLED blank`  clears the display
+- `PiOLED status` displays the state of the server process, and the ipc semaphores
+- `PiOLED unlock` releases the ipc semaphores, which are normally released by the server process
+"""
     global config, args
     global logging
     global display_file
     global pioled_logger
 
     commands = ['message', 'blank', 'status', 'unlock']
-    parser = argparse.ArgumentParser(description=__doc__ + __version__, formatter_class=argparse.RawTextHelpFormatter)
+    parser = argparse.ArgumentParser(description=cli.__doc__ + __version__, formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument('Command', nargs='?', choices=commands,
                         help=f"Interactive mode Command")
     parser.add_argument('Message', nargs='?',
@@ -445,7 +456,7 @@ def cli():
     parser.add_argument('--service', action='store_true',
                         help="Start PiOLED server")
     parser.add_argument('--config-file', '-c', type=str, default=CONFIG_FILE,
-                        help=f"Path to the config file (Default <{CONFIG_FILE})> in user config directory")
+                        help=f"Path to the server config file (Default <{CONFIG_FILE}> in user config directory)")
     parser.add_argument('--log-console', '-z', action='store_true',
                         help="Force server logging to the console, overriding config LogFile param")
     parser.add_argument('--val-logfile', default=None,

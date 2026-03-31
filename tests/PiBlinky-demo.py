@@ -5,7 +5,7 @@ Produce / compare to golden results:
     ./PiBlinky-demo.py > testrun.log
 
     Expected differences:
-        Log order can shift due to 3 independent threads
+        Log order can shift due to independent PiBlinky threads
 """
 
 #==========================================================

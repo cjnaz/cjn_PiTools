@@ -342,7 +342,7 @@ Examples:
 ### Returns
 - 0 on success
 - I2C_ERROR on I2C IO error
-- Raises ValueError on issues with the `reg_dict` content
+- Raises ValueError on issues with the args
 
         
 ### Behaviors and rules

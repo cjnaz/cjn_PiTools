@@ -79,7 +79,7 @@ sht3x_logger = logging.getLogger('cjn_PiTools.SHT3x')
 
 class SHT3x:
     """
-## Class SHT3x (device_name, device_addr, pi_i2c_bus_handle, do_reset) - SHT3x Temperature/RH sensor library for Raspberry Pi
+## Class SHT3x (device_name, device_addr, pi_i2c_bus_handle, do_reset=True) - SHT3x Temperature/RH sensor library for Raspberry Pi
 
 Create a SHT3x family device instance
 
@@ -507,7 +507,7 @@ after the single shot measurement trigger has completed.
 
 
 ### Returns
-- 2-byte status register value on success
+- 2-byte status register value (16-bit int) on success
 - I2C_ERROR on I2C IO error
 - CRC_ERROR on fetched data CRC mismatch
 

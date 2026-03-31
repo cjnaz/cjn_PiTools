@@ -1,13 +1,19 @@
 # ADC121C (and related family) ADC driver for Raspberry Pi
 
-Skip to [API documentation](#links)
+Skip to the [API documentation](#links)
 
 This module provides a clean and complete API for the ADC121C ADC, and related family devices, including:
 - ADC121C021, ADC121C021Q, and ADC121C027 12-bit ADCs
 - ADC101C021, ADC101C021Q, and ADC101C027 10-bit ADCs
 - ADC081C021, ADC081C021Q, and ADC081C027 8-bit ADCs
 
-Supports both smbus and pigpio (local and remote) interfaces/APIs
+Supports:
+- reading conversion results and alert status
+- writing and reading all config register fields
+- writing and reading the alert limit registers
+- reading and resetting the lowest and highest conversion result capture registers
+- Detailed debug-level visibility on operations
+- Both smbus and pigpio (local and remote) interfaces/APIs
 
 Tested on Python 3.9.2.
 
@@ -110,7 +116,7 @@ Create an ADC121C family device instance
 - Get a `pi_i2c` instance handle in the tools script code and pass it to this device instantiation
 
 `Vref` (float)
-- ADC reference voltage
+- ADC reference (and supply) voltage
 - `read_conversion_result()`'s returned 12-bit code is scaled by this value to return the measured voltage
 
 `config_byte` (int, default None)
@@ -118,7 +124,7 @@ Create an ADC121C family device instance
   - Explicitly set the configuration register to the `config_byte` value during instantiation
   - Must be in range 0x00 to 0xFF
   - Bit 1 (Reserved) is always forced to `0`, per the specification
-  - The field values within the `config_byte` saved to the respective class instance variables, and used as the default
+  - The field values within the `config_byte` are saved to the respective class instance variables, and used as the default
   values in later `write_config()` calls
   - `config_byte` takes precedent over the following individual field settings, if both are given at instantiation
 - If `config_byte` is None then the following individual field settings are used
@@ -146,7 +152,7 @@ Create an ADC121C family device instance
 - Must be 0 or 1
 - Default 0 is Alert Pin disabled - disable the ALERT output pin
 - This value (or the field bit within `config_byte`, if specified) is used as the default value in later `write_config()` calls
-- NOTE:  The Alert Pin function is not tested. (I'm using the ADC121C027 (no alert pin))
+- NOTE:  The Alert Pin function is not tested - I'm using the ADC121C027 (no alert pin)
 
 `polarity` (int, default 0)
 - Value for the alert pin Polarity field in the configuration register
@@ -176,7 +182,7 @@ Create an ADC121C family device instance
 - All configuration register fields default to `0`:
   - `cycle_time` defaults to 0b000 - Normal mode (automatic conversion mode disabled)
   - `alert_hold`, `alert_flag_en`, and `alert_pin_en` each default to 0 - Disabled
-  - `polarity` defaults to 0 - the alert pin is active low if `alert_pin_en` = 1
+  - `polarity` defaults to 0 - the alert pin is active low if `alert_pin_en` is set to 1
 - Debug logging may be enabled in the tool script code by setting this module's logging level:
 
         logging.getLogger('cjn_PiTools.ADC121C').setLevel(logging.DEBUG)
@@ -214,7 +220,7 @@ to `read_conversion_result()`
 
 ### Returns
 - Tuple (over_range_alert, under_range_alert) as integers (0 or 1)
-- 1 indicates respective over-range or under-range altert
+- 1 indicates respective over-range or under-range alert
 - Tuple (I2C_ERROR, I2C_ERROR) on I2C IO error
 
 <br/>
@@ -268,32 +274,27 @@ with their default values set at instantiation
 
 `cycle_time` (int, default None)
 - Value for the 3-bit Cycle Time field in the configuration register
-- Must be in range 0b000 to 0b111
-- If an int (and `config_byte` is None) then the 3-bit Cycle Time field is set to this value
+- If an int (and `config_byte` is None) then the 3-bit Cycle Time field is set to this value - must be in range 0b000 to 0b111
 - If None (and `config_byte` is None), then the default value set at instantiation is used
 
 `alert_hold` (int, default None)
 - Value for the Alert Hold field in the configuration register
-- Must be 0 or 1
-- If an int (and `config_byte` is None) then the field is set to this value
+- If an int (and `config_byte` is None) then the field is set to this value - must be 0 or 1
 - If None (and `config_byte` is None), then the default value set at instantiation is used
 
 `alert_flag_en` (int, default None)
 - Value for the Alert Flag Enable field in the configuration register
-- Must be 0 or 1
-- If an int (and `config_byte` is None) then the field is set to this value
+- If an int (and `config_byte` is None) then the field is set to this value - must be 0 or 1
 - If None (and `config_byte` is None), then the default value set at instantiation is used
 
 `alert_pin_en` (int, default None)
 - Value for the Alert Pin Enable field in the configuration register
-- Must be 0 or 1
-- If an int (and `config_byte` is None) then the field is set to this value
+- If an int (and `config_byte` is None) then the field is set to this value - must be 0 or 1
 - If None (and `config_byte` is None), then the default value set at instantiation is used
 
 `polarity` (int, default None)
 - Value for the Polarity field in the configuration register
-- Must be 0 or 1
-- If an int (and `config_byte` is None) then the field is set to this value
+- If an int (and `config_byte` is None) then the field is set to this value - must be 0 or 1
 - If None (and `config_byte` is None), then the default value set at instantiation is used
 
 
@@ -370,6 +371,8 @@ to construct the configuration byte.  For example:
 
 ***ADC121C class member function***
 
+The register value is converted to a voltage based on Vref
+
 
 ### Returns
 - Vlow alert level voltage (float) on success
@@ -405,6 +408,8 @@ to construct the configuration byte.  For example:
 # read_vhigh_alert_limit () - Return the Vhigh alert register voltage level
 
 ***ADC121C class member function***
+
+The register value is converted to a voltage based on Vref
 
 
 ### Returns
@@ -442,6 +447,8 @@ to construct the configuration byte.  For example:
 
 ***ADC121C class member function***
 
+The register value is converted to a voltage based on Vref
+
 
 ### Returns
 - Vhyst alert level voltage on success
@@ -478,7 +485,7 @@ The reset state is 0x0FFF (maximum count value, effectively Vref).
 
 ***ADC121C class member function***
 
-The register value is converted to a voltage based on Vref.
+The register value is converted to a voltage based on Vref
 
 
 ### Returns
@@ -524,7 +531,7 @@ The reset state is 0x0000 (minimum count value, effectively 0.0V).
 
 ***ADC121C class member function***
 
-The register value is converted to a voltage based on Vref.
+The register value is converted to a voltage based on Vref
 
 
 ### Returns

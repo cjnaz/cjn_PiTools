@@ -5,7 +5,7 @@ Produce / compare to golden results:
     ./MCP23008-demo.py > testrun.log
 
     Expected differences:
-        During init, GPIO may read 0b11110000 due to floating input pins pulled high in prior testing
+        During init, GPIO may read 0b11110000 due to floating input pins pulled high in prior testing, otherwise 0b00000000
         pi_i2c object addresses in test 13
 """
 
@@ -307,8 +307,8 @@ if __name__ == '__main__':
     if check_tnum('50', include0=False):
         def func():
             xx = MCP23008('My_MCP23008', 0x20, i2c_bus_handle_smbus,
-                          init_settings={'IODIR': 0b11110000, 'GPPU': 0b11110000, 'OLAT': 0b00000110})
-        dotest ("Module documentation", "None", func)
+                          init_settings={'IODIR': 0b11110000, 'GPPU': 0b11110000, 'OLAT': 0b00000000})
+        dotest ("Clear outputs", "None", func)
 
 
 

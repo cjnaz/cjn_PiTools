@@ -1,13 +1,19 @@
 # ADC121C (and related family) ADC driver for Raspberry Pi
 
-Skip to [API documentation](#links)
+Skip to the [API documentation](#links)
 
 This module provides a clean and complete API for the ADC121C ADC, and related family devices, including:
 - ADC121C021, ADC121C021Q, and ADC121C027 12-bit ADCs
 - ADC101C021, ADC101C021Q, and ADC101C027 10-bit ADCs
 - ADC081C021, ADC081C021Q, and ADC081C027 8-bit ADCs
 
-Supports both smbus and pigpio (local and remote) interfaces/APIs
+Supports:
+- reading conversion results and alert status
+- writing and reading all config register fields
+- writing and reading the alert limit registers
+- reading and resetting the lowest and highest conversion result capture registers
+- Detailed debug-level visibility on operations
+- Both smbus and pigpio (local and remote) interfaces/APIs
 
 Tested on Python 3.9.2.
 

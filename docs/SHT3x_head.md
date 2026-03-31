@@ -1,8 +1,8 @@
 # SHT3x Temperature/RH sensor library for Raspberry Pi
 
-Skip to [API documentation](#links)
+Skip to the [API documentation](#links)
 
-This module provides a clean and complete API for the SHT3x series of temperature/RH sensors, including SHT30, SHT31, and SHT35.
+This module provides a clean and complete API for the SHT3x series of temperature/RH sensors, including SHT30, SHT31, and SHT35 (these are all just manufacturing performance grades of the same die).
 
 Supports:
 - Reading single-shot mode temperature and RH values using either I2C bus clock stretching mode or non-clock stretching mode (your code is responsible for measurement delays)
@@ -11,6 +11,7 @@ Supports:
 - Control of the on-die heater
 - Configuring and read back of the alert registers
 - Asserting a soft_reset
+- Detailed debug-level visibility on operations
 - Both smbus and pigpio (local and remote) interfaces/APIs
 
 Tested on Python 3.9.2

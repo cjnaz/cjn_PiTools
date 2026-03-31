@@ -199,7 +199,7 @@ Follow with calls to `<sensor>.read_temperature2()` for each sensor on the bus.
 ***DS18B20 class member function***
 
 ### Returns
-- (int) 1 if any sensor on this sensor's bus has not yet been read with read_temperature2()
+- (int) 1 if any sensor on this sensor's bus has not yet been read with `read_temperature2()`
 - (int) 0 if all sensors on this sensor's bus have been read
 - (int) -1 if at least one sensor is still in conversion
         """
@@ -271,11 +271,11 @@ and return a new measurement.  No CRC check is possible.
 
     def read_scratchpad(self):
         """
-## read_scratchpad () - Return the w1_slave file line 1 - forces a new temperature conversion
+## read_scratchpad () - Forces a new temperature conversion and returns the w1_slave file line 1
 
 ***DS18B20 class member function***
 
-With debug logging, logs full w1_slave file, temperature (bytes 0 & 1), TH and TL (bytes 2 & 3), and resolution in the config register (byte 4).
+With debug logging, logs full w1_slave file, temperature (bytes 0 & 1), TH and TL (bytes 2 & 3), and resolution in the configuration register (byte 4).
 
 ### Returns
 - (str) Just line 1 (9 bytes and CRC calc/confirmation) from the w1_slave file (not the second line which include 't=xxxxx')
@@ -307,7 +307,7 @@ With debug logging, logs full w1_slave file, temperature (bytes 0 & 1), TH and T
         TL = (TL_byte & 0x7f)-128  if TL_byte & 0x80  else TL_byte
         ds18b20_logger.debug (f"<{self.device_id} / {self.device_name}> Low  alarm limit:  {line[3]}     {TL:3} C,      {CtoF(TL):7.3f} F,  {CtoK(TL):7.3f} K")
 
-        # Decode resolution code from config register
+        # Decode resolution code from configuration register
         resolution = (int(line[4], base=16) >> 5) + 9
         ds18b20_logger.debug (f"<{self.device_id} / {self.device_name}> Resolution:        {line[4]}      {resolution}")
 
@@ -326,12 +326,12 @@ With debug logging, logs full w1_slave file, temperature (bytes 0 & 1), TH and T
 
     def get_resolution(self):
         """
-## get_resolution () - Return the current resolution setting in the config register
+## get_resolution () - Return the current resolution setting in the configuration register
 
 ***DS18B20 class member function***
 
 ### Returns
-- (int) Current resolution setting in the config register, eg 12
+- (int) Current resolution setting in the configuration register, eg 12
         """
         resolution = int(((self.sensor_path / 'resolution')).read_text()[:-1])
         ds18b20_logger.debug (f"<{self.device_id} / {self.device_name}> Current resolution setting:    {resolution}")
@@ -377,13 +377,13 @@ With debug logging, logs full w1_slave file, temperature (bytes 0 & 1), TH and T
 
     def get_alarm_temps(self):
         """
-## get_alarm_temps () - Return the current <TH TL> alarm settings
+## get_alarm_temps () - Return the current <TH TL> alarm threshold settings
 
 ***DS18B20 class member function***
 
 ### Returns
 - (str) Current <TL TH> alarm settings pair, eg '-15 20'
-- Values are degrees C
+- Values are in degrees C
         """
 
         alarm_temps = ((self.sensor_path / 'alarms')).read_text()[:-1]
@@ -399,11 +399,11 @@ With debug logging, logs full w1_slave file, temperature (bytes 0 & 1), TH and T
 
     def set_alarm_temps(self, TL, TH):
         """
-## set_alarm_temps (TL, TH) - Set the alarm TL and TH registers - requires root privilege (sudo)
+## set_alarm_temps (TL, TH) - Set the alarm threshold TL and TH registers - requires root privilege (sudo)
 
 ***DS18B20 class member function***
 
-Values must be between -55C and +125C.  w1_therm sets TL to the lower of the two temps, TH to the higher.
+Values must be between -55C and +125C.  w1_therm sets TL to the lower of the two passed-in temps, TH to the higher.
 
 ### Parameters
 `TL` (int or str)
@@ -561,20 +561,10 @@ Values must be between -55C and +125C.  w1_therm sets TL to the lower of the two
 #=====================================================================================
 
 def cli():
-
-    import time
-    import argparse
-    import datetime
-    import sys
-    import importlib.metadata
-    __version__ = importlib.metadata.version(__package__ or __name__)
-
-    set_toolname (TOOLNAME)
-
-    desc = """DS18B20 driver and CLI/demo for Raspberry Pi
+    """DS18B20 driver and CLI/demo for Raspberry Pi
 
 Modes:
-    0:  Dump info for all sensors (-m 0)  (DeviceID is optional, ignored for mode 0 only)
+    0:  Dump info for all sensors (-m 0)  (DeviceID is optional & ignored for mode 0 only)
     1:  Get current temp (<DeviceID> -m 1)
     2:  Read scratchpad (<DeviceID> -m 2)
     3:  Get current resolution (<DeviceID> -m 3)
@@ -592,10 +582,18 @@ Modes:
     21: Demonstrate saving alarm/resolution to EEPROM and restoring (<DeviceID> -m 21)
     22: Demonstrate bulk/parallel temperature conversions and sensor reads (<DeviceID> -m 22) (Supply the DeviceID of one of the sensors on the bus of interest.)
 """
+    import time
+    import argparse
+    import datetime
+    import sys
+    import importlib.metadata
+    __version__ = importlib.metadata.version(__package__ or __name__)
+
+    set_toolname (TOOLNAME)
 
     DEFAULT_NAME = "DS18B20"
 
-    parser = argparse.ArgumentParser(description=desc + __version__, formatter_class=argparse.RawTextHelpFormatter)
+    parser = argparse.ArgumentParser(description=cli.__doc__ + __version__, formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument('DeviceID', nargs='?', default='NOT-SPECIFIED',
                         help=f"ID of target device, eg 28-0b2280337113")
     parser.add_argument('-m', '--mode', type=int, default=0,

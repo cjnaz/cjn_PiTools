@@ -14,11 +14,11 @@ The initW1buses module addresses these two problems by:
 
 ## Setup / Installation
 
-If (and only if) you wish to use the DS18B20 bulk read trigger capability then install `initW1buses.service`, as follows:
+If (and only if) you wish to use the DS18B20 bulk read trigger capability as a non-privileged user, then install `initW1buses.service`, as follows:
 
 1. Run the initial user setup:  `initW1buses --setup-user`.  This will extract `/home/<me>/.config/initW1buses/initW1buses.service` from the package distribution.
 
-1. Adjust `initW1buses.service` for the path to the initW1buses stub/alias (per `which initW1buses`).  Also optionally specify a GPIO pin to be driven high or low using the `--GPIO` switch (`--HiLo` defaults to 1), and optionally change the `--delay` time to allow all W1 devices to be found by the kernel.
+1. Adjust `initW1buses.service` for the path to the initW1buses file stub/alias (per `which initW1buses`).  Also optionally specify a GPIO pin to be driven high or low using the `--GPIO` switch (`--HiLo` defaults to 1), and optionally change the `--delay` time to allow all W1 devices to be found by the kernel.
 
 1. Install `initW1buses.service` into systemd:
    - `sudo cp initW1buses.service /etc/systemd/system; sudo systemctl daemon-reload; sudo systemctl enable --now initW1buses.service`
@@ -53,4 +53,31 @@ optional arguments:
   -s, --status          Display status of W1 buses initialization
   --setup-user          Install starter files in user space
   -V, --version         Print version number and exit
+```
+
+The status output should look like this:
+
+```
+$ initW1buses --status
+--------- Service status --------------------
+
+● initW1buses.service - Initialize W1 busses therm_bulk_read permission
+     Loaded: loaded (/etc/systemd/system/initW1buses.service; enabled; vendor preset: enabled)
+     Active: active (exited) since Sun 2026-03-29 07:34:01 MST; 1 day 4h ago
+    Process: 352 ExecStart=/home/<me>/devel/venvs/pydev-3.9/bin/initW1buses --GPIO 21 (code=exited, status=0/SUCCESS)
+   Main PID: 352 (code=exited, status=0/SUCCESS)
+        CPU: 1.057s
+
+Mar 29 07:33:39 testhost systemd[1]: Starting Initialize W1 busses therm_bulk_read permission...
+Mar 29 07:33:41 testhost initW1buses[352]:     initW1buses.cli                  -  WARNING:  Set GPIO <21> to drive <1>
+Mar 29 07:33:41 testhost initW1buses[352]:     initW1buses.cli                  -  WARNING:  Waiting 20 seconds for W1 devices discovery
+Mar 29 07:34:01 testhost initW1buses[352]:     initW1buses.cli                  -  WARNING:  Found and enabled write access to </sys/devices/w1_bus_master1/therm_bulk_read>
+Mar 29 07:34:01 testhost systemd[1]: Finished Initialize W1 busses therm_bulk_read permission.
+
+--------- Found buses and sensors --------------------
+/sys/devices/w1_bus_master1
+    /sys/devices/w1_bus_master1/therm_bulk_read:   <-rw-rw-rw->
+    Sensors
+        /sys/devices/w1_bus_master1/28-0b228004203c
+        /sys/devices/w1_bus_master1/28-0b2280337113
 ```
