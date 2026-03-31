@@ -60,5 +60,6 @@ If using the pigpio driver:
 <br/>
 
 ## Revision history
+- 1.1.1 260401 - pyproject.toml cleanup, keywords
 - 1.1 260401 - Added ADC121C, HTU21D, MCP23008, PCA9548, and SHT3x drivers
 - 1.0 260207 - New.  Bundled PiBlinky, PiOLED, initW1buses, and DS18B20 modules
