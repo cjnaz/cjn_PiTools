@@ -76,10 +76,10 @@ pca9548_resBd_handle_pigpio =   PCA9548(PCA9548_RESBD['name'], PCA9548_RESBD['ad
 pca9548_resBd_handle_pigpio.write_control_reg (0b110)      # Enable Channels 1 and 2 (SHT3x devices available at 0x44 and 0x45)
 
 # Instantiate and configure SHT3x sensors
-sht3x_44_inst_smbus =   SHT3x('sht3x44', 0x44, i2c_bus_handle_smbus)
-sht3x_44_inst_pigpio =  SHT3x('sht3x44', 0x44, i2c_bus_handle_pigpio)
-sht3x_45_inst_smbus =   SHT3x('sht3x45', 0x45, i2c_bus_handle_smbus)
-sht3x_45_inst_pigpio =  SHT3x('sht3x45', 0x45, i2c_bus_handle_pigpio)
+sht3x_44_inst_smbus =   SHT3x('sht3x44', 0x44, i2c_bus_handle_smbus, do_reset=False)
+sht3x_44_inst_pigpio =  SHT3x('sht3x44', 0x44, i2c_bus_handle_pigpio, do_reset=False)
+sht3x_45_inst_smbus =   SHT3x('sht3x45', 0x45, i2c_bus_handle_smbus, do_reset=False)
+sht3x_45_inst_pigpio =  SHT3x('sht3x45', 0x45, i2c_bus_handle_pigpio, do_reset=False)
 
 # sht3x_44_inst_smbus.clear_status_reg()
 # sht3x_45_inst_smbus.clear_status_reg()

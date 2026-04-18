@@ -40,6 +40,7 @@ TOOLNAME =                      'PiOLED'
 CONFIG_FILE =                   'PiOLED_server.cfg'       # Abs, or relative to the core.tool.config_dir
 PIOLED_GO_FLAG =                'PiOLED_go_flag'
 PIOLED_FILE_LOCK =              'PiOLED_file_lock'
+PRINT_LOG_LENGTH_DEFAULT =      50
 
 SERVER_FILE_LOGGING_FORMAT =    '{asctime} {module:>15}.{funcName:20} * {levelname:>8}:  {message}'
 SERVER_CONS_LOGGING_FORMAT =              '{module:>15}.{funcName:20} * {levelname:>8}:  {message}'
@@ -64,8 +65,8 @@ pioled_logger = logging.getLogger('cjn_PiTools.PiOLED')
 set_toolname (TOOLNAME)
 # print (core.tool)
 
-pioled_go_flag =                resource_lock(PIOLED_GO_FLAG)
-pioled_file_lock =              resource_lock(PIOLED_FILE_LOCK)
+# pioled_go_flag =                resource_lock(PIOLED_GO_FLAG)
+# pioled_file_lock =              resource_lock(PIOLED_FILE_LOCK)
 
 
 
@@ -84,21 +85,28 @@ class pioled_display_driver:
                  name='pioled_driver',
                  page_time=PIOLED_PAGE_TIME,
                  inter_page_time=PIOLED_INTER_PAGE_TIME,
-                 inter_message_set_time=PIOLED_INTER_MESSAGE_SET_TIME
+                 inter_message_set_time=PIOLED_INTER_MESSAGE_SET_TIME,
+                 toolname = 'toolname not set'
                  ):
         global pioled_logger
+        global pioled_go_flag, pioled_file_lock
+
         self.queue = queue
         self.display_file = Path(display_file)
         self.name = name
         self.page_time = page_time
         self.inter_page_time = inter_page_time
         self.inter_message_set_time = inter_message_set_time
+        self.toolname = toolname
         self.saved_message_set = {'cmd:':None, 'cnt':None, 'pages':[[{'x':0,  'y':0,  'size':18, 'text':"Warning"},
                                                                      {'x':10, 'y':20, 'size':12, 'text':"Message set Restored"},
                                                                      {'x':10, 'y':32, 'size':12, 'text':"before Saved"}]]}
 
+        pioled_go_flag =    resource_lock(PIOLED_GO_FLAG)
+        pioled_file_lock =  resource_lock(PIOLED_FILE_LOCK)
+
         # Check access to pioled_file_lock and display_file
-        if not pioled_file_lock.get_lock(lock_info='pioled_display_driver startup file access check', timeout=2):
+        if not pioled_file_lock.get_lock(lock_info=self.toolname + ' - pioled_display_driver startup file access check', timeout=2):
             pioled_logger.warning (f"Failed to get pioled_file_lock during pioled_display_driver startup - Continuing. Current lock owner: <{pioled_file_lock.get_lock_info()}>")
         else:
             try:
@@ -238,7 +246,7 @@ class pioled_display_driver:
                 pioled_logger.warning (f"Expecting list or dict, found type {type(line)}: <{line}> - Skipping\n  {message_list}")
                 return 1
 
-        if not pioled_file_lock.get_lock(lock_info='message_page'):
+        if not pioled_file_lock.get_lock(lock_info=self.toolname + ' - message_page'):
             periodic_log(f"Failed to get pioled_file_lock. Current lock owner: <{pioled_file_lock.get_lock_info()}> - Skipping",
                          category='get_lock', logger_name='pioled_logger', log_interval='1h', log_level=logging.WARNING)
             return 1
@@ -251,14 +259,14 @@ class pioled_display_driver:
                 ofile.flush()
 
         try:
-            run_with_timeout(_write_display_file, rwt_timeout=0.2)
+            run_with_timeout(_write_display_file, rwt_timeout=0.5)
         except Exception as e:
             periodic_log(f"Failed to write the display_file - Skipping\n  {type(e).__name__}: {e}",
                          category='display_file write', logger_name='pioled_logger', log_interval='1h', log_level=logging.WARNING)
             pioled_file_lock.unget_lock(where_called='message_page failed to write the display file')
             return 1
 
-        pioled_go_flag.get_lock(lock_info='message_page')
+        pioled_go_flag.get_lock(lock_info=self.toolname + ' - message_page')
 
         if message_time > 0:
             time.sleep(message_time)
@@ -280,8 +288,13 @@ def service():
     """
 
     global pioled_disp        # Used in _oneliner() service_int_handler()
+    global pioled_go_flag, pioled_file_lock
+
     signal.signal(signal.SIGINT,  service_int_handler)      # Ctrl-C
     signal.signal(signal.SIGTERM, service_int_handler)      # kill <pid>
+
+    pioled_go_flag =    resource_lock(PIOLED_GO_FLAG)
+    pioled_file_lock =  resource_lock(PIOLED_FILE_LOCK)
 
     pioled_disp = pioled()
     _oneliner("PiOLED service started")
@@ -290,7 +303,7 @@ def service():
     logging.debug (pioled_disp)
 
     pioled_file_lock.unget_lock(where_called="PiOLED service startup", force=True)  # Restarting the server will force unget the locks
-    pioled_go_flag.unget_lock(where_called="PiOLED service startup", force=True)
+    pioled_go_flag.unget_lock  (where_called="PiOLED service startup", force=True)
 
 
     while 1:
@@ -323,7 +336,7 @@ def service():
                 except Exception as e:
                     logging.warning (f"Error processing contents: {contents}\n  {type(e).__name__}: {e}")
 
-                pioled_go_flag.unget_lock(where_called='service loop end', force=True)
+                pioled_go_flag.unget_lock  (where_called='service loop end', force=True)
                 pioled_file_lock.unget_lock(where_called='service loop end', force=True)
 
         time.sleep(0.01)
@@ -341,7 +354,7 @@ def service_int_handler(signal, frame):
     _oneliner("PiOLED service exiting")
     time.sleep(2)
     pioled_file_lock.unget_lock(where_called='service_int_handler', force=True)
-    pioled_go_flag.unget_lock(where_called='service_int_handler', force=True)
+    pioled_go_flag.unget_lock  (where_called='service_int_handler', force=True)
     sys.exit(0)     # Display is cleared by luma when the service process terminates
 
 
@@ -430,23 +443,22 @@ class pioled_font_manager:
 #=====================================================================================
 
 def cli():
-    """
-PiOLED's interactive commands:
-- `PiOLED message` displays a multi-line message on the display, supporting list and 
-  dictionary formats - see PiOLED.md for format info.  Example:
+    """**** PiOLED's interactive commands ****
 
-    PiOLED message "[0, 0, 18, 'Wherever you go...'], {'x':10, 'y':20, 'size':20, 'text':'there you are.', 'font':'ProggyTiny.ttf'}"
-
-- `PiOLED blank`  clears the display
-- `PiOLED status` displays the state of the server process, and the ipc semaphores
-- `PiOLED unlock` releases the ipc semaphores, which are normally released by the server process
+    status      Display the state of the server process, and the ipc semaphores
+    unlock      Release the ipc semaphores, which are normally released by the server process
+    taillog     Print the tail (last 50 lines) of the server log file
+    blank       Clear the display
+    message     Display a multi-line message on the display, supporting list and dictionary formats - Example:
+            PiOLED message "[0, 0, 18, 'Wherever you go...'], {'x':10, 'y':20, 'size':20, 'text':'there you are.', 'font':'ProggyTiny.ttf'}"
 """
+
     global config, args
     global logging
     global display_file
     global pioled_logger
 
-    commands = ['message', 'blank', 'status', 'unlock']
+    commands = ['message', 'blank', 'status', 'unlock', 'taillog']
     parser = argparse.ArgumentParser(description=cli.__doc__ + __version__, formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument('Command', nargs='?', choices=commands,
                         help=f"Interactive mode Command")
@@ -500,17 +512,35 @@ PiOLED's interactive commands:
     logging.warning (f"Config file <{config.config_full_path}>, display_file: <{display_file}>")
 
 
-    # Service/server mode
+    # ----------- S e r v i c e / S e r v e r   m o d e -----------
     if args.service:
-        set_logging_level ([logging.WARNING, logging.INFO, logging.DEBUG][args.verbose])    # set server root logger level for service process
-        if args.verbose == 2:
-            logging.getLogger('cjnfuncs.resourcelock').setLevel(logging.DEBUG)
+        ll = [config.getcfg('LogLevel', logging.WARNING), logging.INFO, logging.DEBUG][args.verbose]
+        set_logging_level (ll)                                          # Set root logger level for the server process
+        set_logging_level (ll, logger_name='cjnfuncs.resourcelock')     # info level logs pioled_go_flag and pioled_file_lock handles
+
+        # if args.verbose == 2:
+        #     logging.getLogger('cjnfuncs.resourcelock').setLevel(logging.DEBUG)
         if args.val_logfile:
             setuplogging (call_logfile=args.val_logfile, call_logfile_wins=True, FileLogFormat=SERVER_CONS_LOGGING_FORMAT)
         service()                                                                           # service never returns
 
 
-    # Interactive commands
+    # ----------- Interactive Commands setups  -----------
+    setuplogging(ConsoleLogFormat=CLI_CONSOLE_LOGGING_FORMAT)
+    ll = [logging.WARNING, logging.INFO, logging.DEBUG][args.verbose]
+    set_logging_level (ll, logger_name='cjn_PiTools.PiOLED')
+    set_logging_level (ll, logger_name='cjnfuncs.resourcelock')
+    
+    # if args.verbose == 2:
+    #     logging.getLogger('cjnfuncs.resourcelock').setLevel(logging.DEBUG)
+
+    import queue
+    pioled_q =  queue.Queue()
+    pioled =    pioled_display_driver(pioled_q, display_file=display_file)
+    pioled.start()
+
+
+    # ----------- S T A T U S -----------
     if args.Command == 'status':
         import subprocess
         print ("-----------------------------")
@@ -521,6 +551,8 @@ PiOLED's interactive commands:
         print ("-----------------------------")
         sys.exit()
 
+
+    # ----------- U N L O C K -----------
     if args.Command == 'unlock':
         print (f"Before forced unlock:  PiOLED_go_flag is currently set?      <{pioled_go_flag.is_locked()}>")
         pioled_go_flag.unget_lock(force=True, where_called='PiOLED.main - UNLOCK forced unlock')
@@ -530,19 +562,30 @@ PiOLED's interactive commands:
         print (f"After  forced unlock:  PiOLED_file_lock is currently locked? <{pioled_file_lock.is_locked()}>")
         sys.exit()
 
-    setuplogging(ConsoleLogFormat=CLI_CONSOLE_LOGGING_FORMAT)
-    set_logging_level ([logging.WARNING, logging.INFO, logging.DEBUG][args.verbose], logger_name='cjn_PiTools.PiOLED')
-    if args.verbose == 2:
-        logging.getLogger('cjnfuncs.resourcelock').setLevel(logging.DEBUG)
 
-    import queue
-    pioled_q =  queue.Queue()
-    pioled =    pioled_display_driver(pioled_q, display_file=display_file)
-    pioled.start()
+    # ----------- T A I L L O G -----------
+    if args.Command == 'taillog':
+        from cjnfuncs.mungePath import mungePath
+        import collections
 
+        try:
+            logfile = mungePath(config.getcfg('LogFile'), core.tool.log_dir_base).full_path
+            nlines = config.getcfg("PrintLogLength", PRINT_LOG_LENGTH_DEFAULT)
+            print (f"Tail of  <{logfile}>:")
+            _xx = collections.deque(logfile.open(), nlines)
+            for line in _xx:
+                print (line, end="")
+        except Exception as e:
+            print (f"Couldn't print the log file.  LogFile defined in the config file?\n  {type(e).__name__}: {e}")
+        sys.exit()
+
+
+    # ----------- B L A N K -----------
     if args.Command == 'blank':
         pioled.blank()
 
+
+    # ----------- M E S S A G E -----------
     if args.Command == 'message':
         try:
             message = args.Message.strip()

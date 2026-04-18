@@ -1,6 +1,10 @@
 [project]
 name = 'cjn_PiTools'
-version = "1.1.1"
+version = "1.1.2rc1"
+    # 1.1.2rc1
+    #   PiOLED add toolname to pioled_display_driver pioled_file_lock and pioled_go_flag .get_lock() calls
+    #   PiOLED taillog command
+    #   Debug logging of MCP23008 set_register() and set_bits() values
     # 1.1.1 - pyproject.toml cleanup, Added to keywords
     # 1.1 - Final cleanup, release
     # 1.0.1 - PiOLED startup display file access check debug

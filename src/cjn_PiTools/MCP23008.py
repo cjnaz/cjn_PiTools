@@ -298,6 +298,7 @@ values, and current read values, e.g.,
             # Write the register
             try:
                 self.pi_i2c_bus_handle.i2c_write_device (self.device_addr, [self.registers[item]['addr'], value])
+                mcp23008_logger.debug (f"<{self.device_name}> Reg <{item}> set to <0b{value:0>8b}>")
             except Exception as e:
                 mcp23008_logger.debug (f"<{self.device_name}> exception:\n  {type(e).__name__}: {e}")
                 return I2C_ERROR
@@ -371,12 +372,13 @@ are made to the cached value, not the value read from the device.
         # Write the register
         try:
             self.pi_i2c_bus_handle.i2c_write_device (self.device_addr, [self.registers[reg_name]['addr'], value])
+            mcp23008_logger.debug (f"<{self.device_name}> Reg <{reg_name}> set to <0b{value:0>8b}>")
         except Exception as e:
             mcp23008_logger.debug (f"<{self.device_name}> exception:\n  {type(e).__name__}: {e}")
             return I2C_ERROR
 
         # If successful, cache the value
-        self.registers[reg_name]['cached'] = value   # Save new value to 
+        self.registers[reg_name]['cached'] = value
 
         return 0
 
