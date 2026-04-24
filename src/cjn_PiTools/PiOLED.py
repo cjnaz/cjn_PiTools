@@ -534,10 +534,12 @@ def cli():
     # if args.verbose == 2:
     #     logging.getLogger('cjnfuncs.resourcelock').setLevel(logging.DEBUG)
 
-    import queue
-    pioled_q =  queue.Queue()
-    pioled =    pioled_display_driver(pioled_q, display_file=display_file)
-    pioled.start()
+    # import queue
+    # pioled_q =  queue.Queue()
+    # pioled =    pioled_display_driver(pioled_q, display_file=display_file, toolname=TOOLNAME)
+    # pioled.start()
+    pioled_go_flag =    resource_lock(PIOLED_GO_FLAG)
+    pioled_file_lock =  resource_lock(PIOLED_FILE_LOCK)
 
 
     # ----------- S T A T U S -----------
@@ -580,7 +582,13 @@ def cli():
         sys.exit()
 
 
+
     # ----------- B L A N K -----------
+    import queue
+    pioled_q =  queue.Queue()
+    pioled =    pioled_display_driver(pioled_q, display_file=display_file, toolname=TOOLNAME)
+    pioled.start()
+
     if args.Command == 'blank':
         pioled.blank()
 
