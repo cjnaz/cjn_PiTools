@@ -22,6 +22,7 @@ Produce / compare to golden results:
 #
 #  Chris Nelson, 2024-2026
 #
+# 1.1 260503 - Updated for shared memory implementation
 # 1.0 260401 - New
 #
 #==========================================================
@@ -37,20 +38,14 @@ import re
 import queue
 from pathlib import Path
 
-from cjnfuncs.core import           set_toolname, logging, set_logging_level
-from cjnfuncs.resourcelock import   resource_lock
+from cjnfuncs.core import           set_toolname, logging, set_logging_level, setuplogging
 from cjn_PiTools.PiOLED import      pioled_display_driver, PIOLED_TH_EXIT, PIOLED_TH_PAUSE, PIOLED_SAVE, PIOLED_RESTORE
 
-
-DISPLAY_FILE =      '/mnt/RAMDRIVE/pioled_display.txt'
-PIOLED_GO_FLAG =    'PiOLED_go_flag'
-PIOLED_FILE_LOCK=   'PiOLED_file_lock'
-
-pioled_go_flag =    resource_lock(PIOLED_GO_FLAG)
-pioled_file_lock=   resource_lock(PIOLED_FILE_LOCK)
+LOGGING_FORMAT =    '{asctime} {module:>15}.{funcName:20} - {levelname:>8}:  {message}'
 
 
 set_toolname(TOOLNAME)
+setuplogging(ConsoleLogFormat=LOGGING_FORMAT)
 set_logging_level(logging.DEBUG)
 logging.getLogger('cjn_PiTools').setLevel(logging.WARNING)
 
@@ -67,7 +62,7 @@ if cli_args.verbose:
     logging.getLogger('cjnfuncs.resourcelock').setLevel(logging.DEBUG)
 
 
-logging.warning (f"\n\n---- Test Init ------------------------------------------------------")
+# logging.warning (f"\n\n---- Test Init ------------------------------------------------------")
 
 
 def print_test_header(header):
@@ -89,10 +84,10 @@ def check_tnum(tnum_in, include0='0'):
     return False
 
 
-def do_setup(page_time=1, inter_page_time=0.2, inter_message_set_time=2, display_file=DISPLAY_FILE):
+def do_setup(page_time=1, inter_page_time=0.2, inter_message_set_time=2): #, display_file=DISPLAY_FILE):
     # Returns tuple:  queue handle, pioled class instance, and pioled thread handle
     pioled_q =    queue.Queue()
-    pioled =      pioled_display_driver(pioled_q, display_file=display_file,
+    pioled =      pioled_display_driver(pioled_q, toolname=TOOLNAME,
                     page_time=page_time, inter_page_time=inter_page_time, inter_message_set_time=inter_message_set_time)
     return pioled_q, pioled, pioled.start()
 
@@ -689,7 +684,7 @@ if __name__ == '__main__':
         m2 = [[0, 0, 20, "Message2.2"], [5, 30, 12, "No final wait leaves"], [5, 45, 12, "last page displayed."], [100, 50, 12, tnum]]
         msg_set = [m1, m2]
         pioled_q.put ({'cnt':2, 'pages':msg_set, 'inter_page_time':0.2})
-        time.sleep (6.5)    # should be during Message2.1
+        time.sleep (5)    # should be during Message2.1
 
         pioled_q.put ({'cmd':PIOLED_TH_EXIT, 'pages':[[[20, 20, 18, 'Exited'], [100, 50, 12, tnum]]]})
         pioled_th.join()
@@ -720,22 +715,7 @@ if __name__ == '__main__':
 
     #-------------------------------------------------------------------------
     # Error cases
-    if check_tnum('13a'):
-        print_test_header ("Can't find the display file")
-
-        pioled_q, pioled, pioled_th = do_setup()
-
-        try:
-            Path(DISPLAY_FILE).unlink()
-        except:
-            pass
-
-        pioled_go_flag.get_lock(lock_info='Test 13a')
-
-        time.sleep (0.1)
-
-        pioled_q.put ({'cmd':PIOLED_TH_EXIT, 'pages':[[[20, 20, 18, 'Exited'], [100, 50, 12, tnum]]]})
-        pioled_th.join()
+    # if check_tnum('13a'):     # Irrelavant with shared memory implementation rather than display_file
 
 
     if check_tnum('13b'):
@@ -818,44 +798,6 @@ if __name__ == '__main__':
         pioled_th.join()
 
 
-    if check_tnum('13h'):
-        print_test_header ("display file is locked")
-
-        pioled_q, pioled, pioled_th = do_setup()
-
-        pioled_file_lock.get_lock(lock_info='Test 13h setup')
-
-        pioled_q.put ({'pages':[[[0, 0, 20, "display file is locked"]]]})
-
-        time.sleep (1.5)
-
-        pioled_file_lock.unget_lock(where_called='Test 13h end', force=True)
-        pioled_q.put ({'cmd':PIOLED_TH_EXIT, 'pages':[[[20, 20, 18, 'Exited'], [100, 50, 12, tnum]]]})
-        pioled_th.join()
-
-
-    if check_tnum('13i'):
-        print_test_header ("pioled_file_lock-ed on pioled_display_driver instantiation")
-
-        pioled_file_lock.get_lock(lock_info='Test 13i setup')
-
-        pioled_q, pioled, pioled_th = do_setup()
-
-        pioled_file_lock.unget_lock(where_called='Test 13i end', force=True)
-        pioled_q.put ({'cmd':PIOLED_TH_EXIT, 'pages':[[[20, 20, 18, 'Exited'], [100, 50, 12, tnum]]]})
-        pioled_th.join()
-
-
-    if check_tnum('13j'):
-        print_test_header ("No access to display_file on pioled_display_driver instantiation")
-
-        pioled_q, pioled, pioled_th = do_setup(display_file='/no-access')
-
-        pioled_q.put ({'cmd':PIOLED_TH_EXIT, 'pages':[[[20, 20, 18, 'Exited'], [100, 50, 12, tnum]]]})
-        pioled_th.join()
-
-        logging.warning (f"PiOLED_file_lock is_locked <{pioled_file_lock.is_locked()}>,  info: <{pioled_file_lock.get_lock_info()}>")
-
 
     #-------------------------------------------------------------------------
     # Development/testing/debug
@@ -923,5 +865,3 @@ if __name__ == '__main__':
 
 
     logging.warning (f"\n\n---- Cleanup --------------------------------------------------------")
-
-

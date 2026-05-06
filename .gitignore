@@ -5,4 +5,4 @@ mylive/
 mydev/
 *.egg-info/
 .vscode/
-testrun.log
+testrun.txt

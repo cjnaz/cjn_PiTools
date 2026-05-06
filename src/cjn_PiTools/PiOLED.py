@@ -22,6 +22,8 @@ from pathlib import Path
 from types import SimpleNamespace
 from threading import Thread
 from importlib_resources import files as ir_files
+import collections
+
 
 from luma.core import cmdline
 from luma.core.render import canvas
@@ -29,8 +31,8 @@ from PIL import ImageFont
 
 from cjnfuncs.core          import set_toolname, logging, set_logging_level, periodic_log, setuplogging
 from cjnfuncs.configman     import config_item
+from cjnfuncs.mungePath     import mungePath
 from cjnfuncs.resourcelock  import resource_lock
-from cjnfuncs.rwt           import run_with_timeout
 from cjnfuncs.deployfiles   import deploy_files
 import cjnfuncs.core as core
 
@@ -39,7 +41,8 @@ import cjnfuncs.core as core
 TOOLNAME =                      'PiOLED'
 CONFIG_FILE =                   'PiOLED_server.cfg'       # Abs, or relative to the core.tool.config_dir
 PIOLED_GO_FLAG =                'PiOLED_go_flag'
-PIOLED_FILE_LOCK =              'PiOLED_file_lock'
+PIOLED_SHM_LOCK =               'PiOLED_shm_lock'
+PIOLED_SHM =                    'PiOLED_shm'
 PRINT_LOG_LENGTH_DEFAULT =      50
 
 SERVER_FILE_LOGGING_FORMAT =    '{asctime} {module:>15}.{funcName:20} * {levelname:>8}:  {message}'
@@ -65,8 +68,9 @@ pioled_logger = logging.getLogger('cjn_PiTools.PiOLED')
 set_toolname (TOOLNAME)
 # print (core.tool)
 
-# pioled_go_flag =                resource_lock(PIOLED_GO_FLAG)
-# pioled_file_lock =              resource_lock(PIOLED_FILE_LOCK)
+pioled_go_flag =                resource_lock(PIOLED_GO_FLAG)
+pioled_shm_lock =               resource_lock(PIOLED_SHM_LOCK)
+pioled_shm =                    resource_lock(PIOLED_SHM)
 
 
 
@@ -77,50 +81,35 @@ set_toolname (TOOLNAME)
 #=====================================================================================
 
 class pioled_display_driver:
-    """Driver for sending messages on the OLED display via a display_file
+    """Driver for sending messages on the OLED display via shared memory
     This driver/handler is instantiated within the client/tool script/app.
     The config file is not used (used only by the server).
     """
-    def __init__(self, queue, display_file,
-                 name='pioled_driver',
-                 page_time=PIOLED_PAGE_TIME,
-                 inter_page_time=PIOLED_INTER_PAGE_TIME,
+    def __init__(self, queue,
+                 name =                 'pioled_driver',
+                 page_time =            PIOLED_PAGE_TIME,
+                 inter_page_time =      PIOLED_INTER_PAGE_TIME,
                  inter_message_set_time=PIOLED_INTER_MESSAGE_SET_TIME,
-                 toolname = 'toolname not set'
+                 toolname =             'toolname not set'
                  ):
         global pioled_logger
-        global pioled_go_flag, pioled_file_lock
+        global pioled_go_flag, pioled_shm_lock, pioled_shm
 
-        self.queue = queue
-        self.display_file = Path(display_file)
-        self.name = name
-        self.page_time = page_time
-        self.inter_page_time = inter_page_time
-        self.inter_message_set_time = inter_message_set_time
-        self.toolname = toolname
-        self.saved_message_set = {'cmd:':None, 'cnt':None, 'pages':[[{'x':0,  'y':0,  'size':18, 'text':"Warning"},
-                                                                     {'x':10, 'y':20, 'size':12, 'text':"Message set Restored"},
-                                                                     {'x':10, 'y':32, 'size':12, 'text':"before Saved"}]]}
-
-        pioled_go_flag =    resource_lock(PIOLED_GO_FLAG)
-        pioled_file_lock =  resource_lock(PIOLED_FILE_LOCK)
-
-        # Check access to pioled_file_lock and display_file
-        if not pioled_file_lock.get_lock(lock_info=self.toolname + ' - pioled_display_driver startup file access check', timeout=2):
-            pioled_logger.warning (f"Failed to get pioled_file_lock during pioled_display_driver startup - Continuing. Current lock owner: <{pioled_file_lock.get_lock_info()}>")
-        else:
-            try:
-                self.display_file.touch()
-                self.display_file.unlink()
-            except Exception as e:
-                pioled_logger.warning (f"Unable to access oled display_file <{self.display_file}> - Continuing\n  {type(e).__name__}: {e}")
-            pioled_file_lock.unget_lock(where_called="pioled_display_driver startup file access check")
+        self.queue =                    queue
+        self.name =                     name
+        self.page_time =                page_time
+        self.inter_page_time =          inter_page_time
+        self.inter_message_set_time =   inter_message_set_time
+        self.toolname =                 toolname
+        self.saved_message_set =        {'cmd:':None, 'cnt':None, 'pages':[[{'x':0,  'y':0,  'size':18, 'text':"Warning"},
+                                                                            {'x':10, 'y':20, 'size':12, 'text':"Message set Restored"},
+                                                                            {'x':10, 'y':32, 'size':12, 'text':"before Saved"}]]}
 
 
     def start(self):
         self.this_thread = Thread(target=self.message_loop, name=self.name, daemon=True)    # daemon so that if the main thread errors this thread is auto-killed, avoiding hang
         self.this_thread.start()
-        pioled_logger.debug (f"pioled message_loop thread created using display_file <{self.display_file}>")
+        pioled_logger.debug (f"pioled message_loop thread created")
         return self.this_thread
 
 
@@ -246,24 +235,19 @@ class pioled_display_driver:
                 pioled_logger.warning (f"Expecting list or dict, found type {type(line)}: <{line}> - Skipping\n  {message_list}")
                 return 1
 
-        if not pioled_file_lock.get_lock(lock_info=self.toolname + ' - message_page'):
-            periodic_log(f"Failed to get pioled_file_lock. Current lock owner: <{pioled_file_lock.get_lock_info()}> - Skipping",
-                         category='get_lock', logger_name='pioled_logger', log_interval='1h', log_level=logging.WARNING)
+        if not pioled_shm_lock.get_lock(lock_info=self.toolname + ' - message_page'):
+            periodic_log(f"Failed to get pioled_shm_lock. Current lock owner: <{pioled_shm_lock.get_lock_info()}> - Skipping",
+                         category='get pioled_shm_lock', logger_name='pioled_logger', log_interval='1h', log_level=logging.WARNING)
             return 1
 
-        pioled_logger.debug (f"Writing to display_file <{self.display_file}>:\n{xx[:-1]}")      # trim off final \n
-
-        def _write_display_file():
-            with self.display_file.open('wt') as ofile:
-                ofile.write(xx)
-                ofile.flush()
+        pioled_logger.debug (f"Writing to shared memory block:\n{xx[:-1]}")      # trim off final \n
 
         try:
-            run_with_timeout(_write_display_file, rwt_timeout=0.5)
+            pioled_shm.set_lock_info(xx)
         except Exception as e:
-            periodic_log(f"Failed to write the display_file - Skipping\n  {type(e).__name__}: {e}",
-                         category='display_file write', logger_name='pioled_logger', log_interval='1h', log_level=logging.WARNING)
-            pioled_file_lock.unget_lock(where_called='message_page failed to write the display file')
+            periodic_log(f"Unable to access shared memory block - Skipping\n  {type(e).__name__}: {e}",
+                         category='write pioled_shm', logger_name='pioled_logger', log_interval='1h', log_level=logging.WARNING)
+            pioled_shm_lock.unget_lock(where_called='message_page failed to write the display file')
             return 1
 
         pioled_go_flag.get_lock(lock_info=self.toolname + ' - message_page')
@@ -284,17 +268,14 @@ class pioled_display_driver:
 #=====================================================================================
 
 def service():
-    """ Display content of DISPLAY_FILE
+    """ Display content of shared memory pioled_shm
     """
 
-    global pioled_disp        # Used in _oneliner() service_int_handler()
-    global pioled_go_flag, pioled_file_lock
+    global pioled_disp                                      # Used in _oneliner() service_int_handler()
+    global pioled_go_flag, pioled_shm_lock, pioled_shm
 
     signal.signal(signal.SIGINT,  service_int_handler)      # Ctrl-C
     signal.signal(signal.SIGTERM, service_int_handler)      # kill <pid>
-
-    pioled_go_flag =    resource_lock(PIOLED_GO_FLAG)
-    pioled_file_lock =  resource_lock(PIOLED_FILE_LOCK)
 
     pioled_disp = pioled()
     _oneliner("PiOLED service started")
@@ -302,42 +283,36 @@ def service():
     _oneliner("")
     logging.debug (pioled_disp)
 
-    pioled_file_lock.unget_lock(where_called="PiOLED service startup", force=True)  # Restarting the server will force unget the locks
+    pioled_shm_lock.unget_lock (where_called="PiOLED service startup", force=True)  # Restarting the server will force unget the locks
     pioled_go_flag.unget_lock  (where_called="PiOLED service startup", force=True)
-
 
     while 1:
         if pioled_go_flag.is_locked():
-            if not display_file.exists():
-                logging.warning(f"display_file <{display_file}> not found - Skipping")
-                pioled_go_flag.unget_lock(where_called="service loop couldn't find the display_file", force=True)
-                pioled_file_lock.unget_lock(where_called="service loop couldn't find the display_file", force=True)
-            else:
-                try:
-                    contents = display_file.read_text()[:-1]            # drop final \n
-                    logging.debug (f"PiOLED Server received at {datetime.datetime.now()}\n{contents}")
+            try:
+                contents = pioled_shm.get_lock_info()[:-1]          # drop final \n
+                logging.debug (f"PiOLED Server received at {datetime.datetime.now()}\n{contents}")
 
-                    with canvas(pioled_disp.device) as draw:
-                        for line in contents.split('\n'):
-                            _line = ast.literal_eval(line)              # convert text to dict
-                            x =     _line['x']
-                            y =     _line['y']
-                            size =  _line['size']
-                            text =  _line['text']
+                with canvas(pioled_disp.device) as draw:
+                    for line in contents.split('\n'):
+                        _line = ast.literal_eval(line)              # convert text to dict
+                        x =     _line['x']
+                        y =     _line['y']
+                        size =  _line['size']
+                        text =  _line['text']
 
-                            try:
-                                font_size = known_fonts.get_font(_line['font'], size)
-                            except:
-                                font_size = known_fonts.get_font(config.getcfg('Default_font', DISPLAY_DRIVER_FONT), size)  # TODO rework defaults
-                            color = _line['color']  if ('color' in _line  and  _line['color'] is not None)  else config.getcfg('Default_color', DISPLAY_DRIVER_COLOR)
+                        try:
+                            font_size = known_fonts.get_font(_line['font'], size)
+                        except:
+                            font_size = known_fonts.get_font(config.getcfg('Default_font', DISPLAY_DRIVER_FONT), size)  # TODO rework defaults
+                        color = _line['color']  if ('color' in _line  and  _line['color'] is not None)  else config.getcfg('Default_color', DISPLAY_DRIVER_COLOR)
 
-                            draw.text((x, y), text, font=font_size, fill=color)
+                        draw.text((x, y), text, font=font_size, fill=color)
 
-                except Exception as e:
-                    logging.warning (f"Error processing contents: {contents}\n  {type(e).__name__}: {e}")
+            except Exception as e:
+                logging.warning (f"Error processing contents: {contents}\n  {type(e).__name__}: {e}")
 
-                pioled_go_flag.unget_lock  (where_called='service loop end', force=True)
-                pioled_file_lock.unget_lock(where_called='service loop end', force=True)
+            pioled_go_flag.unget_lock  (where_called='service loop end', force=True)
+            pioled_shm_lock.unget_lock (where_called='service loop end', force=True)
 
         time.sleep(0.01)
 
@@ -353,7 +328,7 @@ def service_int_handler(signal, frame):
     logging.warning(f"Signal {signal} received.  Exiting.")
     _oneliner("PiOLED service exiting")
     time.sleep(2)
-    pioled_file_lock.unget_lock(where_called='service_int_handler', force=True)
+    pioled_shm_lock.unget_lock (where_called='service_int_handler', force=True)
     pioled_go_flag.unget_lock  (where_called='service_int_handler', force=True)
     sys.exit(0)     # Display is cleared by luma when the service process terminates
 
@@ -367,6 +342,7 @@ def service_int_handler(signal, frame):
 class pioled:
     """ Interact with the luma.oled driver
     """
+
     def __init__(self):
         global known_fonts
         # Import luma config and instantiate self.device
@@ -455,8 +431,9 @@ def cli():
 
     global config, args
     global logging
-    global display_file
     global pioled_logger
+    global pioled_go_flag, pioled_shm_lock, pioled_shm
+
 
     commands = ['message', 'blank', 'status', 'unlock', 'taillog']
     parser = argparse.ArgumentParser(description=cli.__doc__ + __version__, formatter_class=argparse.RawTextHelpFormatter)
@@ -506,10 +483,8 @@ def cli():
         logging.exception(f"Failed loading config file <{args.config_file}> - Aborting\n  {type(e).__name__}: {e}")
         sys.exit(1)
 
-    display_file = Path(config.getcfg('Display_file'))
 
     logging.warning (f"========== {core.tool.toolname} ({__version__}), pid {os.getpid()} ==========")
-    logging.warning (f"Config file <{config.config_full_path}>, display_file: <{display_file}>")
 
 
     # ----------- S e r v i c e / S e r v e r   m o d e -----------
@@ -518,10 +493,9 @@ def cli():
         set_logging_level (ll)                                          # Set root logger level for the server process
         set_logging_level (ll, logger_name='cjnfuncs.resourcelock')     # info level logs pioled_go_flag and pioled_file_lock handles
 
-        # if args.verbose == 2:
-        #     logging.getLogger('cjnfuncs.resourcelock').setLevel(logging.DEBUG)
         if args.val_logfile:
-            setuplogging (call_logfile=args.val_logfile, call_logfile_wins=True, FileLogFormat=SERVER_CONS_LOGGING_FORMAT)
+            # setuplogging (call_logfile=args.val_logfile, call_logfile_wins=True, FileLogFormat=SERVER_CONS_LOGGING_FORMAT)
+            setuplogging (call_logfile=args.val_logfile, call_logfile_wins=True, FileLogFormat=SERVER_FILE_LOGGING_FORMAT)
         service()                                                                           # service never returns
 
 
@@ -531,16 +505,6 @@ def cli():
     set_logging_level (ll, logger_name='cjn_PiTools.PiOLED')
     set_logging_level (ll, logger_name='cjnfuncs.resourcelock')
     
-    # if args.verbose == 2:
-    #     logging.getLogger('cjnfuncs.resourcelock').setLevel(logging.DEBUG)
-
-    # import queue
-    # pioled_q =  queue.Queue()
-    # pioled =    pioled_display_driver(pioled_q, display_file=display_file, toolname=TOOLNAME)
-    # pioled.start()
-    pioled_go_flag =    resource_lock(PIOLED_GO_FLAG)
-    pioled_file_lock =  resource_lock(PIOLED_FILE_LOCK)
-
 
     # ----------- S T A T U S -----------
     if args.Command == 'status':
@@ -548,8 +512,8 @@ def cli():
         print ("-----------------------------")
         print (f"\n{subprocess.run(['systemctl', 'status', 'PiOLED_server'],  capture_output=True, text=True).stdout}")
         print ("-----------------------------")
-        print (f"\nPiOLED_go_flag is currently set?      <{pioled_go_flag.is_locked()}>,  last locked by: <{pioled_go_flag.get_lock_info()}>")
-        print (f"\nPiOLED_file_lock is currently locked? <{pioled_file_lock.is_locked()}>,  last locked by: <{pioled_file_lock.get_lock_info()}>")
+        print (f"\nPiOLED_go_flag is currently set?   <{pioled_go_flag.is_locked()}>,  last locked by: <{pioled_go_flag.get_lock_info()}>")
+        print (f"\npioled_shm_lock is currently set?  <{pioled_shm_lock.is_locked()}>,  last locked by: <{pioled_shm_lock.get_lock_info()}>")
         print ("-----------------------------")
         sys.exit()
 
@@ -559,16 +523,14 @@ def cli():
         print (f"Before forced unlock:  PiOLED_go_flag is currently set?      <{pioled_go_flag.is_locked()}>")
         pioled_go_flag.unget_lock(force=True, where_called='PiOLED.main - UNLOCK forced unlock')
         print (f"After  forced unlock:  PiOLED_go_flag is currently set?      <{pioled_go_flag.is_locked()}>")
-        print (f"Before forced unlock:  PiOLED_file_lock is currently locked? <{pioled_file_lock.is_locked()}>")
-        pioled_file_lock.unget_lock(force=True, where_called='PiOLED.main - UNLOCK forced unlock')
-        print (f"After  forced unlock:  PiOLED_file_lock is currently locked? <{pioled_file_lock.is_locked()}>")
+        print (f"Before forced unlock:  pioled_shm_lock is currently locked? <{pioled_shm_lock.is_locked()}>")
+        pioled_shm_lock.unget_lock(force=True, where_called='PiOLED.main - UNLOCK forced unlock')
+        print (f"After  forced unlock:  pioled_shm_lock is currently locked? <{pioled_shm_lock.is_locked()}>")
         sys.exit()
 
 
     # ----------- T A I L L O G -----------
     if args.Command == 'taillog':
-        from cjnfuncs.mungePath import mungePath
-        import collections
 
         try:
             logfile = mungePath(config.getcfg('LogFile'), core.tool.log_dir_base).full_path
@@ -582,13 +544,12 @@ def cli():
         sys.exit()
 
 
-
-    # ----------- B L A N K -----------
     import queue
     pioled_q =  queue.Queue()
-    pioled =    pioled_display_driver(pioled_q, display_file=display_file, toolname=TOOLNAME)
+    pioled =    pioled_display_driver(pioled_q, toolname=TOOLNAME)
     pioled.start()
 
+    # ----------- B L A N K -----------
     if args.Command == 'blank':
         pioled.blank()
 
