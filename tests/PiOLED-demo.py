@@ -27,7 +27,7 @@ Produce / compare to golden results:
 #
 #==========================================================
 
-__version__ = "1.0"
+__version__ = "1.1"
 TOOLNAME =      'PiOLED_demo'
 
 import argparse

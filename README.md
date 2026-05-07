@@ -53,13 +53,23 @@ If using the pigpio driver:
 
 <br/>
 
-## Key changes since the prior major public release (1.0)
+## Key changes since the prior major public release (1.1)
 
-- V1.1 added ADC121C, HTU21D, MCP23008, PCA9548, and SHT3x drivers
+V1.2 - Changes
+    PiOLED uses shared memory, changed from display_file - cjnfuncs 3.2 dependency
+    PiOLED add toolname to pioled_display_driver pioled_shm_lock and pioled_go_flag .get_lock() calls
+    PiOLED taillog command
+    Debug logging of MCP23008 set_register() and set_bits() values
+
 
 <br/>
 
 ## Revision history
+- 1.2 - Changes
+    PiOLED uses shared memory, changed from display_file - cjnfuncs 3.2 dependency
+    PiOLED add toolname to pioled_display_driver pioled_shm_lock and pioled_go_flag .get_lock() calls
+    PiOLED taillog command
+    Debug logging of MCP23008 set_register() and set_bits() values
 - 1.1.1 260401 - pyproject.toml cleanup, keywords
 - 1.1 260401 - Added ADC121C, HTU21D, MCP23008, PCA9548, and SHT3x drivers
 - 1.0 260207 - New.  Bundled PiBlinky, PiOLED, initW1buses, and DS18B20 modules

@@ -1,23 +1,22 @@
 [project]
 name = 'cjn_PiTools'
-version = "1.1.2rc3"
-    # 1.1.2rc3 - PiOLED change to shared memory block from display_file
-    # 1.1.2rc2 - scrubbed PiOLED cli lock inits and pioled
-    # 1.1.2rc1
-    #   PiOLED add toolname to pioled_display_driver pioled_file_lock and pioled_go_flag .get_lock() calls
+version = "1.2"
+    #   PiOLED uses shared memory, changed from display_file - cjnfuncs 3.2 dependency
+    #   PiOLED add toolname to pioled_display_driver pioled_shm_lock and pioled_go_flag .get_lock() calls
     #   PiOLED taillog command
     #   Debug logging of MCP23008 set_register() and set_bits() values
     # 1.1.1 - pyproject.toml cleanup, Added to keywords
     # 1.1 - Final cleanup, release
     # 1.0.1 - PiOLED startup display file access check debug
     # 1.0 - New.  Bundled PiBlinky, PiOLED, initW1buses, and DS18B20 modules
+
 description = "cjn's library of Raspberry Pi functions, drivers, tools, ..."
 readme = "README.md"
 requires-python = ">=3.9"
 authors = [ {name = "Chris Nelson", email = "github@cjnaz.com"} ]
 license = "MIT"
 dependencies = [
-    'cjnfuncs >= 3.1.1',
+    'cjnfuncs >= 3.2',
     'luma.oled',
     'pillow',
     'spidev',
