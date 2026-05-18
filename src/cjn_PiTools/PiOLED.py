@@ -512,20 +512,20 @@ def cli():
         print ("-----------------------------")
         print (f"\n{subprocess.run(['systemctl', 'status', 'PiOLED_server'],  capture_output=True, text=True).stdout}")
         print ("-----------------------------")
-        print (f"\nPiOLED_go_flag is currently set?   <{pioled_go_flag.is_locked()}>,  last locked by: <{pioled_go_flag.get_lock_info()}>")
-        print (f"\npioled_shm_lock is currently set?  <{pioled_shm_lock.is_locked()}>,  last locked by: <{pioled_shm_lock.get_lock_info()}>")
+        print (f"\nPiOLED_go_flag  is currently set?  <{pioled_go_flag.is_locked()}>,  last locked by: <{pioled_go_flag.get_lock_info()}>")
+        print (f"\nPiOLED_shm_lock is currently set?  <{pioled_shm_lock.is_locked()}>,  last locked by: <{pioled_shm_lock.get_lock_info()}>")
         print ("-----------------------------")
         sys.exit()
 
 
     # ----------- U N L O C K -----------
     if args.Command == 'unlock':
-        print (f"Before forced unlock:  PiOLED_go_flag is currently set?      <{pioled_go_flag.is_locked()}>")
+        print (f"Before forced unlock:  PiOLED_go_flag  is currently set?     <{pioled_go_flag.is_locked()}>")
         pioled_go_flag.unget_lock(force=True, where_called='PiOLED.main - UNLOCK forced unlock')
-        print (f"After  forced unlock:  PiOLED_go_flag is currently set?      <{pioled_go_flag.is_locked()}>")
-        print (f"Before forced unlock:  pioled_shm_lock is currently locked? <{pioled_shm_lock.is_locked()}>")
+        print (f"After  forced unlock:  PiOLED_go_flag  is currently set?     <{pioled_go_flag.is_locked()}>")
+        print (f"Before forced unlock:  PiOLED_shm_lock is currently locked?  <{pioled_shm_lock.is_locked()}>")
         pioled_shm_lock.unget_lock(force=True, where_called='PiOLED.main - UNLOCK forced unlock')
-        print (f"After  forced unlock:  pioled_shm_lock is currently locked? <{pioled_shm_lock.is_locked()}>")
+        print (f"After  forced unlock:  PiOLED_shm_lock is currently locked?  <{pioled_shm_lock.is_locked()}>")
         sys.exit()
 
 

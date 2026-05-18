@@ -95,7 +95,7 @@ Create a SHT3x family device instance
 
 `do_reset` (bool, default True)
 - If True, call `soft_reset()` and `clear_status_reg()` as part of instantiation
-- If the device is not accessible at the time of instantiation then set `do_reset=False` and reset the device when available
+- Set to False if the device is not available at instantiation time, and reset the device before reading values
 
 
 ### Class instance variables - as passed in at instantiation

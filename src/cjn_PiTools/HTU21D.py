@@ -39,7 +39,7 @@ htu21d_logger = logging.getLogger('cjn_PiTools.HTU21D')
 
 class HTU21D:
     """
-## Class HTU21D (device_name, pi_i2c_bus_handle, do_soft_reset=True) - HTU21D library for Raspberry Pi
+## Class HTU21D (device_name, pi_i2c_bus_handle, do_reset=True) - HTU21D library for Raspberry Pi
 
 Create an HTU21D device instance
 
@@ -50,8 +50,9 @@ Create an HTU21D device instance
 `pi_i2c_bus_handle` (cjn_PiTools.shared.pi_i2c instance)
 - Get a `pi_i2c` instance handle in the tools script code and pass it to this device instantiation
 
-`do_soft_reset` (bool, default True)
+`do_reset` (bool, default True)
 - If True, issue a soft reset as part of instantiation
+- Set to False if the device is not available at instantiation time, and reset the device before reading values
 
 
 ### Class instance variables - as passed in at instantiation
@@ -70,7 +71,7 @@ Create an HTU21D device instance
 
         logging.getLogger('cjn_PiTools.HTU21D').setLevel(logging.DEBUG)
 """
-    def __init__(self, device_name, pi_i2c_bus_handle, do_soft_reset=True):
+    def __init__(self, device_name, pi_i2c_bus_handle, do_reset=True):
         self.device_name =          device_name
         self.device_addr =          HTU21D_ADDR
         self.pi_i2c_bus_handle =    pi_i2c_bus_handle
@@ -78,11 +79,11 @@ Create an HTU21D device instance
         if not isinstance(self.device_name, str):
             raise ValueError (f"HTU21D device_name must be a str.  Received <{device_name}>")
 
-        if not isinstance(do_soft_reset, bool):
-            raise ValueError (f"<{self.device_name}> do_soft_reset must be a bool.  Received <{do_soft_reset}>")
+        if not isinstance(do_reset, bool):
+            raise ValueError (f"<{self.device_name}> do_reset must be a bool.  Received <{do_reset}>")
 
 
-        if do_soft_reset:
+        if do_reset:
             if self.soft_reset() == I2C_ERROR:
                 raise RuntimeError (f"<{self.device_name}> soft_reset during instantiation failed")
 

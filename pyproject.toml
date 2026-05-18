@@ -1,10 +1,15 @@
 [project]
 name = 'cjn_PiTools'
-version = "1.2"
+version = "1.2.1rc1"
+    # 1.2.1rc1 
+    #   PiOLED tweaks
+    #   HTU21D init changed do_soft_reset > do_reset, consistent with SHT3x
+    # 1.2 release
     #   PiOLED uses shared memory, changed from display_file - cjnfuncs 3.2 dependency
     #   PiOLED add toolname to pioled_display_driver pioled_shm_lock and pioled_go_flag .get_lock() calls
     #   PiOLED taillog command
     #   Debug logging of MCP23008 set_register() and set_bits() values
+    #   doc fixes
     # 1.1.1 - pyproject.toml cleanup, Added to keywords
     # 1.1 - Final cleanup, release
     # 1.0.1 - PiOLED startup display file access check debug

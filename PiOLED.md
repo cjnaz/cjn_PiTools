@@ -238,7 +238,7 @@ optional arguments:
 
 These locks may be cleared by the PiOLED CLI command:
 
-      PiOLED unlock, or within code:
+      PiOLED unlock
 
 or using the resourcelock CLI commands:
 
