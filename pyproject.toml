@@ -1,7 +1,8 @@
 [project]
 name = 'cjn_PiTools'
-version = "1.2.1rc1"
-    # 1.2.1rc1 
+version = "1.2.1rc2"
+    # 1.2.1
+    #   ADC121C read_conversion_result force_address switch added
     #   PiOLED tweaks
     #   HTU21D init changed do_soft_reset > do_reset, consistent with SHT3x
     # 1.2 release

@@ -181,16 +181,25 @@ Create an ADC121C family device instance
     #=====================================================================================
     #=====================================================================================
 
-    def read_conversion_result(self):
+    def read_conversion_result(self, force_address=False):
         """
 ## read_conversion_result () - Return the measured voltage
 
 ***ADC121C class member function***
 
 
+### Args
+`force_address` (bool, default False)
+- If True, force the Address Pointer Register byte to be written
+- Needed if a separate process should access the device and independently change the address pointer register
+while the current process thinks the the register still points to the conversion result register (and thus does 
+not write/update the address pointer register).
+
+
 ### Returns
 - Tuple (Alert Flag bit, Measured Voltage (float))
 - Tuple (I2C_ERROR, I2C_ERROR) on I2C IO error
+
 
 ### Behaviors and rules
 - The 12-bit code read from the device is scaled by Vref and returned as the measured voltage
@@ -200,13 +209,15 @@ to `read_conversion_result()`
         adc121c_logger.debug (f"<{self.device_name}> ***** read_conversion_result()")
 
         try:
-            if not self.conv_rslt_reg_addressed:
+            if not self.conv_rslt_reg_addressed  or  force_address:
+                if force_address:
+                    adc121c_logger.debug (f"<{self.device_name}> Force reset of the Address Pointer Register")
                 self.pi_i2c_bus_handle.i2c_write_device (self.device_addr, [CONVERSION_RSLT_REG_PTR])
                 self.conv_rslt_reg_addressed = True
             (count, data) = self.pi_i2c_bus_handle.i2c_read_device(self.device_addr, 2)
             conv_result = (((data[0] & 0x0f) << 8) | (data[1] & 0xff)) / 4096 * self.Vref
             alert_flag = 1  if data[0] & 0x80  else 0
-            adc121c_logger.debug (f"Conversion result <{self.device_name}>:  (0x{data[0]:0>2x} 0x{data[1]:0>2x}) = <{conv_result:5.3f}V>, Alert flag <{alert_flag}>")
+            adc121c_logger.debug (f"<{self.device_name}> Conversion result:  (0x{data[0]:0>2x} 0x{data[1]:0>2x}) = <{conv_result:5.3f}V>, Alert flag <{alert_flag}>")
             return alert_flag, conv_result
 
         except Exception as e:
@@ -242,7 +253,7 @@ to `read_conversion_result()`
 
             over_range_alert =      (alert_status_reg_value & 0b00000010) >> 1
             under_range_alert =     alert_status_reg_value & 0b00000001
-            adc121c_logger.debug (f"over_range_alert: <{over_range_alert}>, under_range_alert: <{under_range_alert}>")
+            adc121c_logger.debug (f"<{self.device_name}> over_range_alert: <{over_range_alert}>, under_range_alert: <{under_range_alert}>")
             return over_range_alert, under_range_alert
 
         except Exception as e:
@@ -528,7 +539,7 @@ The register value is converted to a voltage based on Vref
             self.conv_rslt_reg_addressed = False
             (count, data) = self.pi_i2c_bus_handle.i2c_read_device(self.device_addr, 2)
             vlow_limit_value = (((data[0] & 0x0f) << 8) | (data[1] & 0xff)) / 4096 * self.Vref
-            adc121c_logger.debug (f"VLow limit <{self.device_name}>:  (0x{data[0]:0>2x} 0x{data[1]:0>2x}) = <{vlow_limit_value:5.3f}V>")
+            adc121c_logger.debug (f"<{self.device_name}> VLow limit:  (0x{data[0]:0>2x} 0x{data[1]:0>2x}) = <{vlow_limit_value:5.3f}V>")
             return vlow_limit_value
 
         except Exception as e:
@@ -601,7 +612,7 @@ The register value is converted to a voltage based on Vref
             self.conv_rslt_reg_addressed = False
             (count, data) = self.pi_i2c_bus_handle.i2c_read_device(self.device_addr, 2)
             vhigh_limit_value = (((data[0] & 0x0f) << 8) | (data[1] & 0xff)) / 4096 * self.Vref
-            adc121c_logger.debug (f"VHigh limit <{self.device_name}>:  (0x{data[0]:0>2x} 0x{data[1]:0>2x}) = <{vhigh_limit_value:5.3f}V>")
+            adc121c_logger.debug (f"<{self.device_name}> VHigh limit:  (0x{data[0]:0>2x} 0x{data[1]:0>2x}) = <{vhigh_limit_value:5.3f}V>")
             return vhigh_limit_value
 
         except Exception as e:
@@ -674,7 +685,7 @@ The register value is converted to a voltage based on Vref
             self.conv_rslt_reg_addressed = False
             (count, data) = self.pi_i2c_bus_handle.i2c_read_device(self.device_addr, 2)
             vhyst_value = (((data[0] & 0x0f) << 8) | (data[1] & 0xff)) / 4096 * self.Vref
-            adc121c_logger.debug (f"vhyst value <{self.device_name}>:  (0x{data[0]:0>2x} 0x{data[1]:0>2x}) = <{vhyst_value:5.3f}V>")
+            adc121c_logger.debug (f"<{self.device_name}> Vhyst value:  (0x{data[0]:0>2x} 0x{data[1]:0>2x}) = <{vhyst_value:5.3f}V>")
             return vhyst_value
 
         except Exception as e:
@@ -752,7 +763,7 @@ mode (switching to Normal mode).
             self.conv_rslt_reg_addressed = False
             (count, data) = self.pi_i2c_bus_handle.i2c_read_device(self.device_addr, 2)
             vmin_value = (((data[0] & 0x0f) << 8) | (data[1] & 0xff)) / 4096 * self.Vref
-            adc121c_logger.debug (f"vmin value <{self.device_name}>:  (0x{data[0]:0>2x} 0x{data[1]:0>2x}) = <{vmin_value:5.3f}V>")
+            adc121c_logger.debug (f"<{self.device_name}> Vmin value:  (0x{data[0]:0>2x} 0x{data[1]:0>2x}) = <{vmin_value:5.3f}V>")
             return vmin_value
 
         except Exception as e:
@@ -826,7 +837,7 @@ The register value is converted to a voltage based on Vref
             self.conv_rslt_reg_addressed = False
             (count, data) = self.pi_i2c_bus_handle.i2c_read_device(self.device_addr, 2)
             vmax_value = (((data[0] & 0x0f) << 8) | (data[1] & 0xff)) / 4096 * self.Vref
-            adc121c_logger.debug (f"vmax value <{self.device_name}>:  (0x{data[0]:0>2x} 0x{data[1]:0>2x}) = <{vmax_value:5.3f}V>")
+            adc121c_logger.debug (f"<{self.device_name}> Vmax value:  (0x{data[0]:0>2x} 0x{data[1]:0>2x}) = <{vmax_value:5.3f}V>")
             return vmax_value
 
         except Exception as e:
