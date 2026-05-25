@@ -12,6 +12,7 @@ Produce / compare to golden results:
 #
 #  Chris Nelson, Copyright 2026
 #
+# 1.1 260524 - Added tests 4 for monitor_ch
 # 1.0 260401 - New
 #
 #==========================================================
@@ -113,78 +114,105 @@ if __name__ == '__main__':
     if check_tnum('1c'):
         def func():
             pca9548_resBd_handle_smbus.write_control_reg (0xaa)
-            logging.info (f"channel_enable_bit_map:  0b{pca9548_resBd_handle_smbus.channel_enable_bit_map:0>8b}")
+            logging.info (f"channel_enable_bitmap:  0b{pca9548_resBd_handle_smbus.channel_enable_bitmap:0>8b}")
             pca9548_resBd_handle_smbus.read_control_reg()
 
             pca9548_resBd_handle_pigpio.write_control_reg (0xff)
-            logging.info (f"channel_enable_bit_map:  0b{pca9548_resBd_handle_pigpio.channel_enable_bit_map:0>8b}")
+            logging.info (f"channel_enable_bitmap:  0b{pca9548_resBd_handle_pigpio.channel_enable_bitmap:0>8b}")
             pca9548_resBd_handle_pigpio.read_control_reg()
 
             pca9548_resBd_handle_smbus.write_control_reg('5')
-            logging.info (f"channel_enable_bit_map:  0b{pca9548_resBd_handle_smbus.channel_enable_bit_map:0>8b}")
+            logging.info (f"channel_enable_bitmap:  0b{pca9548_resBd_handle_smbus.channel_enable_bitmap:0>8b}")
             pca9548_resBd_handle_smbus.read_control_reg()
 
         dotest ("Mix it up across apis", "None, no exception", func)
 
 
     #-------------------------------------------------------------------------
-    # Exercise build_bit_map()
+    # Exercise build_bitmap()
     if check_tnum('2a'):
         def func():
-            return pca9548_resBd_handle_smbus._build_bit_map (0)
+            return pca9548_resBd_handle_smbus._build_bitmap (0)
 
         dotest ("int value 0", "0", func)
 
     if check_tnum('2b'):
         def func():
-            return pca9548_resBd_handle_smbus._build_bit_map (0x55)
+            return pca9548_resBd_handle_smbus._build_bitmap (0x55)
 
         dotest ("int value 0x55", "85 (0x55)", func)
 
     if check_tnum('2c'):
         def func():
-            return pca9548_resBd_handle_smbus._build_bit_map ('0')
+            return pca9548_resBd_handle_smbus._build_bitmap ('0')
 
         dotest ("str '0'", "1 - channel 0 enabled", func)
 
     if check_tnum('2d'):
         def func():
-            return pca9548_resBd_handle_smbus._build_bit_map ('7')
+            return pca9548_resBd_handle_smbus._build_bitmap ('7')
 
         dotest ("str '7'", "128 (decimal) - channel 7 enabled", func)
 
     if check_tnum('2e'):
         def func():
-            return pca9548_resBd_handle_smbus._build_bit_map ('-1')
+            return pca9548_resBd_handle_smbus._build_bitmap ('-1')
 
         dotest ("str -1", "0 - No channel enabled", func)
 
     if check_tnum('2f'):
         def func():
-            return pca9548_resBd_handle_smbus._build_bit_map ('Hello')
+            return pca9548_resBd_handle_smbus._build_bitmap ('Hello')
 
         dotest ("str 'Hello'", "ValueError: invalid literal for int() with base 10: 'Hello'", func)
 
     if check_tnum('2g'):
         def func():
-            return pca9548_resBd_handle_smbus._build_bit_map ('9')
+            return pca9548_resBd_handle_smbus._build_bitmap ('9')
 
         dotest ("str '9'", "ValueError: <PCA9548_Res> channel_value (str) must be int range -1 to 7 - received <9>", func)
 
 
     #-------------------------------------------------------------------------
-    # Exercise bit_map_to_channel_str()
+    # Exercise bitmap_to_channel_str()
     if check_tnum('3a'):
-        dotest ("bit_map 1", "0 (str)", pca9548_resBd_handle_smbus._bit_map_to_channel_str, 1)
+        dotest ("bitmap 1", "0 (str)", pca9548_resBd_handle_smbus._bitmap_to_channel_str, 1)
 
     if check_tnum('3b'):
-        dotest ("bit_map 0x55", "0 2 4 6 (str)", pca9548_resBd_handle_smbus._bit_map_to_channel_str, 0x55)
+        dotest ("bitmap 0x55", "0 2 4 6 (str)", pca9548_resBd_handle_smbus._bitmap_to_channel_str, 0x55)
 
     if check_tnum('3c'):
-        dotest ("bit_map 0xff", "0 1 2 3 4 5 6 7 (str)", pca9548_resBd_handle_smbus._bit_map_to_channel_str, 0xff)
+        dotest ("bitmap 0xff", "0 1 2 3 4 5 6 7 (str)", pca9548_resBd_handle_smbus._bitmap_to_channel_str, 0xff)
 
     if check_tnum('3d'):
-        dotest ("bit_map 0", "'' (empty str)", pca9548_resBd_handle_smbus._bit_map_to_channel_str, 0)
+        dotest ("bitmap 0", "'' (empty str)", pca9548_resBd_handle_smbus._bitmap_to_channel_str, 0)
+
+
+    #-------------------------------------------------------------------------
+    # monitor_ch tests
+    if check_tnum('4a'):
+        def func():
+            xx = PCA9548('test_4a', PCA9548_RESBD['addr'], i2c_bus_handle_smbus, monitor_ch='7')
+            xx.write_control_reg('3')
+            xx.read_control_reg()
+            xx.write_control_reg('-1')
+            xx.read_control_reg()
+            xx.write_control_reg(0x55)
+            xx.read_control_reg()
+
+        dotest ("monitor_ch 7", "None", func)
+
+    if check_tnum('4b'):
+        def func():
+            xx = PCA9548('test_4a', PCA9548_RESBD['addr'], i2c_bus_handle_smbus, monitor_ch=0xc1)
+            xx.write_control_reg('3')
+            xx.read_control_reg()
+            xx.write_control_reg('-1')
+            xx.read_control_reg()
+            xx.write_control_reg(0x55)
+            xx.read_control_reg()
+
+        dotest ("monitor_ch 0, 6, 7", "None", func)
 
 
 
@@ -206,7 +234,7 @@ if __name__ == '__main__':
         def func():
             pca9548_resBd_handle_pigpio.write_control_reg (0x1ff)
 
-        dotest ("Int bit-map out of range", "ValueError: <PCA9548_Res> channel_value (int) must be int range 0x00 to 0xFF - received <511> / <0x1ff>", func)
+        dotest ("Int bitmap out of range", "ValueError: <PCA9548_Res> channel_value (int) must be int range 0x00 to 0xFF - received <511> / <0x1ff>", func)
 
     if check_tnum('13d'):
         def func():
@@ -257,6 +285,13 @@ if __name__ == '__main__':
             return pca9548_irrBd_handle_smbus.read_control_reg()
 
         dotest ("PCA9548_Irr not accessible for read - api smbus", "-256 (I2C_ERROR)", func)
+
+    if check_tnum('13k'):
+        def func():
+            PCA9548('PCA9548_Bad_monitor_ch', PCA9548_RESBD['addr'], i2c_bus_handle_pigpio, monitor_ch=0x100)
+
+        dotest ("Monitor_ch error", "ValueError: <PCA9548_Bad_monitor_ch> channel_value (int) must be int range 0x00 to 0xFF - received <256> / <0x100>", func)
+
 
 
     # if check_tnum('50', include0=False):

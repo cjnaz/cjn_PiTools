@@ -7,6 +7,7 @@ It also provides a command line interface for interactive dev/debug.
 
 Supports:
 - Reading and writing the PCA9548 control register via API and CLI
+- Always-enabled channel(s) for I2C bus monitoring
 - Detailed debug-level visibility on operations
 - Both smbus and pigpio (local and remote) interfaces/APIs
 
@@ -55,7 +56,7 @@ pio_i2c_bus_handle.close()
 And running it:
 ```
 $ ./PCA9548_README_ex.py 
-DEBUG:cjn_PiTools.PCA9548:<My_PCA9548> New PCA9548 device defined at addr <0x71> using api <smbus> on i2c bus <1>
+DEBUG:cjn_PiTools.PCA9548:<My_PCA9548> New PCA9548 device defined at addr <0x71> using api <smbus> on i2c bus <1>, Monitor channel(s) enabled: <>
 DEBUG:cjn_PiTools.PCA9548:<My_PCA9548> ***** write_control_reg()
 DEBUG:cjn_PiTools.PCA9548:<My_PCA9548> New mask:     <0b01010101>, channels <0 2 4 6>
 DEBUG:cjn_PiTools.PCA9548:<My_PCA9548> ***** read_control_reg()
@@ -68,6 +69,25 @@ DEBUG:cjn_PiTools.PCA9548:<My_PCA9548> New mask:     <0b00000000>, channels <>
 DEBUG:cjn_PiTools.PCA9548:<My_PCA9548> ***** write_control_reg()
 DEBUG:cjn_PiTools.PCA9548:<My_PCA9548> New mask:     <0b00001000>, channels <3>
 ```
+
+<br>
+
+## Enabling a monitor channel
+
+At instantiation, a channel (or multiple channels) may be designated as a monitor channel.  This channel will always be
+enabled, and can be used for monitoring/tracing bus activity.  Here's an example of designating channel 7 as a monitor channel, and enabling I2C bus traffic on channel 2:
+
+    PCA9548_0x71 = PCA9548('My_PCA9548', 0x71, pio_i2c_bus_handle, monitor_ch='7')
+    PCA9548_0x71.write_control_reg('2')
+    PCA9548_0x71.read_control_reg()
+
+Monitor channels can be seen as enabled in the debug logging at instantiation, and in `write_control_reg()` and `read_control_reg()` calls:
+
+    DEBUG:cjn_PiTools.PCA9548:<My_PCA9548> New PCA9548 device defined at addr <0x71> using api <smbus> on i2c bus <1>, Monitor channel(s) enabled: <7>
+    DEBUG:cjn_PiTools.PCA9548:<My_PCA9548> ***** write_control_reg()
+    DEBUG:cjn_PiTools.PCA9548:<My_PCA9548> New mask:     <0b10000100>, channels <2 7>
+    DEBUG:cjn_PiTools.PCA9548:<My_PCA9548> ***** read_control_reg()
+    DEBUG:cjn_PiTools.PCA9548:<My_PCA9548> Current mask: <0b10000100>, channels <2 7>
 
 <br>
 

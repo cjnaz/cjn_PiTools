@@ -270,6 +270,10 @@ Args, Returns, and Behaviors info.
 """
         htu21d_logger.debug (f"<{self.device_name}> ***** read_temperature()")
         try:
+            self.read_user_reg(quiet=True)
+        except:
+            pass
+        try:
             self.pi_i2c_bus_handle.i2c_write_byte(self.device_addr, TRIGGER_TEMP_MEASURE_HOLD)
         except Exception as e:
             htu21d_logger.debug (f"<{self.device_name}> exception:\n  {type(e).__name__}: {e}")
@@ -305,6 +309,10 @@ obtain the measured result after an appropriate delay. See the datasheet for mea
 - If the measurement is still in progress then I2C_ERROR is returned, and `fetch_temperature()` should be called again later.
 """
         htu21d_logger.debug (f"<{self.device_name}> ***** trigger_temperature_nohold()")
+        try:
+            self.read_user_reg(quiet=True)
+        except:
+            pass
         try:
             self.pi_i2c_bus_handle.i2c_write_byte(self.device_addr, TRIGGER_TEMP_MEASURE_NOHOLD)
             return 0
@@ -404,6 +412,10 @@ Args, Returns, and Behaviors info.
 """
         htu21d_logger.debug (f"<{self.device_name}> ***** read_RH()")
         try:
+            self.read_user_reg(quiet=True)
+        except:
+            pass
+        try:
             self.pi_i2c_bus_handle.i2c_write_byte(self.device_addr, TRIGGER_RH_MEASURE_HOLD)
         except Exception as e:
             htu21d_logger.debug (f"<{self.device_name}> exception:\n  {type(e).__name__}: {e}")
@@ -438,6 +450,10 @@ obtain the measured result after an appropriate delay. See the datasheet for mea
 - If the measurement is still in progress then I2C_ERROR is returned, and `fetch_RH()` should be called again later.
 """
         htu21d_logger.debug (f"<{self.device_name}> ***** trigger_RH_nohold()")
+        try:
+            self.read_user_reg(quiet=True)
+        except:
+            pass
         try:
             self.pi_i2c_bus_handle.i2c_write_byte(self.device_addr, TRIGGER_RH_MEASURE_NOHOLD)
             return 0

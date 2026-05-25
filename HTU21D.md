@@ -97,7 +97,7 @@ To enabled debug logging from this module's classes/functions, add this to your 
 
 ---
 
-# Class HTU21D (device_name, pi_i2c_bus_handle, do_soft_reset=True) - HTU21D library for Raspberry Pi
+# Class HTU21D (device_name, pi_i2c_bus_handle, do_reset=True) - HTU21D library for Raspberry Pi
 
 Create an HTU21D device instance
 
@@ -108,8 +108,9 @@ Create an HTU21D device instance
 `pi_i2c_bus_handle` (cjn_PiTools.shared.pi_i2c instance)
 - Get a `pi_i2c` instance handle in the tools script code and pass it to this device instantiation
 
-`do_soft_reset` (bool, default True)
+`do_reset` (bool, default True)
 - If True, issue a soft reset as part of instantiation
+- Set to False if the device is not available at instantiation time, and reset the device before reading values
 
 
 ### Class instance variables - as passed in at instantiation

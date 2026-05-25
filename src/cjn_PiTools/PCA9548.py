@@ -39,6 +39,10 @@ Create a PCA9548 device instance
 `pi_i2c_bus_handle` (cjn_PiTools.shared.pi_i2c instance)
 - Get an instance handle in the tools script code and pass it to this device instantiation
 
+`monitor_ch` (int or str, default int 0)
+- Setting the `monitor_ch` enables channel(s) to alway be enabled, and thus available for monitoring bus activity
+- See `write_control_reg(write_value)` for allowed values
+
 
 ### Class instance variables
 `device_name` (str)
@@ -47,8 +51,11 @@ Create a PCA9548 device instance
 `device_addr` (int)
 - As from instantiation
 
-`channel_enable_bit_map` (int)
+`channel_enable_bitmap` (int)
 - Current mask of enabled channels (1=enabled) - value range 0x00 to 0xFF
+
+`monitor_ch_bitmap` (int)
+- Decoded `monitor_ch` bitmap from instantiation
 
 
 ### Returns
@@ -64,10 +71,11 @@ Create a PCA9548 device instance
 
     """
 
-    def __init__ (self, device_name, device_addr, pi_i2c_bus_handle):
+    def __init__ (self, device_name, device_addr, pi_i2c_bus_handle, monitor_ch=0x00):
         self.device_name =          device_name
         self.device_addr =          device_addr
         self.pi_i2c_bus_handle =    pi_i2c_bus_handle
+        self.monitor_ch_bitmap =    0x00
 
         if not isinstance (self.device_name, str):
             raise ValueError (f"PCA9548 device.name must be str, received <{device_name}>")
@@ -76,7 +84,11 @@ Create a PCA9548 device instance
             raise ValueError (f"<{self.device_name}> PCA9548 device.addr must be 0x70 - 0x77, received <0x{device_addr:0>x}>")
 
         api = 'smbus'  if self.pi_i2c_bus_handle.api == 'smbus'  else 'pigpio'
-        PCA9548_logger.debug (f"<{self.device_name}> New PCA9548 device defined at addr <0x{self.device_addr:0>2x}> using api <{api}> on i2c bus <{self.pi_i2c_bus_handle.i2c_bus_num}>")
+
+        if monitor_ch:
+            self.monitor_ch_bitmap =    self._build_bitmap(monitor_ch)
+            # PCA9548_logger.debug (f"<{self.device_name}> ")
+        PCA9548_logger.debug (f"<{self.device_name}> New PCA9548 device defined at addr <0x{self.device_addr:0>2x}> using api <{api}> on i2c bus <{self.pi_i2c_bus_handle.i2c_bus_num}>, Monitor channel(s) enabled: <{self._bitmap_to_channel_str(self.monitor_ch_bitmap)}>")
 
 
     #=====================================================================================
@@ -91,7 +103,7 @@ Create a PCA9548 device instance
 
 ***PCA9548 class member function***
 
-The `write_value` is written to the control register and saved in `channel_enable_bit_map`
+The `write_value` is written to the control register and saved in `channel_enable_bitmap`
 
 
 ### Args
@@ -100,30 +112,30 @@ The `write_value` is written to the control register and saved in `channel_enabl
   - If int value:  Used directly as the channel enable mask
   - If str '-1':  Sets the channel enable mask to 0x00 (no channels enabled)
   - If str '0' to '7': Enables the individual channel, and disables all others, e.g., '2' resolves to 0b00000100
-- The resolved value is also saved to the instance variable `channel_enable_bit_map`
+- The resolved value is also saved to the instance variable `channel_enable_bitmap`
 
 
 ### Returns
-- `channel_enable_bit_map` value on success
+- `channel_enable_bitmap` value on success
 - I2C_ERROR if unable to write to the control register
 - Raises ValueError if `write_value` is not valid
         """
 
         PCA9548_logger.debug (f"<{self.device_name}> ***** write_control_reg()")
 
-        channel_enable_bit_map = self._build_bit_map(write_value)
+        channel_enable_bitmap = self._build_bitmap(write_value) | self.monitor_ch_bitmap
 
         if PCA9548_logger.isEnabledFor(logging.DEBUG):
-            PCA9548_logger.debug (f"<{self.device_name}> New mask:     <0b{channel_enable_bit_map:0>8b}>, channels <{self._bit_map_to_channel_str(channel_enable_bit_map)}>")
+            PCA9548_logger.debug (f"<{self.device_name}> New mask:     <0b{channel_enable_bitmap:0>8b}>, channels <{self._bitmap_to_channel_str(channel_enable_bitmap)}>")
 
         try:
-            result = self.pi_i2c_bus_handle.i2c_write_byte(self.device_addr, channel_enable_bit_map)
-            self.channel_enable_bit_map = channel_enable_bit_map
+            result = self.pi_i2c_bus_handle.i2c_write_byte(self.device_addr, channel_enable_bitmap)
+            self.channel_enable_bitmap = channel_enable_bitmap
         except Exception as e:
             PCA9548_logger.debug (f"<{self.device_name}> exception:  {type(e).__name__}: {e}")
             return I2C_ERROR
 
-        return channel_enable_bit_map
+        return channel_enable_bitmap
 
 
     #=====================================================================================
@@ -153,7 +165,7 @@ The `write_value` is written to the control register and saved in `channel_enabl
             return I2C_ERROR
 
         if PCA9548_logger.isEnabledFor(logging.DEBUG)  and  current_ch_enable_mask >= 0x00:  # TODO pigpio returns negative error codes.  Log and return I2C_ERROR
-            PCA9548_logger.debug (f"<{self.device_name}> Current mask: <0b{current_ch_enable_mask:0>8b}>, channels <{self._bit_map_to_channel_str(current_ch_enable_mask)}>")
+            PCA9548_logger.debug (f"<{self.device_name}> Current mask: <0b{current_ch_enable_mask:0>8b}>, channels <{self._bitmap_to_channel_str(current_ch_enable_mask)}>")
         return current_ch_enable_mask
 
 
@@ -164,7 +176,7 @@ The `write_value` is written to the control register and saved in `channel_enabl
     #=====================================================================================
     #=====================================================================================
 
-    def _build_bit_map (self, channel_value):
+    def _build_bitmap (self, channel_value):
         """
         Accepts channel_value
             int 0x00 to 0xFF:  Set channels per bit mask
@@ -192,7 +204,7 @@ The `write_value` is written to the control register and saved in `channel_enabl
                 return 0x01 << int(xx)
             
 
-    def _bit_map_to_channel_str(self, bit_mask):
+    def _bitmap_to_channel_str(self, bit_mask):
         """
         returns str of enabled channels for logging
         e.g., 0b00000101 returns '0 2'

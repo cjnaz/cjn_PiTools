@@ -198,9 +198,18 @@ Create an ADC121C family device instance
 ***ADC121C class member function***
 
 
+### Args
+`force_address` (bool, default False)
+- If True, force the Address Pointer Register byte to be written
+- Needed if a separate process should access the device and independently change the address pointer register
+while the current process thinks the the register still points to the conversion result register (and thus does 
+not write/update the address pointer register).
+
+
 ### Returns
 - Tuple (Alert Flag bit, Measured Voltage (float))
 - Tuple (I2C_ERROR, I2C_ERROR) on I2C IO error
+
 
 ### Behaviors and rules
 - The 12-bit code read from the device is scaled by Vref and returned as the measured voltage

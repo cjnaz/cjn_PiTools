@@ -3,10 +3,10 @@
 ---- Test Init ------------------------------------------------------
                              shared.__init__                       -    DEBUG:  Set up <pigpio> mode for i2c_bus_num <1>
                              shared.__init__                       -    DEBUG:  Set up <smbus> mode for i2c_bus_num <1>
-                            PCA9548.__init__                       -    DEBUG:  <PCA9548_Res> New PCA9548 device defined at addr <0x71> using api <pigpio> on i2c bus <1>
-                            PCA9548.__init__                       -    DEBUG:  <PCA9548_Irr> New PCA9548 device defined at addr <0x75> using api <pigpio> on i2c bus <1>
-                            PCA9548.__init__                       -    DEBUG:  <PCA9548_Res> New PCA9548 device defined at addr <0x71> using api <smbus> on i2c bus <1>
-                            PCA9548.__init__                       -    DEBUG:  <PCA9548_Irr> New PCA9548 device defined at addr <0x75> using api <smbus> on i2c bus <1>
+                            PCA9548.__init__                       -    DEBUG:  <PCA9548_Res> New PCA9548 device defined at addr <0x71> using api <pigpio> on i2c bus <1>, Monitor channel(s) enabled: <>
+                            PCA9548.__init__                       -    DEBUG:  <PCA9548_Irr> New PCA9548 device defined at addr <0x75> using api <pigpio> on i2c bus <1>, Monitor channel(s) enabled: <>
+                            PCA9548.__init__                       -    DEBUG:  <PCA9548_Res> New PCA9548 device defined at addr <0x71> using api <smbus> on i2c bus <1>, Monitor channel(s) enabled: <>
+                            PCA9548.__init__                       -    DEBUG:  <PCA9548_Irr> New PCA9548 device defined at addr <0x75> using api <smbus> on i2c bus <1>, Monitor channel(s) enabled: <>
                        PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
@@ -48,7 +48,7 @@ Test 1c - Mix it up across apis
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> New mask:     <0b10101010>, channels <1 3 5 7>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x71> data <0xaa>
-                       PCA9548-demo.func                           -     INFO:  channel_enable_bit_map:  0b10101010
+                       PCA9548-demo.func                           -     INFO:  channel_enable_bitmap:  0b10101010
                             PCA9548.read_control_reg               -    DEBUG:  <PCA9548_Res> ***** read_control_reg()
                              shared.i2c_read_byte                  -    DEBUG:  Using api <smbus> read 1 byte from bus <1> addr <0x71>
                              shared.i2c_read_byte                  -    DEBUG:  i2c_read_byte from addr <0x71>:  <0xaa>
@@ -57,7 +57,7 @@ Test 1c - Mix it up across apis
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> New mask:     <0b11111111>, channels <0 1 2 3 4 5 6 7>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> write bus <1> addr <0x71> data <0xff>
                              shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
-                       PCA9548-demo.func                           -     INFO:  channel_enable_bit_map:  0b11111111
+                       PCA9548-demo.func                           -     INFO:  channel_enable_bitmap:  0b11111111
                             PCA9548.read_control_reg               -    DEBUG:  <PCA9548_Res> ***** read_control_reg()
                              shared.i2c_read_byte                  -    DEBUG:  Using api <<pipio.pi host=localhost port=8888>> read 1 byte from bus <1> addr <0x71>
                              shared._get_pigpio_i2c_device_handle  -    DEBUG:  Got i2c_device_handle: <0> for addr <0x71>
@@ -66,7 +66,7 @@ Test 1c - Mix it up across apis
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> ***** write_control_reg()
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> New mask:     <0b00100000>, channels <5>
                              shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x71> data <0x20>
-                       PCA9548-demo.func                           -     INFO:  channel_enable_bit_map:  0b00100000
+                       PCA9548-demo.func                           -     INFO:  channel_enable_bitmap:  0b00100000
                             PCA9548.read_control_reg               -    DEBUG:  <PCA9548_Res> ***** read_control_reg()
                              shared.i2c_read_byte                  -    DEBUG:  Using api <smbus> read 1 byte from bus <1> addr <0x71>
                              shared.i2c_read_byte                  -    DEBUG:  i2c_read_byte from addr <0x71>:  <0x20>
@@ -132,7 +132,7 @@ Test 2g - str '9'
                        PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
-Test 3a - bit_map 1
+Test 3a - bitmap 1
   GIVEN:      (1,), {}
   EXPECT:     0 (str)
                        PCA9548-demo.dotest                         -  WARNING:  
@@ -140,7 +140,7 @@ Test 3a - bit_map 1
                        PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
-Test 3b - bit_map 0x55
+Test 3b - bitmap 0x55
   GIVEN:      (85,), {}
   EXPECT:     0 2 4 6 (str)
                        PCA9548-demo.dotest                         -  WARNING:  
@@ -148,7 +148,7 @@ Test 3b - bit_map 0x55
                        PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
-Test 3c - bit_map 0xff
+Test 3c - bitmap 0xff
   GIVEN:      (255,), {}
   EXPECT:     0 1 2 3 4 5 6 7 (str)
                        PCA9548-demo.dotest                         -  WARNING:  
@@ -156,11 +156,71 @@ Test 3c - bit_map 0xff
                        PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
-Test 3d - bit_map 0
+Test 3d - bitmap 0
   GIVEN:      (0,), {}
   EXPECT:     '' (empty str)
                        PCA9548-demo.dotest                         -  WARNING:  
   RETURNED:   
+                       PCA9548-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 4a - monitor_ch 7
+  GIVEN:      (), {}
+  EXPECT:     None
+                            PCA9548.__init__                       -    DEBUG:  <test_4a> New PCA9548 device defined at addr <0x71> using api <smbus> on i2c bus <1>, Monitor channel(s) enabled: <7>
+                            PCA9548.write_control_reg              -    DEBUG:  <test_4a> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <test_4a> New mask:     <0b10001000>, channels <3 7>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x71> data <0x88>
+                            PCA9548.read_control_reg               -    DEBUG:  <test_4a> ***** read_control_reg()
+                             shared.i2c_read_byte                  -    DEBUG:  Using api <smbus> read 1 byte from bus <1> addr <0x71>
+                             shared.i2c_read_byte                  -    DEBUG:  i2c_read_byte from addr <0x71>:  <0x88>
+                            PCA9548.read_control_reg               -    DEBUG:  <test_4a> Current mask: <0b10001000>, channels <3 7>
+                            PCA9548.write_control_reg              -    DEBUG:  <test_4a> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <test_4a> New mask:     <0b10000000>, channels <7>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x71> data <0x80>
+                            PCA9548.read_control_reg               -    DEBUG:  <test_4a> ***** read_control_reg()
+                             shared.i2c_read_byte                  -    DEBUG:  Using api <smbus> read 1 byte from bus <1> addr <0x71>
+                             shared.i2c_read_byte                  -    DEBUG:  i2c_read_byte from addr <0x71>:  <0x80>
+                            PCA9548.read_control_reg               -    DEBUG:  <test_4a> Current mask: <0b10000000>, channels <7>
+                            PCA9548.write_control_reg              -    DEBUG:  <test_4a> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <test_4a> New mask:     <0b11010101>, channels <0 2 4 6 7>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x71> data <0xd5>
+                            PCA9548.read_control_reg               -    DEBUG:  <test_4a> ***** read_control_reg()
+                             shared.i2c_read_byte                  -    DEBUG:  Using api <smbus> read 1 byte from bus <1> addr <0x71>
+                             shared.i2c_read_byte                  -    DEBUG:  i2c_read_byte from addr <0x71>:  <0xd5>
+                            PCA9548.read_control_reg               -    DEBUG:  <test_4a> Current mask: <0b11010101>, channels <0 2 4 6 7>
+                       PCA9548-demo.dotest                         -  WARNING:  
+  RETURNED:   None
+                       PCA9548-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 4b - monitor_ch 0, 6, 7
+  GIVEN:      (), {}
+  EXPECT:     None
+                            PCA9548.__init__                       -    DEBUG:  <test_4a> New PCA9548 device defined at addr <0x71> using api <smbus> on i2c bus <1>, Monitor channel(s) enabled: <0 6 7>
+                            PCA9548.write_control_reg              -    DEBUG:  <test_4a> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <test_4a> New mask:     <0b11001001>, channels <0 3 6 7>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x71> data <0xc9>
+                            PCA9548.read_control_reg               -    DEBUG:  <test_4a> ***** read_control_reg()
+                             shared.i2c_read_byte                  -    DEBUG:  Using api <smbus> read 1 byte from bus <1> addr <0x71>
+                             shared.i2c_read_byte                  -    DEBUG:  i2c_read_byte from addr <0x71>:  <0xc9>
+                            PCA9548.read_control_reg               -    DEBUG:  <test_4a> Current mask: <0b11001001>, channels <0 3 6 7>
+                            PCA9548.write_control_reg              -    DEBUG:  <test_4a> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <test_4a> New mask:     <0b11000001>, channels <0 6 7>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x71> data <0xc1>
+                            PCA9548.read_control_reg               -    DEBUG:  <test_4a> ***** read_control_reg()
+                             shared.i2c_read_byte                  -    DEBUG:  Using api <smbus> read 1 byte from bus <1> addr <0x71>
+                             shared.i2c_read_byte                  -    DEBUG:  i2c_read_byte from addr <0x71>:  <0xc1>
+                            PCA9548.read_control_reg               -    DEBUG:  <test_4a> Current mask: <0b11000001>, channels <0 6 7>
+                            PCA9548.write_control_reg              -    DEBUG:  <test_4a> ***** write_control_reg()
+                            PCA9548.write_control_reg              -    DEBUG:  <test_4a> New mask:     <0b11010101>, channels <0 2 4 6 7>
+                             shared.i2c_write_byte                 -    DEBUG:  Using api <smbus> write bus <1> addr <0x71> data <0xd5>
+                            PCA9548.read_control_reg               -    DEBUG:  <test_4a> ***** read_control_reg()
+                             shared.i2c_read_byte                  -    DEBUG:  Using api <smbus> read 1 byte from bus <1> addr <0x71>
+                             shared.i2c_read_byte                  -    DEBUG:  i2c_read_byte from addr <0x71>:  <0xd5>
+                            PCA9548.read_control_reg               -    DEBUG:  <test_4a> Current mask: <0b11010101>, channels <0 2 4 6 7>
+                       PCA9548-demo.dotest                         -  WARNING:  
+  RETURNED:   None
                        PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
@@ -180,7 +240,7 @@ Test 13b - Bad device.name
                        PCA9548-demo.dotest                         -  WARNING:  
 
 ==============================================================================================
-Test 13c - Int bit-map out of range
+Test 13c - Int bitmap out of range
   GIVEN:      (), {}
   EXPECT:     ValueError: <PCA9548_Res> channel_value (int) must be int range 0x00 to 0xFF - received <511> / <0x1ff>
                             PCA9548.write_control_reg              -    DEBUG:  <PCA9548_Res> ***** write_control_reg()
@@ -289,6 +349,14 @@ Test 13j - PCA9548_Irr not accessible for read - api smbus
                             PCA9548.read_control_reg               -    DEBUG:  <PCA9548_Irr> exception:  OSError: [Errno 121] Remote I/O error
                        PCA9548-demo.dotest                         -  WARNING:  
   RETURNED:   -256
+                       PCA9548-demo.dotest                         -  WARNING:  
+
+==============================================================================================
+Test 13k - Monitor_ch error
+  GIVEN:      (), {}
+  EXPECT:     ValueError: <PCA9548_Bad_monitor_ch> channel_value (int) must be int range 0x00 to 0xFF - received <256> / <0x100>
+                       PCA9548-demo.dotest                         -    ERROR:  
+  RAISED:     ValueError: <PCA9548_Bad_monitor_ch> channel_value (int) must be int range 0x00 to 0xFF - received <256> / <0x100>
                        PCA9548-demo.<module>                       -  WARNING:  
 
 ---- Cleanup --------------------------------------------------------
