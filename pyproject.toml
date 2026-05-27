@@ -1,6 +1,6 @@
 [project]
 name = 'cjn_PiTools'
-version = "1.2.1rc3"
+version = "1.2.1"
     # 1.2.1
     #   HTU21D dummy user reg reads for measurement reads stability
     #   PCA9548 monitor_ch
@@ -24,7 +24,7 @@ requires-python = ">=3.9"
 authors = [ {name = "Chris Nelson", email = "github@cjnaz.com"} ]
 license = "MIT"
 dependencies = [
-    'cjnfuncs >= 3.2',
+    'cjnfuncs >= 3.2.1',
     'luma.oled',
     'pillow',
     'spidev',
