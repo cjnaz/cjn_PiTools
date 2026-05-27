@@ -62,26 +62,26 @@ V1.2.1 Changes
 
 
 V1.2 Changes
-    PiOLED uses shared memory, changed from display_file - cjnfuncs 3.2 dependency
-    PiOLED add toolname to pioled_display_driver pioled_shm_lock and pioled_go_flag .get_lock() calls
-    PiOLED taillog command
-    Debug logging of MCP23008 set_register() and set_bits() values
+- PiOLED uses shared memory, changed from display_file - cjnfuncs 3.2 dependency
+- PiOLED add toolname to pioled_display_driver pioled_shm_lock and pioled_go_flag .get_lock() calls
+- PiOLED taillog command
+- Debug logging of MCP23008 set_register() and set_bits() values
 
 
 <br/>
 
 ## Revision history
 - 1.2.1 260526
-    HTU21D dummy user reg reads for measurement reads stability
-    PCA9548 monitor_ch
-    ADC121C read_conversion_result force_address switch added
-    PiOLED tweaks
-    HTU21D init changed do_soft_reset > do_reset, consistent with SHT3x
+  - HTU21D dummy user reg reads for measurement reads stability
+  - PCA9548 monitor_ch
+  - ADC121C read_conversion_result force_address switch added
+  - PiOLED tweaks
+  - HTU21D init changed do_soft_reset > do_reset, consistent with SHT3x
 - 1.2 260506
-    PiOLED uses shared memory, changed from display_file - cjnfuncs 3.2 dependency
-    PiOLED add toolname to pioled_display_driver pioled_shm_lock and pioled_go_flag .get_lock() calls
-    PiOLED taillog command
-    Debug logging of MCP23008 set_register() and set_bits() values
+  - PiOLED uses shared memory, changed from display_file - cjnfuncs 3.2 dependency
+  - PiOLED add toolname to pioled_display_driver pioled_shm_lock and pioled_go_flag .get_lock() calls
+  - PiOLED taillog command
+  - Debug logging of MCP23008 set_register() and set_bits() values
 - 1.1.1 260401 - pyproject.toml cleanup, keywords
 - 1.1 260401 - Added ADC121C, HTU21D, MCP23008, PCA9548, and SHT3x drivers
 - 1.0 260207 - New.  Bundled PiBlinky, PiOLED, initW1buses, and DS18B20 modules
